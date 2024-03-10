@@ -1,13 +1,18 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import { Link } from "expo-router";
+import { StyleSheet, Text, View, Button } from "react-native";
+import { Link, router } from "expo-router";
 
 export default function App() {
+  function handleNavigate() {
+    router.replace("/dashboard");
+  }
   return (
     <View style={styles.container}>
       <Text>Open up App.js to start working on your app!</Text>
       <Link href={"/profile"}>Navegar profile</Link>
-      <Link href={"/user"}>Navegar user</Link>
+      <Link href={"/user/123456"}>Navegar user</Link>
+
+      <Button title="navegar dashboard" onPress={handleNavigate} />
     </View>
   );
 }

@@ -5,8 +5,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const Stack = createNativeStackNavigator();
 
-import FirstScreen from "./src/app/FirstScreen";
-import SecondScreen from "./src/app/SecondScreen";
+import FirstScreen from "./src/FirstScreen";
+import SecondScreen from "./src/SecondScreen";
 
 export default function App() {
   return (
@@ -15,23 +15,8 @@ export default function App() {
         initialRouteName="FirstScreen"
         screenOptions={{
           headerShown: false,
-          cardStyle: { backgroundColor: "transparent" },
-          cardOverlayEnabled: true,
-          cardStyleInterpolator: ({ current: { progress } }) => ({
-            cardStyle: {
-              opacity: progress.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, 1],
-              }),
-            },
-            overlayStyle: {
-              opacity: progress.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, 0.5],
-                extrapolate: "clamp",
-              }),
-            },
-          }),
+          // animationTypeForReplace: "pop",
+          animation: "none",
         }}
       >
         <Stack.Screen name="FirstScreen" component={FirstScreen} />
@@ -44,7 +29,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1f1f1f",
+    backgroundColor: "#181818",
     alignItems: "center",
     justifyContent: "center",
   },
