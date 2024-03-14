@@ -7,6 +7,8 @@ const Stack = createNativeStackNavigator();
 
 import FirstScreen from "./src/FirstScreen";
 import SecondScreen from "./src/SecondScreen";
+import MaterialTab from "./src/MaterialTab";
+import BottomTab from "./src/BottomTab";
 
 export default function App() {
   return (
@@ -16,11 +18,21 @@ export default function App() {
         screenOptions={{
           headerShown: false,
           // animationTypeForReplace: "pop",
-          animation: "none",
+          animation: "slide_from_right",
         }}
       >
         <Stack.Screen name="FirstScreen" component={FirstScreen} />
         <Stack.Screen name="SecondScreen" component={SecondScreen} />
+        <Stack.Screen
+          name="MaterialTab"
+          component={MaterialTab}
+          options={{ animation: "fade_from_bottom" }}
+        />
+        <Stack.Screen
+          name="BottomTab"
+          component={BottomTab}
+          options={{ animation: "fade_from_bottom" }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

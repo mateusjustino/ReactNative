@@ -47,7 +47,7 @@ export default function App() {
   function handleLogin() {
     signInWithEmailAndPassword(auth, email, password)
       .then((user) => {
-        console.log(user);
+        // console.log(user);
         setAuthUser({
           email: user.user.email,
           uid: user.user.uid,

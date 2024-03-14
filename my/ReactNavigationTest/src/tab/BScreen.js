@@ -1,17 +1,14 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
-const SecondScreen = ({ navigation }) => {
+const BScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
-      <Text style={styles.text}>Second Screen</Text>
-      <TouchableOpacity onPress={() => navigation.navigate("MaterialTab")}>
-        <Text style={styles.text}>Material Tab</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("BottomTab")}>
-        <Text style={styles.text}>Bottom Tab</Text>
-      </TouchableOpacity>
+      <Text style={styles.text}>B Screen</Text>
+      {/* <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Text style={styles.text}>Navegar</Text>
+      </TouchableOpacity> */}
     </View>
   );
 };
@@ -30,4 +27,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SecondScreen;
+export default BScreen;
