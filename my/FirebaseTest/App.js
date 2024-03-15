@@ -8,6 +8,8 @@ import VerifyEmail from "./src/app/VerifyEmail";
 import UpdateProfile from "./src/app/UpdateProfile";
 import PasswordReset from "./src/app/PasswordReset";
 import UpdateEmail from "./src/app/UpdateEmail";
+import UpdatePassword from "./src/app/UpdatePassword";
+import Database from "./src/app/Database";
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -21,6 +23,8 @@ export default function App() {
         <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
         <Stack.Screen name="UpdateEmail" component={UpdateEmail} />
         <Stack.Screen name="PasswordReset" component={PasswordReset} />
+        <Stack.Screen name="UpdatePassword" component={UpdatePassword} />
+        <Stack.Screen name="Database" component={Database} />
       </Stack.Navigator>
     </NavigationContainer>
   );

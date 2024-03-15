@@ -9,12 +9,9 @@ const MainApp = ({ navigation }) => {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // setUser({
-        //   email: user.email,
-        //   uid: user.uid,
-        // });
         setUser(user);
         console.log(user);
+        console.log("-".repeat(99));
         return;
       }
       setUser(null);
@@ -54,8 +51,8 @@ const MainApp = ({ navigation }) => {
         </View>
         <View style={{ margin: 10 }}>
           <Button
-            title="Update Password (fazer agoraaa)"
-            onPress={() => navigation.navigate("")}
+            title="Update Password"
+            onPress={() => navigation.navigate("UpdatePassword")}
           />
         </View>
         <View style={{ margin: 10 }}>
@@ -68,6 +65,12 @@ const MainApp = ({ navigation }) => {
           <Button
             title="Password Reset"
             onPress={() => navigation.navigate("PasswordReset")}
+          />
+        </View>
+        <View style={{ margin: 10 }}>
+          <Button
+            title="Database"
+            onPress={() => navigation.navigate("Database")}
           />
         </View>
         <View style={{ margin: 10 }}>
