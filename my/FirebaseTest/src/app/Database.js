@@ -7,12 +7,20 @@ import {
   FlatList,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { addDoc, collection, doc, onSnapshot } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  deleteDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../firebaseConnection";
 
 const Database = ({ navigation }) => {
   const [text, setText] = useState("");
   const [listText, setListText] = useState([]);
+  const [isEditing, setIsEditing] = useState("");
 
   useEffect(() => {
     const textRef = collection(db, "textos");
@@ -43,6 +51,25 @@ const Database = ({ navigation }) => {
       .catch((error) => alert(error.message));
   };
 
+  const handleDeleteDoc = async (id) => {
+    await deleteDoc(doc(db, "textos", id))
+      .then(() => alert("deletado com sucess"))
+      .catch((error) => alert(error.message));
+  };
+
+  const handleEnterEditMode = (item) => {
+    setIsEditing(item.id);
+    setText(item.text);
+  };
+
+  const handleEditDoc = async () => {
+    await updateDoc(doc(db, "textos", isEditing), {
+      text: text,
+    })
+      .then(() => alert("atualizado"))
+      .catch((error) => alert(error.message));
+  };
+
   return (
     <View style={styles.container}>
       <Text>Text:</Text>
@@ -58,7 +85,10 @@ const Database = ({ navigation }) => {
         onChangeText={(text) => setText(text)}
       />
       <View style={{ marginBottom: 20 }}>
-        <Button title="Add Text" onPress={handleAddDoc} />
+        <Button
+          title={isEditing ? "Edit Text" : "Add Text"}
+          onPress={isEditing ? handleEditDoc : handleAddDoc}
+        />
       </View>
 
       <FlatList
@@ -68,10 +98,16 @@ const Database = ({ navigation }) => {
             <Text style={{ textAlign: "center" }}>{item.text}</Text>
             <View style={{ flexDirection: "row" }}>
               <View style={{ margin: 10 }}>
-                <Button title="edit" />
+                <Button
+                  title="update"
+                  onPress={() => handleEnterEditMode(item)}
+                />
               </View>
               <View style={{ margin: 10 }}>
-                <Button title="delete" />
+                <Button
+                  title="delete"
+                  onPress={() => handleDeleteDoc(item.id)}
+                />
               </View>
             </View>
           </View>

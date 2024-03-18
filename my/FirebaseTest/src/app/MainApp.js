@@ -7,7 +7,7 @@ const MainApp = ({ navigation }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
         console.log(user);
@@ -49,6 +49,10 @@ const MainApp = ({ navigation }) => {
             onPress={() => navigation.navigate("UpdateEmail")}
           />
         </View>
+        <Text>
+          link para reautenticar user no comentario
+          {/* https://stackoverflow.com/questions/37811684/how-to-create-credential-object-needed-by-firebase-web-user-reauthenticatewith */}
+        </Text>
         <View style={{ margin: 10 }}>
           <Button
             title="Update Password"

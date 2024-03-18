@@ -9,7 +9,6 @@ const UpdateProfile = ({ navigation }) => {
   const handleUpdateProfile = () => {
     updateProfile(auth.currentUser, {
       displayName: nome,
-      email: email,
     })
       .then(() => {
         alert("nome atualizado");
