@@ -1,11 +1,100 @@
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+
+import {
+  Container,
+  Title,
+  Input,
+  Button,
+  ButtonText,
+  SignUpButton,
+  SignUpText,
+} from "./styles";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../contexts/auth";
 
 const Login = () => {
+  const [login, setLogin] = useState(true);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { signUp } = useContext(AuthContext);
+
+  function toggleLogin() {
+    setName("");
+    setEmail("");
+    setPassword("");
+    setLogin(!login);
+  }
+
+  function handleSignIn() {
+    if (email === "" || password === "") {
+      alert("Preencha todos os campos");
+      return;
+    }
+  }
+
+  async function handleSignUp() {
+    if (name === "" || email === "" || password === "") {
+      alert("Preencha todos os campos");
+      return;
+    }
+    await signUp(email, password, name);
+  }
+
+  if (login) {
+    return (
+      <Container>
+        <Title>
+          Dev
+          <Text style={{ color: "#e52246" }}>Post</Text>
+        </Title>
+        <Input
+          placeholder="seuemail@teste.com"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+        />
+        <Input
+          placeholder="******"
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+        />
+        <Button onPress={handleSignIn}>
+          <ButtonText>Acessar</ButtonText>
+        </Button>
+        <SignUpButton onPress={toggleLogin}>
+          <SignUpText>Criar uma conta</SignUpText>
+        </SignUpButton>
+      </Container>
+    );
+  }
   return (
-    <View>
-      <Text>Login</Text>
-    </View>
+    <Container>
+      <Title>
+        Dev
+        <Text style={{ color: "#e52246" }}>Post</Text>
+      </Title>
+      <Input
+        placeholder="Seu nome"
+        value={name}
+        onChangeText={(text) => setName(text)}
+      />
+      <Input
+        placeholder="seuemail@teste.com"
+        value={email}
+        onChangeText={(text) => setEmail(text)}
+      />
+      <Input
+        placeholder="******"
+        value={password}
+        onChangeText={(text) => setPassword(text)}
+      />
+      <Button onPress={handleSignUp}>
+        <ButtonText>Cadastrar</ButtonText>
+      </Button>
+      <SignUpButton onPress={toggleLogin}>
+        <SignUpText>Ja tenho uma conta</SignUpText>
+      </SignUpButton>
+    </Container>
   );
 };
 
