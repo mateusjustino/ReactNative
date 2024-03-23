@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "1.21.0",
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
@@ -19,8 +20,8 @@
     "react-native": "0.73.5",
     "react-native-safe-area-context": "4.8.2",
     "react-native-screens": "~3.29.0",
-    "styled-components": "^6.1.8",
-    "@react-native-async-storage/async-storage": "1.21.0"
+    "react-native-vector-icons": "^10.0.3",
+    "styled-components": "^6.1.8"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
