@@ -1,4 +1,3 @@
-import { Text, View } from "react-native";
 import {
   Container,
   Name,
@@ -24,9 +23,11 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
+import { useNavigation } from "@react-navigation/native";
 
 const PostList = ({ data, userId }) => {
   const [likePost, setLikePost] = useState(data?.likes);
+  const navigation = useNavigation();
 
   async function handleLikePost(id, likes) {
     const docId = `${userId}_${id}`;
@@ -50,9 +51,7 @@ const PostList = ({ data, userId }) => {
     await setDoc(doc(db, "likes", docId), {
       postId: id,
       userId: userId,
-    })
-      .then(() => alert("foi"))
-      .catch((error) => alert(error.message));
+    });
 
     const docRefPost = doc(db, "posts", id);
     await updateDoc(docRefPost, {
@@ -70,7 +69,14 @@ const PostList = ({ data, userId }) => {
 
   return (
     <Container>
-      <Header>
+      <Header
+        onPress={() =>
+          navigation.navigate("PostsUser", {
+            title: data.autor,
+            userId: data.userId,
+          })
+        }
+      >
         {data.avatarUrl ? (
           <Avatar source={{ uri: data.avatarUrl }} />
         ) : (
