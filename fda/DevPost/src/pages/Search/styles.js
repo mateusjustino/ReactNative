@@ -22,4 +22,6 @@ export const Input = styled.TextInput`
   color: #121212;
 `;
 
-export const List = styled.FlatList``;
+export const List = styled.FlatList`
+  flex: 1;
+`;
