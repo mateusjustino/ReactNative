@@ -2,7 +2,7 @@ import { Container, Input, Button, ButtonText } from "./styles";
 import { useState, useLayoutEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { db, storage } from "../../firebaseConnection";
-import { ref } from "firebase/storage";
+import { getDownloadURL, ref } from "firebase/storage";
 import { addDoc, collection, doc } from "firebase/firestore";
 
 import { AuthContext } from "../../contexts/auth";
@@ -28,14 +28,14 @@ const DevPost = () => {
       return;
     }
 
-    let avatarUrl = null;
+    let urlImg = null;
     try {
-      let response = await ref(storage, "users")
-        .child(user?.uid)
-        .getDownloadURL();
-      avatarUrl = response;
+      const storageRef = ref(storage, "users/" + user?.uid);
+      getDownloadURL(storageRef).then((linkUrl) => {
+        urlImg = linkUrl;
+      });
     } catch (error) {
-      avatarUrl = null;
+      urlImg = null;
     }
 
     await addDoc(collection(db, "posts"), {
@@ -44,7 +44,7 @@ const DevPost = () => {
       autor: user?.nome,
       userId: user?.uid,
       likes: 0,
-      avatarUrl,
+      avatarUrl: urlImg,
     })
       .then(() => {
         setPost("");

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/auth";
 import Header from "../../components/Header";
 import {
@@ -40,6 +40,25 @@ const Profile = () => {
   // const [url, setUrl] = useState("https://sujeitoprogramador.com/steve.png");
   const [url, setUrl] = useState(null);
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    let isActive = true;
+    async function loadAvatar() {
+      try {
+        if (isActive) {
+          const storageRef = ref(storage, "users/" + user?.uid);
+          getDownloadURL(storageRef).then((linkUrl) => {
+            setUrl(linkUrl);
+          });
+        }
+      } catch (error) {
+        console.log("foto nao encontrada");
+      }
+    }
+    loadAvatar();
+
+    return () => (isActive = false);
+  }, []);
 
   async function handleSignOut() {
     await signOut();
@@ -83,79 +102,34 @@ const Profile = () => {
       return;
     }
     if (!result.canceled) {
-      // // Convert URI to a Blob via XHTML request, and actually upload it to the network
-      // const blob = await new Promise((resolve, reject) => {
-      //   const xhr = new XMLHttpRequest();
-      //   xhr.onload = function () {
-      //     resolve(xhr.response);
-      //   };
-      //   xhr.onerror = function () {
-      //     reject(new TypeError("Network request failed"));
-      //   };
-      //   xhr.responseType = "blob";
-      //   xhr.open("GET", result.assets[0].uri, true);
-      //   xhr.send(null);
-      // });
-      // const storageRef = ref(storage, "teste.jpeg");
-      // const thisUsersNewPostRef = ref(storageRef, "users/img1");
-      // uploadBytes(thisUsersNewPostRef, blob).then((snapshot) => {
-      //   // causes crash
-      //   console.log("Uploaded a blob or file!");
-      // });
-      const docRef = ref(storage, "image.jpeg");
-      const img = await fetch(result.assets[0].uri);
+      const fileSource = result.assets[0].uri;
+      const docRef = ref(storage, "users/" + user?.uid);
+      const img = await fetch(fileSource);
       const bytes = await img.blob();
 
-      await uploadBytes(docRef, bytes);
+      await uploadBytes(docRef, bytes).then(() => {
+        uploadAvatarPost();
+      });
+      setUrl(fileSource);
     }
+  };
 
-    // console.log(result);
-    // console.log(result.assets[0].fileName);
-    const fileSource = result.assets[0].uri;
-    // console.log(fileSource);
-
-    // // Create the file metadata
-    // /** @type {any} */
-    // const metadata = {
-    //   contentType: "image/jpeg",
-    // };
-
-    // // Upload file and metadata to the object 'images/mountains.jpg'
-    // const storageRef = ref(storage, "teste.jpeg");
-    // await uploadBytesResumable(storageRef, fileSource, metadata)
-    //   .then(() => console.log("foi"))
-    //   .catch((error) => console.log(error.message));
-
-    // ------
-    // const storageRef = ref(storage, "users");
-
-    // // 'file' comes from the Blob or File API
-    // uploadBytes(storageRef, fileSource).then((snapshot) => {
-    //   console.log("Uploaded a blob or file!");
-    // });
-    //---------
-    // import { getStorage, ref, uploadBytes } from "firebase/storage";
-
-    // const storage = getStorage();
-    // const storageRef = ref(storage, "some-child");
-
-    // // 'file' comes from the Blob or File API
-    // uploadBytes(storageRef, file).then((snapshot) => {
-    //   console.log("Uploaded a blob or file!");
-    // });
-
-    //------------------
-    // // Create the file metadata
-    // /** @type {any} */
-    // const metadata = {
-    //   contentType: "image/jpeg",
-    // };
-
-    // // Upload file and metadata to the object 'images/mountains.jpg'
-    // const storageRef = ref(storage, "users/" + user?.uid);
-    // uploadBytesResumable(storageRef, fileSource, metadata)
-    //   .then(() => alert("tudo certo"))
-    //   .catch((error) => alert(error.message));
+  const uploadAvatarPost = () => {
+    const storageRef = ref(storage, "users/" + user?.uid);
+    getDownloadURL(storageRef)
+      .then(async (image) => {
+        const q = query(
+          collection(db, "posts"),
+          where("userId", "==", user?.uid)
+        );
+        const postDocs = await getDocs(q);
+        postDocs.forEach(async (item) => {
+          await updateDoc(doc(db, "posts", item.id), {
+            avatarUrl: image,
+          });
+        });
+      })
+      .catch((error) => alert(error.message));
   };
 
   return (
