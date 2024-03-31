@@ -6,9 +6,11 @@ import { updateProfile } from "firebase/auth";
 const UpdateProfile = ({ navigation }) => {
   const [nome, setNome] = useState("");
 
+  console.log("aaa", auth.currentUser.uid);
   const handleUpdateProfile = () => {
     updateProfile(auth.currentUser, {
       displayName: nome,
+      appName: "Myy Firebase Test",
     })
       .then(() => {
         alert("nome atualizado");
