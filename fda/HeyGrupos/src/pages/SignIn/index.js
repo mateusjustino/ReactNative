@@ -8,11 +8,45 @@ import {
   SafeAreaView,
   Platform,
 } from "react-native";
+import { auth } from "../../firebaseConnection";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { useNavigation } from "@react-navigation/native";
 
 export default function SignIn() {
+  const navigation = useNavigation();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [type, setType] = useState(false);
+
+  function handleLogin() {
+    if (type) {
+      if (name === "" || email === "" || password === "") return;
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          updateProfile(auth.currentUser, {
+            displayName: name,
+          })
+            .then(() => {
+              navigation.goBack();
+            })
+            .catch((error) => alert(error.message));
+        })
+        .catch((error) => alert(error.message));
+    } else {
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          navigation.goBack();
+        })
+        .catch((error) => alert(error.message));
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.logo}>HeyGrupos</Text>
@@ -20,19 +54,21 @@ export default function SignIn() {
         Ajude, colabore, faça networking!
       </Text>
 
-      <TextInput
-        style={styles.input}
-        value={name}
-        onChangeText={(text) => setName(text)}
-        placeholder="Qual seu nome?"
-        placeholderTextColor="#99999b"
-      />
+      {type && (
+        <TextInput
+          style={styles.input}
+          value={name}
+          onChangeText={(text) => setName(text)}
+          placeholder="Qual seu nome?"
+          placeholderTextColor="#99999b"
+        />
+      )}
 
       <TextInput
         style={styles.input}
         value={email}
         onChangeText={(text) => setEmail(text)}
-        placeholder="Seu email?"
+        placeholder="Seu email"
         placeholderTextColor="#99999b"
       />
 
@@ -40,15 +76,21 @@ export default function SignIn() {
         style={styles.input}
         value={password}
         onChangeText={(text) => setPassword(text)}
-        placeholder="Sua senha?"
+        placeholder="Sua senha"
         placeholderTextColor="#99999b"
       />
 
-      <TouchableOpacity style={styles.buttonLogin}>
-        <Text style={styles.buttonText}>Acessar</Text>
+      <TouchableOpacity
+        style={[
+          styles.buttonLogin,
+          { backgroundColor: type ? "#f53745" : "#57dd86" },
+        ]}
+        onPress={handleLogin}
+      >
+        <Text style={styles.buttonText}>{type ? "Cadastrar" : "Acessar"}</Text>
       </TouchableOpacity>
-      <TouchableOpacity>
-        <Text>Criar uma nova conta</Text>
+      <TouchableOpacity onPress={() => setType(!type)}>
+        <Text>{type ? "Já possuo uma conta" : "Criar uma nova conta"}</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -76,7 +118,6 @@ const styles = StyleSheet.create({
   },
   buttonLogin: {
     width: "90%",
-    backgroundColor: "#121212",
     height: 50,
     justifyContent: "center",
     alignItems: "center",
