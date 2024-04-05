@@ -7,9 +7,68 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import React, { useState } from "react";
+import { db, auth } from "../../firebaseConnection";
+import { onAuthStateChanged } from "firebase/auth";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  serverTimestamp,
+} from "firebase/firestore";
 
-const ModalNewRoom = ({ setVisible }) => {
+const ModalNewRoom = ({ setVisible, setUpdateScreen }) => {
   const [roomName, setRoomName] = useState("");
+
+  let user;
+  onAuthStateChanged(auth, (userData) => {
+    if (userData) {
+      user = userData;
+    }
+  });
+
+  async function handleButtonCreate() {
+    if (roomName === "") return;
+
+    const querySnapshot = await getDocs(collection(db, "MESSAGE_THREADS"));
+    let myThreads = 0;
+    querySnapshot.docs.map((docItem) => {
+      if (docItem.data().owner === user.uid) {
+        myThreads += 1;
+      }
+    });
+    if (myThreads >= 4) {
+      alert("Já atingiu o limite de usuarios");
+    } else {
+      createRoom();
+    }
+  }
+
+  async function createRoom() {
+    const paiRef = await addDoc(collection(db, "MESSAGE_THREADS"), {
+      name: roomName,
+      owner: user.uid,
+      lastMessage: {
+        text: `Grupo ${roomName} criado. Bem vindo(a)!`,
+        createdAt: serverTimestamp(),
+      },
+    });
+    const paiId = paiRef.id;
+    const subColecaoRef = collection(
+      doc(db, "MESSAGE_THREADS", paiId),
+      "MESSAGES"
+    );
+    await addDoc(subColecaoRef, {
+      text: `Grupo ${roomName} criado. Bem vindo(a)!`,
+      createdAt: serverTimestamp(),
+      system: true,
+    }).then(() => {
+      setVisible();
+      setUpdateScreen();
+    });
+  }
+
   return (
     <View style={styles.container}>
       <TouchableWithoutFeedback onPress={setVisible}>
@@ -25,8 +84,17 @@ const ModalNewRoom = ({ setVisible }) => {
           placeholder="Nome para sua sala?"
         />
 
-        <TouchableOpacity style={styles.buttonCreate}>
+        <TouchableOpacity
+          style={styles.buttonCreate}
+          onPress={handleButtonCreate}
+        >
           <Text style={styles.buttonText}>Criar sala</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => setVisible(false)}
+        >
+          <Text>Voltar</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -73,5 +141,10 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: "bold",
     color: "#fff",
+  },
+  backButton: {
+    marginTop: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
