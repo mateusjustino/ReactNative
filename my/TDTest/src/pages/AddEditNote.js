@@ -5,6 +5,7 @@ import {
   Platform,
   StyleSheet,
   Image,
+  Text,
 } from "react-native";
 import {
   RichText,
@@ -30,7 +31,7 @@ export default function AddEditNote() {
         // bold
         return {
           ...item,
-          image: () => require("./boldActive.png"),
+          // image: () => require("./boldActive.png"),
         };
       }
       if (index === 1) {
@@ -123,52 +124,52 @@ export default function AddEditNote() {
     // autofocus: true,
     avoidIosKeyboard: true,
     initialContent,
-    // bridgeExtensions: [
-    //   ...TenTapStartKit,
-    //   CoreBridge.configureCSS(customFont), // Custom font
-    // ],
-    // theme: {
-    //   toolbar: {
-    //     toolbarBody: {
-    //       // estilo da flatlist
-    //       height: 50,
-    //     },
-    //     toolbarButton: {
-    //       // estilo do touchable opacity
-    //       // backgroundColor: "#f00",
-    //       // padding: 10,
-    //       // paddingHorizontal: 0,
-    //       // marginHorizontal: 3,
-    //     },
-    //     iconWrapper: {
-    //       // estilo da view ao redor do icone
-    //       padding: 5,
-    //       // paddingHorizontal: 15,
-    //       borderRadius: 20,
-    //     },
-    //     iconWrapperActive: {
-    //       // estilo da view quando o icone está ativo
-    //       backgroundColor: "rgba(0, 0, 0, 0.1)",
-    //       // borderRadius: 25,
-    //       // borderWidth: 1,
-    //       // borderColor: "#674CE805",
-    //     },
-    //     iconWrapperDisabled: {
-    //       // estilo da view quando o icone está desativado
-    //     },
-    //     icon: {
-    //       // height: 10,
-    //       // width: 10,
-    //       tintColor: colorPurple,
-    //     },
-    //     iconActive: {
-    //       tintColor: "red",
-    //     },
-    //   },
-    //   webview: {
-    //     // backgroundColor: "#1C1C1E",
-    //   },
-    // },
+    bridgeExtensions: [
+      ...TenTapStartKit,
+      CoreBridge.configureCSS(customFont), // Custom font
+    ],
+    theme: {
+      toolbar: {
+        toolbarBody: {
+          // estilo da flatlist
+          height: 50,
+        },
+        toolbarButton: {
+          // estilo do touchable opacity
+          // backgroundColor: "#f00",
+          // padding: 10,
+          // paddingHorizontal: 0,
+          // marginHorizontal: 3,
+        },
+        iconWrapper: {
+          // estilo da view ao redor do icone
+          padding: 5,
+          // paddingHorizontal: 15,
+          borderRadius: 20,
+        },
+        iconWrapperActive: {
+          // estilo da view quando o icone está ativo
+          backgroundColor: "rgba(0, 0, 0, 0.1)",
+          // borderRadius: 25,
+          // borderWidth: 1,
+          // borderColor: "#674CE805",
+        },
+        iconWrapperDisabled: {
+          // estilo da view quando o icone está desativado
+        },
+        icon: {
+          // height: 10,
+          // width: 10,
+          tintColor: colorPurple,
+        },
+        iconActive: {
+          tintColor: "red",
+        },
+      },
+      webview: {
+        // backgroundColor: "#1C1C1E",
+      },
+    },
   });
 
   return (
@@ -178,12 +179,9 @@ export default function AddEditNote() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={exampleStyles.keyboardAvoidingView}
       >
-        <Toolbar
-          editor={editor}
-          //  items={[...upToolbar]}
-        />
+        <Text>aa</Text>
+        <Toolbar editor={editor} items={[...upToolbar]} />
       </KeyboardAvoidingView>
-      {/* <Image source={require("./boldActive.png")} /> */}
     </SafeAreaView>
   );
 }

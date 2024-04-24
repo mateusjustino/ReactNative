@@ -8,10 +8,20 @@ const Stack = createNativeStackNavigator();
 
 const AppRoutes = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        animation: "fade",
+      }}
+    >
       <Stack.Screen name="Welcome" component={Welcome} />
       <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="AddEditNote" component={AddEditNote} />
+      <Stack.Screen
+        name="AddEditNote"
+        component={AddEditNote}
+        options={{
+          animation: "slide_from_right",
+        }}
+      />
       <Stack.Screen name="Test" component={Test} />
     </Stack.Navigator>
   );
