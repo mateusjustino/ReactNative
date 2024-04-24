@@ -179,7 +179,6 @@ export default function AddEditNote() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={exampleStyles.keyboardAvoidingView}
       >
-        <Text>aa</Text>
         <Toolbar editor={editor} items={[...upToolbar]} />
       </KeyboardAvoidingView>
     </SafeAreaView>
