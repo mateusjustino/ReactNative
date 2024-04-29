@@ -11,6 +11,7 @@ const AppRoutes = () => {
     <Stack.Navigator
       screenOptions={{
         animation: "fade",
+        headerShown: false,
       }}
     >
       <Stack.Screen name="Welcome" component={Welcome} />

@@ -1,6 +1,7 @@
 import { Button, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { useFonts } from "expo-font";
+import Header from "../components/Header";
 
 const Welcome = ({ navigation }) => {
   const [fontsLoaded] = useFonts({
@@ -8,16 +9,19 @@ const Welcome = ({ navigation }) => {
   });
   if (fontsLoaded) {
     return (
-      <View>
-        <Text style={{ fontSize: 50 }}>Welcome</Text>
-        <Text style={{ fontSize: 50, fontFamily: "MerriweatherRegular" }}>
-          Welcome
-        </Text>
-        <Button
-          title="go to home"
-          onPress={() => navigation.navigate("Home")}
-        />
-      </View>
+      <>
+        <Header />
+        <View>
+          <Text style={{ fontSize: 50 }}>Welcome</Text>
+          <Text style={{ fontSize: 50, fontFamily: "MerriweatherRegular" }}>
+            Welcome
+          </Text>
+          <Button
+            title="go to home"
+            onPress={() => navigation.navigate("Home")}
+          />
+        </View>
+      </>
     );
   }
 };

@@ -11,6 +11,7 @@ import NoteList from "../components/NoteList";
 import { db } from "../firebaseConnection";
 import { collection, onSnapshot } from "firebase/firestore";
 import FavButton from "../components/FavButton";
+import Header from "../components/Header";
 
 const Home = () => {
   const [notes, setNotes] = useState([]);
@@ -24,6 +25,7 @@ const Home = () => {
           id: doc.id,
           title: doc.data().title,
           contentText: doc.data().contentText,
+          contentHTML: doc.data().contentHTML,
           createdAt: doc.data().createdAt,
           lastEditTime: doc.data().lastEditTime,
         });
@@ -43,29 +45,29 @@ const Home = () => {
     );
   }
   return (
-    <View style={{ flex: 1 }}>
-      <ScrollView style={{ flex: 1 }}>
-        <View style={{ margin: 20, alignItems: "center" }}>
-          <Text>Header</Text>
-        </View>
-        <View style={{ margin: 20, flexDirection: "row" }}>
-          <View style={styles.tag} />
-          <View style={styles.tag} />
-          <View style={styles.tag} />
-          <View style={styles.tag} />
-        </View>
+    <>
+      <Header showContent />
+      <View style={{ flex: 1 }}>
+        <ScrollView style={{ flex: 1 }}>
+          <View style={{ margin: 20, flexDirection: "row" }}>
+            <View style={styles.tag} />
+            <View style={styles.tag} />
+            <View style={styles.tag} />
+            <View style={styles.tag} />
+          </View>
 
-        <FlatList
-          keyExtractor={(item) => item.id}
-          data={notes}
-          renderItem={({ item }) => <NoteList data={item} />}
-          scrollEnabled={false}
-        />
-      </ScrollView>
-      <View style={{ alignItems: "center" }}>
-        <FavButton style={styles.favButton} />
+          <FlatList
+            keyExtractor={(item) => item.id}
+            data={notes}
+            renderItem={({ item }) => <NoteList data={item} />}
+            scrollEnabled={false}
+          />
+        </ScrollView>
+        <View style={{ alignItems: "center" }}>
+          <FavButton style={styles.favButton} />
+        </View>
       </View>
-    </View>
+    </>
   );
 };
 
