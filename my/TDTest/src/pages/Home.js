@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   View,
+  useWindowDimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import NoteList from "../components/NoteList";
@@ -13,9 +14,17 @@ import { collection, onSnapshot } from "firebase/firestore";
 import FavButton from "../components/FavButton";
 import Header from "../components/Header";
 
+import DraggableFlatList, {
+  ScaleDecorator,
+  ShadowDecorator,
+  OpacityDecorator,
+  useOnCellActiveAnimation,
+} from "react-native-draggable-flatlist";
+
 const Home = () => {
   const [notes, setNotes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     setIsLoading(true);
     const unsubscribe = onSnapshot(collection(db, "notes"), (snapshot) => {
@@ -56,10 +65,21 @@ const Home = () => {
             <View style={styles.tag} />
           </View>
 
-          <FlatList
+          {/* <FlatList
             keyExtractor={(item) => item.id}
             data={notes}
             renderItem={({ item }) => <NoteList data={item} />}
+            scrollEnabled={false}
+          /> */}
+
+          <DraggableFlatList
+            // ref={ref}
+            data={notes}
+            keyExtractor={(item) => item.id}
+            onDragEnd={({ data }) => setNotes(data)}
+            renderItem={({ item, drag }) => (
+              <NoteList data={item} drag={drag} />
+            )}
             scrollEnabled={false}
           />
         </ScrollView>
