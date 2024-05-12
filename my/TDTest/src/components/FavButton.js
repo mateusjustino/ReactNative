@@ -19,10 +19,11 @@ export default FavButton;
 
 const styles = StyleSheet.create({
   touch: {
-    position: "absolute",
-    bottom: 30,
+    // position: "absolute",
+    // bottom: 50,
     padding: 15,
     borderRadius: 10,
     borderWidth: 1,
+    backgroundColor: "rgb(240,240,240)",
   },
 });

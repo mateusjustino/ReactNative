@@ -21,8 +21,8 @@ const NoteList = ({ data, drag }) => {
   // const { timezone } = useContext(UserContext);
 
   return (
-    <ScaleDecorator>
-      <OpacityDecorator activeOpacity={0.5}>
+    <ScaleDecorator activeScale={1.03}>
+      <OpacityDecorator activeOpacity={0.9}>
         <ShadowDecorator>
           <TouchableOpacity
             onLongPress={drag}
@@ -30,6 +30,7 @@ const NoteList = ({ data, drag }) => {
               borderWidth: 1,
               margin: 10,
               borderRadius: 10,
+              // backgroundColor: "red",
             }}
             onPress={() =>
               navigation.navigate("AddEditNote", {
@@ -42,11 +43,13 @@ const NoteList = ({ data, drag }) => {
                 {data.title}
               </Text>
             </View>
-
-            {/* <View style={{ margin: 10, maxHeight: 150 }}> */}
             <View style={{ margin: 10 }}>
-              {/* <Text>{data.contentText.slice(0, 20)}</Text> */}
-              {/* {data.contentText.length > 20 && <Text>...</Text>} */}
+              <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                Order: {data.order}
+              </Text>
+            </View>
+
+            <View style={{ margin: 10 }}>
               <Text numberOfLines={5} style={{ lineHeight: 20 }}>
                 {data.contentText}
               </Text>
