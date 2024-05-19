@@ -12,6 +12,7 @@ import {
   Alert,
   TextInput,
   TouchableOpacity,
+  FlatList,
 } from "react-native";
 import {
   useNavigation,
@@ -48,9 +49,7 @@ export default function AddEditNote() {
 
   const [title, setTitle] = useState(data ? data.title : "");
   const [content, setContent] = useState(data ? data.contentText : "");
-  const [tagA, setTagA] = useState(false);
-  const [tagB, setTagB] = useState(false);
-  const [tagC, setTagC] = useState(false);
+  const [activeTags, setActiveTags] = useState(data ? data.tags : []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -74,6 +73,7 @@ export default function AddEditNote() {
   }, []);
 
   const handleAdd = async () => {
+    const now = moment().format("YYYY-MM-DD HH:mm:ss");
     let orderVar = 1;
     const q = query(collection(db, "notes"), orderBy("order"));
     const querySnapshot = await getDocs(q);
@@ -96,6 +96,9 @@ export default function AddEditNote() {
       contentText: content,
       contentTextLower: contentLower,
       order: 0,
+      tags: activeTags,
+      // createdAt: now,
+      createdAt: "2019-10-02 05:07:01",
     })
       .then(async () => {
         // ----------
@@ -107,12 +110,16 @@ export default function AddEditNote() {
   const handleUpdate = async () => {
     const contentLower = content.toLowerCase();
 
+    const now = moment().format("YYYY-MM-DD HH:mm:ss");
+
     const noteRef = doc(db, "notes", data.id);
     await updateDoc(noteRef, {
       title: title,
       contentText: content,
       contentTextLower: contentLower,
       order: 0,
+      tags: activeTags,
+      lastEditTime: now,
     })
       .then(async () => {
         let orderVar = 1;
@@ -138,17 +145,21 @@ export default function AddEditNote() {
       .catch((error) => console.log(error.message));
   };
 
-  const activeTag = (tag) => {
-    if (tag == "a") {
-      setTagA(!tagA);
-    }
-    if (tag == "b") {
-      setTagB(!tagB);
-    }
-    if (tag == "c") {
-      setTagC(!tagC);
-    }
+  // let activeTags = ["a"];
+  const activeTagsFunction = (tag) => {
+    setActiveTags((prevTags) => {
+      if (prevTags.includes(tag)) {
+        // Se a tag já existe, remove-a
+        return prevTags.filter((t) => t !== tag).sort();
+      } else {
+        // Se a tag não existe, adiciona-a
+        return [...prevTags, tag].sort();
+      }
+    });
+    // console.log(activeTags);
   };
+
+  const tagsData = ["a", "b", "c"];
   return (
     <>
       <Header showContent />
@@ -167,34 +178,27 @@ export default function AddEditNote() {
             padding: 10,
           }}
         >
-          <TouchableOpacity
-            style={[
-              styles.tag,
-              tagA ? { borderColor: "green" } : { borderColor: "red" },
-            ]}
-            onPress={() => activeTag("a")}
-          >
-            <Text>a</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.tag,
-              tagB ? { borderColor: "green" } : { borderColor: "red" },
-            ]}
-            onPress={() => activeTag("b")}
-          >
-            <Text>b</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.tag,
-              tagC ? { borderColor: "green" } : { borderColor: "red" },
-            ]}
-            onPress={() => activeTag("c")}
-          >
-            <Text>c</Text>
-          </TouchableOpacity>
+          <FlatList
+            data={tagsData}
+            renderItem={({ item }) => {
+              return (
+                <TouchableOpacity
+                  style={[
+                    styles.tag,
+                    Array.isArray(activeTags) && activeTags.includes(item)
+                      ? { borderColor: "green" }
+                      : { borderColor: "red" },
+                  ]}
+                  onPress={() => activeTagsFunction(item)}
+                >
+                  <Text>{item}</Text>
+                </TouchableOpacity>
+              );
+            }}
+            horizontal
+          />
         </View>
+        <Text>{activeTags}</Text>
         <TextInput
           style={styles.input}
           placeholder="Title"

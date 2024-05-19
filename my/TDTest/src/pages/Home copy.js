@@ -32,11 +32,9 @@ import { UserContext } from "../context/userContext";
 const Home = () => {
   const [notes, setNotes] = useState([]);
   const [notesSearch, setNotesSearch] = useState([]);
-  const [searchFilter, setSearchFilter] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   // const { searchText, setSearchText } = useContext(UserContext);
   const [searchText, setSearchText] = useState("");
-  const [activeTags, setActiveTags] = useState([]);
   // console.log(searchText);
 
   useEffect(() => {
@@ -63,7 +61,7 @@ const Home = () => {
       }
     );
 
-    // console.log("useefeccttasdas");
+    console.log("useefeccttasdas");
     return () => unsubscribe();
   }, []);
 
@@ -88,73 +86,23 @@ const Home = () => {
       );
   };
 
-  const searchNotes = async (fromWhere, item) => {
-    setSearchFilter(false);
-    if (fromWhere === "tags") {
-      console.log("search pelas tags executada");
-      let activeTagsList = activeTags;
-      if (activeTagsList.includes(item)) {
-        // Se a tag já existe, remove-a
-        activeTagsList = activeTagsList.filter((t) => t !== item).sort();
-      } else {
-        // Se a tag não existe, adiciona-a
-        activeTagsList = [...activeTagsList, item].sort();
-      }
-      // console.log(activeTagsList);
-      setActiveTags(activeTagsList);
-      // Mostra a lista atualizada
-      const unsubscribe = onSnapshot(
-        query(collection(db, "notes"), orderBy("order")),
-        (snapshot) => {
-          const list = [];
-          snapshot.forEach((doc) => {
-            const tagsFromNote = doc.data().tags;
-            if (containsAllElements(tagsFromNote, activeTagsList)) {
-              // Faça algo se tagsFromNote contém todos os elementos de activeTagsList
-              list.push({
-                id: doc.id,
-                title: doc.data().title,
-                contentText: doc.data().contentText,
-                contentTextLower: doc.data().contentTextLower,
-                createdAt: doc.data().createdAt,
-                lastEditTime: doc.data().lastEditTime,
-                order: doc.data().order,
-                tags: doc.data().tags,
-              });
-            }
-          });
-          // if (list.length !== 0) {
-          //   setSearchText("");
-          //   setSearchFilter(true);
-          //   setNotesSearch(list);
-          // }
-          // setSearchText("");
-          // setSearchFilter(true);
-          // setNotesSearch(list);
-          if (activeTagsList.length !== 0) {
-            setSearchText("");
-            setSearchFilter(true);
-            setNotesSearch(list);
-          } else {
-            setSearchFilter(false);
-          }
-        }
-      );
-    }
+  const searchNotes = async (fromWhere, text) => {
     if (fromWhere === "input") {
-      setSearchText(item);
-      if (!item) {
+      setSearchText(text);
+      if (!text) {
         return;
       }
-      setActiveTags([]);
-      setSearchFilter(true);
-      const searchTextLower = item.toLowerCase();
+
+      const searchTextLower = text.toLowerCase();
+
       const unsubscribe = onSnapshot(
         query(collection(db, "notes"), orderBy("order")),
         (snapshot) => {
           const list = [];
           snapshot.forEach((doc) => {
             const contentTextLower = doc.data().contentTextLower;
+
+            // Verifica se a letra está presente no conteúdo do documento
             if (contentTextLower.includes(searchTextLower)) {
               list.push({
                 id: doc.id,
@@ -172,17 +120,10 @@ const Home = () => {
         }
       );
     }
-  };
-
-  function containsAllElements(array1, array2) {
-    const set1 = new Set(array1);
-    for (let item of array2) {
-      if (!set1.has(item)) {
-        return false;
-      }
+    if (fromWhere === "tag") {
+      console.log("tagssss");
     }
-    return true;
-  }
+  };
 
   const tagsData = ["a", "b", "c"];
 
@@ -226,13 +167,8 @@ const Home = () => {
               renderItem={({ item }) => {
                 return (
                   <TouchableOpacity
-                    style={[
-                      styles.tag,
-                      Array.isArray(activeTags) && activeTags.includes(item)
-                        ? { borderColor: "green" }
-                        : { borderColor: "red" },
-                    ]}
-                    onPress={() => searchNotes("tags", item)}
+                    style={styles.tag}
+                    onPress={() => searchNotes("tag")}
                   >
                     <Text>{item}</Text>
                   </TouchableOpacity>
@@ -243,13 +179,14 @@ const Home = () => {
           </View>
         </View>
 
-        <Text>{searchFilter ? "true" : "false"}</Text>
+        <Text>{searchText ? "true" : "false"}</Text>
+
         <DraggableFlatList
-          data={searchFilter ? notesSearch : notes}
+          data={searchText ? notesSearch : notes}
           keyExtractor={(item) => item.id}
           onDragEnd={handleAdjustOrder}
           renderItem={({ item, drag }) => (
-            <NoteList data={item} drag={searchFilter ? null : drag} />
+            <NoteList data={item} drag={searchText ? null : drag} />
           )}
           // scrollEnabled={false}
           containerStyle={{ width: "100%", flex: 1 }}
@@ -274,7 +211,6 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 10,
     borderBottomEndRadius: 10,
     marginEnd: 20,
-    borderWidth: 1,
   },
   favContainer: {
     position: "absolute",
