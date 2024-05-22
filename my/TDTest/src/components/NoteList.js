@@ -3,27 +3,21 @@ import {
   Text,
   View,
   TouchableOpacity,
-  useWindowDimensions,
   FlatList,
 } from "react-native";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { UserContext } from "../context/userContext";
 import moment from "moment-timezone";
-import DraggableFlatList, {
+import {
   ScaleDecorator,
   ShadowDecorator,
   OpacityDecorator,
-  useOnCellActiveAnimation,
 } from "react-native-draggable-flatlist";
 
 const NoteList = ({ data, drag }) => {
   const navigation = useNavigation();
-  const [dateTime, setDateTime] = useState("");
-  // const { timezone } = useContext(UserContext);
 
   const formatDateTime = (time) => {
-    // Cria um objeto Moment a partir da data e hora recebida
     const receivedTime = moment(time, "YYYY-MM-DD HH:mm:ss");
     const monthName = receivedTime.format("MMM");
 
@@ -36,26 +30,25 @@ const NoteList = ({ data, drag }) => {
       } else {
         return `${receivedTime.date()} ${monthName}`;
       }
-      // return "mesmo ano";
     } else {
       return `${receivedTime.day()} ${monthName}, ${receivedTime.year()}`;
     }
-
-    // Retorna true se for o mesmo ano, false caso contrário
-    // return isSameYear;
   };
 
   return (
     <ScaleDecorator activeScale={1.03}>
-      <OpacityDecorator activeOpacity={0.9}>
+      <OpacityDecorator activeOpacity={0.99}>
         <ShadowDecorator>
           <TouchableOpacity
-            onLongPress={drag}
+            onLongPress={() => {
+              // console.log("asdsd");
+              drag();
+            }}
             style={{
               borderWidth: 1,
               margin: 10,
               borderRadius: 10,
-              // backgroundColor: "red",
+              backgroundColor: "rgb(240,240,240)",
             }}
             onPress={() =>
               navigation.navigate("AddEditNote", {
@@ -66,11 +59,6 @@ const NoteList = ({ data, drag }) => {
             <View style={{ margin: 10 }}>
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>
                 {data.title}
-              </Text>
-            </View>
-            <View style={{ margin: 10 }}>
-              <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-                Order: {data.order}
               </Text>
             </View>
 
@@ -109,10 +97,6 @@ const NoteList = ({ data, drag }) => {
                 {data.lastEditTime ? (
                   <Text style={{ fontSize: 12 }}>
                     Last time edited:
-                    {/* <Text style={{ fontStyle: "italic" }}>
-                    {" "}
-                    {data.lastEditTime}
-                  </Text> */}
                     <Text style={{ fontStyle: "italic" }}>
                       {" "}
                       {formatDateTime(data.lastEditTime)}
@@ -121,7 +105,6 @@ const NoteList = ({ data, drag }) => {
                 ) : (
                   <Text style={{ fontSize: 12 }}>
                     Created at:
-                    {/* <Text style={{ fontStyle: "italic" }}>{data.createdAt}</Text> */}
                     <Text style={{ fontStyle: "italic" }}>
                       {" "}
                       {formatDateTime(data.createdAt)}

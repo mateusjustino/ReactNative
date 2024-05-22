@@ -1,15 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  SafeAreaView,
-  KeyboardAvoidingView,
-  Platform,
   StyleSheet,
-  Image,
   Text,
   View,
-  ActivityIndicator,
   Button,
-  Alert,
   TextInput,
   TouchableOpacity,
   FlatList,
@@ -31,18 +25,11 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import moment from "moment-timezone";
-import notesOrder from "../scripts/notesOrder";
-import { UserContext } from "../context/userContext";
 
-// EAF9B2
-// 674CE8
 const colorGreen = "#EAF9B2";
 const colorPurple = "#674CE8";
 
 export default function AddEditNote() {
-  // const { searchText, setSearchText } = useContext(UserContext);
-  // console.log(searchText);
-
   const navigation = useNavigation();
   const route = useRoute();
   const data = route.params?.data;
@@ -54,11 +41,7 @@ export default function AddEditNote() {
   useFocusEffect(
     React.useCallback(() => {
       const unsubscribe = navigation.addListener("beforeRemove", () => {
-        // Aqui você pode executar a lógica quando o usuário está tentando voltar
-        // por exemplo, exibir um alerta, mostrar um modal de confirmação, etc.
-        // Se você retornar false aqui, a ação de voltar será cancelada.
         console.log("retornou");
-        // Retorne true para permitir que a tela seja removida
 
         return true;
       });
@@ -67,10 +50,7 @@ export default function AddEditNote() {
     }, [navigation])
   );
 
-  useEffect(() => {
-    // setIsLoading(true);
-    // setIsLoading(false);
-  }, []);
+  useEffect(() => {}, []);
 
   const handleAdd = async () => {
     const now = moment().format("YYYY-MM-DD HH:mm:ss");
@@ -79,7 +59,6 @@ export default function AddEditNote() {
     const querySnapshot = await getDocs(q);
     for (let i = 0; i < querySnapshot.docs.length; i++) {
       const item = querySnapshot.docs[i];
-      // console.log(orderVar);
       const noteRef = doc(db, "notes", item.id);
       await updateDoc(noteRef, {
         order: orderVar,
@@ -97,11 +76,9 @@ export default function AddEditNote() {
       contentTextLower: contentLower,
       order: 0,
       tags: activeTags,
-      // createdAt: now,
-      createdAt: "2019-10-02 05:07:01",
+      createdAt: now,
     })
       .then(async () => {
-        // ----------
         navigation.goBack();
       })
       .catch((error) => console.log(error.message));
@@ -128,7 +105,6 @@ export default function AddEditNote() {
         for (let i = 0; i < querySnapshot.docs.length; i++) {
           const item = querySnapshot.docs[i];
           if (item.id != data.id) {
-            // console.log(orderVar);
             const noteRef = doc(db, "notes", item.id);
             await updateDoc(noteRef, {
               order: orderVar,
@@ -139,13 +115,11 @@ export default function AddEditNote() {
               .catch((error) => console.log(error.message));
           }
         }
-        // ----------
         navigation.goBack();
       })
       .catch((error) => console.log(error.message));
   };
 
-  // let activeTags = ["a"];
   const activeTagsFunction = (tag) => {
     setActiveTags((prevTags) => {
       if (prevTags.includes(tag)) {
@@ -173,7 +147,6 @@ export default function AddEditNote() {
           style={{
             margin: 10,
             flexDirection: "row",
-            // backgroundColor: "green",
             width: "100%",
             padding: 10,
           }}

@@ -1,48 +1,38 @@
 import {
   ActivityIndicator,
-  Button,
   FlatList,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import NoteList from "../components/NoteList";
 import { db } from "../firebaseConnection";
 import {
   collection,
   doc,
-  getDocs,
   onSnapshot,
   orderBy,
   query,
   updateDoc,
-  where,
 } from "firebase/firestore";
 import FavButton from "../components/FavButton";
 import Header from "../components/Header";
-import { useFocusEffect } from "@react-navigation/native";
 import DraggableFlatList from "react-native-draggable-flatlist";
-import notesOrder from "../scripts/notesOrder";
-import { UserContext } from "../context/userContext";
 
 const Home = () => {
   const [notes, setNotes] = useState([]);
   const [notesSearch, setNotesSearch] = useState([]);
   const [searchFilter, setSearchFilter] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  // const { searchText, setSearchText } = useContext(UserContext);
   const [searchText, setSearchText] = useState("");
   const [activeTags, setActiveTags] = useState([]);
-  // console.log(searchText);
 
   useEffect(() => {
     setIsLoading(true);
     const unsubscribe = onSnapshot(
-      // query(collection(db, "notes"), orderBy("order", "asc")),
       query(collection(db, "notes"), orderBy("order")),
       (snapshot) => {
         const list = [];
@@ -63,35 +53,42 @@ const Home = () => {
       }
     );
 
-    // console.log("useefeccttasdas");
     return () => unsubscribe();
   }, []);
 
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     // console.log("usefocuseffesctttt");
-  //   }, [])
-  // );
-
   const handleAdjustOrder = async ({ data, from, to }) => {
-    setNotes(data);
-    // Itera sobre os itens reordenados e atualiza a ordem dos documentos no Firestore
-    await Promise.all(
-      data.map(async (item, index) => {
-        const noteRef = doc(db, "notes", item.id);
-        await updateDoc(noteRef, { order: index });
-      })
-    )
-      .then(() => console.log("Ordem atualizada no Firestore"))
-      .catch((error) =>
-        console.log("Erro ao atualizar a ordem no Firestore:", error)
+    // console.log("notes", notes);
+    // console.log("data", data);
+    let needUpdate = false;
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].id !== notes[i].id) {
+        needUpdate = true;
+      }
+    }
+    if (needUpdate) {
+      console.log("need update exec");
+      setNotes(data);
+      // Itera sobre os itens reordenados e atualiza a ordem dos documentos no Firestore
+      await Promise.all(
+        data.map(async (item, index) => {
+          const noteRef = doc(db, "notes", item.id);
+          await updateDoc(noteRef, { order: index });
+        })
+      )
+        .then(() => console.log("Ordem atualizada no Firestore"))
+        .catch((error) =>
+          console.log("Erro ao atualizar a ordem no Firestore:", error)
+        );
+    } else {
+      console.log(
+        "fazer com que caso nao mude nada, abra a escolha para o usuario excluir ou alterar a cor daquelas notas que estiverem selecionadas"
       );
+    }
   };
 
   const searchNotes = async (fromWhere, item) => {
     setSearchFilter(false);
     if (fromWhere === "tags") {
-      console.log("search pelas tags executada");
       let activeTagsList = activeTags;
       if (activeTagsList.includes(item)) {
         // Se a tag já existe, remove-a
@@ -100,9 +97,7 @@ const Home = () => {
         // Se a tag não existe, adiciona-a
         activeTagsList = [...activeTagsList, item].sort();
       }
-      // console.log(activeTagsList);
       setActiveTags(activeTagsList);
-      // Mostra a lista atualizada
       const unsubscribe = onSnapshot(
         query(collection(db, "notes"), orderBy("order")),
         (snapshot) => {
@@ -123,14 +118,6 @@ const Home = () => {
               });
             }
           });
-          // if (list.length !== 0) {
-          //   setSearchText("");
-          //   setSearchFilter(true);
-          //   setNotesSearch(list);
-          // }
-          // setSearchText("");
-          // setSearchFilter(true);
-          // setNotesSearch(list);
           if (activeTagsList.length !== 0) {
             setSearchText("");
             setSearchFilter(true);
@@ -197,18 +184,14 @@ const Home = () => {
     <>
       <Header showContent />
       <View style={{ flex: 1, alignItems: "center" }}>
-        {/* <ScrollView style={{ flex: 1 }}> */}
-
         <View
           style={{
-            // backgroundColor: "red",
             width: "100%",
           }}
         >
           <TextInput
             style={styles.input}
             value={searchText}
-            // onChangeText={(text) => setSearchText(text)}
             onChangeText={(text) => searchNotes("input", text)}
             placeholder="search..."
           />
@@ -216,7 +199,6 @@ const Home = () => {
             style={{
               margin: 10,
               flexDirection: "row",
-              // backgroundColor: "green",
               width: "100%",
               padding: 10,
             }}
@@ -243,7 +225,6 @@ const Home = () => {
           </View>
         </View>
 
-        <Text>{searchFilter ? "true" : "false"}</Text>
         <DraggableFlatList
           data={searchFilter ? notesSearch : notes}
           keyExtractor={(item) => item.id}
@@ -257,7 +238,6 @@ const Home = () => {
           showsVerticalScrollIndicator={false}
         />
 
-        {/* </ScrollView> */}
         <View style={styles.favContainer}>
           <FavButton style={styles.favButton} />
         </View>
@@ -279,19 +259,14 @@ const styles = StyleSheet.create({
   favContainer: {
     position: "absolute",
     bottom: 30,
-    // right: 100,
   },
-  favButton: {
-    // position: "absolute",
-    // bottom: 20,
-  },
+  favButton: {},
   input: {
     margin: 10,
     padding: 10,
     borderRadius: 10,
     borderWidth: 1,
     lineHeight: 20,
-    // width: "100%",
   },
 });
 

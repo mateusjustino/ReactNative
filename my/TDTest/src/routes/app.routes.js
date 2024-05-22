@@ -2,7 +2,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "../pages/Home";
 import AddEditNote from "../pages/AddEditNote";
 import Welcome from "../pages/Welcome";
-import Test from "../pages/Test";
 
 const Stack = createNativeStackNavigator();
 
@@ -23,7 +22,6 @@ const AppRoutes = () => {
           animation: "slide_from_right",
         }}
       />
-      <Stack.Screen name="Test" component={Test} />
     </Stack.Navigator>
   );
 };
