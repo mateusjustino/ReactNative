@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import NoteList from "../components/NoteList";
 import { db } from "../firebaseConnection";
 import {
@@ -21,6 +21,7 @@ import {
 import FavButton from "../components/FavButton";
 import Header from "../components/Header";
 import DraggableFlatList from "react-native-draggable-flatlist";
+import { UserContext } from "../context/userContext";
 
 const Home = () => {
   const [notes, setNotes] = useState([]);
@@ -29,6 +30,8 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
   const [activeTags, setActiveTags] = useState([]);
+  const [draggingItem, setDraggingItem] = useState(null);
+  const { selectedNotes, setSelectedNotes } = useContext(UserContext);
 
   useEffect(() => {
     setIsLoading(true);
@@ -80,9 +83,7 @@ const Home = () => {
           console.log("Erro ao atualizar a ordem no Firestore:", error)
         );
     } else {
-      console.log(
-        "fazer com que caso nao mude nada, abra a escolha para o usuario excluir ou alterar a cor daquelas notas que estiverem selecionadas"
-      );
+      setSelectedNotes([draggingItem]);
     }
   };
 
@@ -189,48 +190,72 @@ const Home = () => {
             width: "100%",
           }}
         >
-          <TextInput
-            style={styles.input}
-            value={searchText}
-            onChangeText={(text) => searchNotes("input", text)}
-            placeholder="search..."
-          />
-          <View
-            style={{
-              margin: 10,
-              flexDirection: "row",
-              width: "100%",
-              padding: 10,
-            }}
-          >
-            <FlatList
-              data={tagsData}
-              renderItem={({ item }) => {
-                return (
-                  <TouchableOpacity
-                    style={[
-                      styles.tag,
-                      Array.isArray(activeTags) && activeTags.includes(item)
-                        ? { borderColor: "green" }
-                        : { borderColor: "red" },
-                    ]}
-                    onPress={() => searchNotes("tags", item)}
-                  >
-                    <Text>{item}</Text>
-                  </TouchableOpacity>
-                );
-              }}
-              horizontal
-            />
-          </View>
+          {selectedNotes.length !== 0 ? (
+            <>
+              <View
+                style={{
+                  flexDirection: "row",
+                }}
+              >
+                <TouchableOpacity onPress={() => setSelectedNotes([])}>
+                  <Text>ClearNotes</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          ) : (
+            <>
+              <TextInput
+                style={styles.input}
+                value={searchText}
+                onChangeText={(text) => searchNotes("input", text)}
+                placeholder="search..."
+              />
+              <View
+                style={{
+                  margin: 10,
+                  flexDirection: "row",
+                  width: "100%",
+                  padding: 10,
+                }}
+              >
+                <FlatList
+                  data={tagsData}
+                  renderItem={({ item }) => {
+                    return (
+                      <TouchableOpacity
+                        style={[
+                          styles.tag,
+                          Array.isArray(activeTags) && activeTags.includes(item)
+                            ? { borderColor: "green" }
+                            : { borderColor: "red" },
+                        ]}
+                        onPress={() => searchNotes("tags", item)}
+                      >
+                        <Text>{item}</Text>
+                      </TouchableOpacity>
+                    );
+                  }}
+                  horizontal
+                />
+              </View>
+            </>
+          )}
         </View>
-
+        <Text>{draggingItem?.title}</Text>
         <DraggableFlatList
           data={searchFilter ? notesSearch : notes}
           keyExtractor={(item) => item.id}
+          onDragBegin={(index) => {
+            setDraggingItem(searchFilter ? notesSearch[index] : notes[index]);
+          }}
           onDragEnd={handleAdjustOrder}
           renderItem={({ item, drag }) => (
-            <NoteList data={item} drag={searchFilter ? null : drag} />
+            <NoteList
+              data={item}
+              drag={
+                searchFilter || selectedNotes.length !== 0 ? () => {} : drag
+              }
+            />
           )}
           // scrollEnabled={false}
           containerStyle={{ width: "100%", flex: 1 }}

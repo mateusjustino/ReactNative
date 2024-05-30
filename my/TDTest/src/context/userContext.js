@@ -6,6 +6,7 @@ export const UserContext = createContext({});
 export default function UserContextProvider({ children }) {
   const [timezone, setTimezone] = useState("");
   const [searchText, setSearchText] = useState("");
+  const [selectedNotes, setSelectedNotes] = useState([]);
 
   useEffect(() => {
     const fetchTimezone = () => {
@@ -23,9 +24,7 @@ export default function UserContextProvider({ children }) {
   }, []);
 
   return (
-    <UserContext.Provider
-      value={{ timezone, setTimezone, searchText, setSearchText }}
-    >
+    <UserContext.Provider value={{ selectedNotes, setSelectedNotes }}>
       {children}
     </UserContext.Provider>
   );
