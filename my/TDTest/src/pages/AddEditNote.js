@@ -42,7 +42,7 @@ export default function AddEditNote() {
     React.useCallback(() => {
       const unsubscribe = navigation.addListener("beforeRemove", () => {
         console.log("retornou");
-
+        // aqui consigo executar algo quando volto para a tela anterior
         return true;
       });
 
@@ -55,8 +55,10 @@ export default function AddEditNote() {
   const handleAdd = async () => {
     const now = moment().format("YYYY-MM-DD HH:mm:ss");
     let orderVar = 1;
+
     const q = query(collection(db, "notes"), orderBy("order"));
     const querySnapshot = await getDocs(q);
+    // primeiro vou aumentar a order de todos os itens
     for (let i = 0; i < querySnapshot.docs.length; i++) {
       const item = querySnapshot.docs[i];
       const noteRef = doc(db, "notes", item.id);
@@ -69,6 +71,7 @@ export default function AddEditNote() {
         .catch((error) => console.log(error.message));
     }
 
+    // depois apenos adiciono um novo com order em 0
     const contentLower = content.toLowerCase();
     await addDoc(collection(db, "notes"), {
       title: title,
@@ -89,6 +92,7 @@ export default function AddEditNote() {
 
     const now = moment().format("YYYY-MM-DD HH:mm:ss");
 
+    // primeiro vou atualizar a nota atual com as novas infos e order em 0
     const noteRef = doc(db, "notes", data.id);
     await updateDoc(noteRef, {
       title: title,
@@ -105,6 +109,7 @@ export default function AddEditNote() {
         for (let i = 0; i < querySnapshot.docs.length; i++) {
           const item = querySnapshot.docs[i];
           if (item.id != data.id) {
+            // aqui vou atualizar todos as notas aumentar a order delas em 1, menos a que foi atualizada anteriormente
             const noteRef = doc(db, "notes", item.id);
             await updateDoc(noteRef, {
               order: orderVar,
@@ -130,7 +135,6 @@ export default function AddEditNote() {
         return [...prevTags, tag].sort();
       }
     });
-    // console.log(activeTags);
   };
 
   const tagsData = ["a", "b", "c"];
@@ -171,7 +175,6 @@ export default function AddEditNote() {
             horizontal
           />
         </View>
-        <Text>{activeTags}</Text>
         <TextInput
           style={styles.input}
           placeholder="Title"

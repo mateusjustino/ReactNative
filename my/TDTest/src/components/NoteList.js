@@ -21,6 +21,7 @@ const NoteList = ({ data, drag }) => {
   const [activeSelected, setActiveSelected] = useState(false);
 
   useEffect(() => {
+    // filtrando as notas que estão selecionadas
     const isActiveSelected = selectedNotes.some((note) => note.id === data.id);
     setActiveSelected(isActiveSelected);
   }, [selectedNotes]);
@@ -29,7 +30,6 @@ const NoteList = ({ data, drag }) => {
     const receivedTime = moment(time, "YYYY-MM-DD HH:mm:ss");
     const monthName = receivedTime.format("MMM");
 
-    // Cria um objeto Moment para o momento atual
     const now = moment();
     if (receivedTime.year() === now.year()) {
       if (receivedTime.day() === now.day()) {
@@ -44,8 +44,6 @@ const NoteList = ({ data, drag }) => {
 
   const controlSelectecNotes = () => {
     let hasItem = false;
-    console.log("1", selectedNotes);
-    console.log("2", data);
     for (let i = 0; i < selectedNotes.length; i++) {
       if (selectedNotes[i].id === data.id) {
         hasItem = true;
@@ -53,16 +51,12 @@ const NoteList = ({ data, drag }) => {
       }
     }
     if (hasItem) {
-      // console.log("tem o item");
       // Remover o item do estado
       const updatedNotes = selectedNotes.filter((note) => note.id !== data.id);
       setSelectedNotes(updatedNotes);
-      // setActiveSelected(false);
     } else {
-      // console.log("n tem o item");
       // Adicionar o item ao estado
       setSelectedNotes([...selectedNotes, data]);
-      // setActiveSelected(true);
     }
   };
 
@@ -79,16 +73,14 @@ const NoteList = ({ data, drag }) => {
               margin: 10,
               borderRadius: 10,
               backgroundColor: "rgb(240,240,240)",
-              borderColor: activeSelected ? "green" : "red",
+              borderColor: activeSelected ? "green" : "black",
             }}
-            onPress={
-              () =>
-                selectedNotes.length !== 0
-                  ? controlSelectecNotes()
-                  : navigation.navigate("AddEditNote", {
-                      data: data,
-                    })
-              // console.log("nao tem algo"))
+            onPress={() =>
+              selectedNotes.length !== 0
+                ? controlSelectecNotes()
+                : navigation.navigate("AddEditNote", {
+                    data: data,
+                  })
             }
           >
             <View style={{ margin: 10 }}>

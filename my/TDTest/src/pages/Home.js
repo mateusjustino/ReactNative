@@ -12,6 +12,7 @@ import NoteList from "../components/NoteList";
 import { db } from "../firebaseConnection";
 import {
   collection,
+  deleteDoc,
   doc,
   onSnapshot,
   orderBy,
@@ -60,16 +61,14 @@ const Home = () => {
   }, []);
 
   const handleAdjustOrder = async ({ data, from, to }) => {
-    // console.log("notes", notes);
-    // console.log("data", data);
     let needUpdate = false;
+    // checo se as order de alguma nota foi alterada, faço isso pela ordem dos ids
     for (let i = 0; i < data.length; i++) {
       if (data[i].id !== notes[i].id) {
         needUpdate = true;
       }
     }
     if (needUpdate) {
-      console.log("need update exec");
       setNotes(data);
       // Itera sobre os itens reordenados e atualiza a ordem dos documentos no Firestore
       await Promise.all(
@@ -88,7 +87,9 @@ const Home = () => {
   };
 
   const searchNotes = async (fromWhere, item) => {
+    // com o searchFilter eu digo se algum meio de pesquisa esta ativo
     setSearchFilter(false);
+
     if (fromWhere === "tags") {
       let activeTagsList = activeTags;
       if (activeTagsList.includes(item)) {
@@ -172,6 +173,13 @@ const Home = () => {
     return true;
   }
 
+  const handleDeleteSelectedNotes = async () => {
+    for (let i = 0; i < selectedNotes.length; i++) {
+      console.log(selectedNotes[i].title);
+      await deleteDoc(doc(db, "notes", selectedNotes[i].id));
+    }
+  };
+
   const tagsData = ["a", "b", "c"];
 
   if (isLoading) {
@@ -195,10 +203,14 @@ const Home = () => {
               <View
                 style={{
                   flexDirection: "row",
+                  gap: 10,
                 }}
               >
                 <TouchableOpacity onPress={() => setSelectedNotes([])}>
-                  <Text>ClearNotes</Text>
+                  <Text>ClearSelectedNotes</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleDeleteSelectedNotes}>
+                  <Text>DeleteNotes</Text>
                 </TouchableOpacity>
               </View>
             </>
@@ -241,7 +253,6 @@ const Home = () => {
             </>
           )}
         </View>
-        <Text>{draggingItem?.title}</Text>
         <DraggableFlatList
           data={searchFilter ? notesSearch : notes}
           keyExtractor={(item) => item.id}
