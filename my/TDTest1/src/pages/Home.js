@@ -23,6 +23,7 @@ import FavButton from "../components/FavButton";
 import Header from "../components/Header";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { UserContext } from "../context/userContext";
+import Loading from "../components/Loading";
 
 const Home = () => {
   const [notes, setNotes] = useState([]);
@@ -183,11 +184,7 @@ const Home = () => {
   const tagsData = ["a", "b", "c"];
 
   if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="black" />
-      </View>
-    );
+    return <Loading />;
   }
   return (
     <>
