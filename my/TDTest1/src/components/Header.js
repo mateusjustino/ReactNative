@@ -10,9 +10,13 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { auth } from "../firebaseConnection";
 import { useNavigation } from "@react-navigation/native";
+import { useContext } from "react";
+import { UserContext } from "../context/userContext";
 
 export default function Header({ showContent }) {
   const navigation = useNavigation();
+  const { user, setUser } = useContext(UserContext);
+
   const handleLogOut = () => {
     signOut(auth)
       .then(() => {
@@ -28,7 +32,7 @@ export default function Header({ showContent }) {
     <SafeAreaView style={styles.container}>
       {showContent && (
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text>Header</Text>
+          <Text>uid: {user.uid}</Text>
           <TouchableOpacity onPress={handleLogOut}>
             <Text>LogOut</Text>
           </TouchableOpacity>

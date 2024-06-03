@@ -4,19 +4,22 @@ import AddEditNote from "../pages/AddEditNote";
 import Welcome from "../pages/Welcome";
 import SignIn from "../pages/SignIn";
 import SignUp from "../pages/SignUp";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebaseConnection";
 import Loading from "../components/Loading";
+import { UserContext } from "../context/userContext";
 
 const Stack = createNativeStackNavigator();
 
 const AppRoutes = () => {
   const [userAuth, setUserAuth] = useState(null);
+  const { user, setUser } = useContext(UserContext);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
+        setUser(user);
         setUserAuth(true);
       } else {
         setUserAuth(false);

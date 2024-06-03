@@ -18,6 +18,7 @@ import {
   orderBy,
   query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import FavButton from "../components/FavButton";
 import Header from "../components/Header";
@@ -33,12 +34,17 @@ const Home = () => {
   const [searchText, setSearchText] = useState("");
   const [activeTags, setActiveTags] = useState([]);
   const [draggingItem, setDraggingItem] = useState(null);
-  const { selectedNotes, setSelectedNotes } = useContext(UserContext);
+  const { selectedNotes, setSelectedNotes, user, setUser } =
+    useContext(UserContext);
 
   useEffect(() => {
     setIsLoading(true);
     const unsubscribe = onSnapshot(
-      query(collection(db, "notes"), orderBy("order")),
+      query(
+        collection(db, "notes"),
+        where("uid", "==", user.uid + "\uf8ff"),
+        orderBy("order")
+      ),
       (snapshot) => {
         const list = [];
         snapshot.forEach((doc) => {

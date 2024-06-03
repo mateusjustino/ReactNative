@@ -5,26 +5,29 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebaseConnection";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
+import { UserContext } from "../context/userContext";
 
 const SignUp = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { user, setUser } = useContext(UserContext);
 
   const handleRegister = () => {
     if (email && password) {
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           // Signed up
-          const user = userCredential.user;
-          console.log(user);
+          // const user = userCredential.user;
+          // console.log(user);
+          setUser(userCredential.user);
 
           signInWithEmailAndPassword(auth, email, password)
             .then(() => {
