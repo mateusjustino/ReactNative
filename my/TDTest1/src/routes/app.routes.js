@@ -22,6 +22,7 @@ const AppRoutes = () => {
         setUser(user);
         setUserAuth(true);
       } else {
+        setUser({});
         setUserAuth(false);
       }
     });

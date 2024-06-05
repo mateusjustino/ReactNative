@@ -20,8 +20,8 @@ export default function Header({ showContent }) {
   const handleLogOut = () => {
     signOut(auth)
       .then(() => {
-        // Sign-out successful.
         navigation.navigate("SignIn");
+        setUser({});
       })
       .catch((error) => {
         alert(error.message);

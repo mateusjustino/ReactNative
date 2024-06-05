@@ -5,6 +5,7 @@ export const UserContext = createContext({});
 export default function UserContextProvider({ children }) {
   const [selectedNotes, setSelectedNotes] = useState([]);
   const [user, setUser] = useState({});
+  const [tags, setTags] = useState([]);
 
   return (
     <UserContext.Provider

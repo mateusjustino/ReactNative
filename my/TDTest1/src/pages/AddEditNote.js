@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -25,6 +25,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import moment from "moment-timezone";
+import { UserContext } from "../context/userContext";
 
 const colorGreen = "#EAF9B2";
 const colorPurple = "#674CE8";
@@ -34,6 +35,7 @@ export default function AddEditNote() {
   const route = useRoute();
   const data = route.params?.data;
 
+  const { user } = useContext(UserContext);
   const [title, setTitle] = useState(data ? data.title : "");
   const [content, setContent] = useState(data ? data.contentText : "");
   const [activeTags, setActiveTags] = useState(data ? data.tags : []);
@@ -80,6 +82,7 @@ export default function AddEditNote() {
       order: 0,
       tags: activeTags,
       createdAt: now,
+      uid: user.uid,
     })
       .then(async () => {
         navigation.goBack();

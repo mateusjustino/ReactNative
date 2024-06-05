@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import NoteList from "../components/NoteList";
 import { db } from "../firebaseConnection";
 import {
@@ -25,6 +25,7 @@ import Header from "../components/Header";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { UserContext } from "../context/userContext";
 import Loading from "../components/Loading";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Home = () => {
   const [notes, setNotes] = useState([]);
@@ -40,24 +41,25 @@ const Home = () => {
   useEffect(() => {
     setIsLoading(true);
     const unsubscribe = onSnapshot(
-      query(
-        collection(db, "notes"),
-        where("uid", "==", user.uid + "\uf8ff"),
-        orderBy("order")
-      ),
+      query(collection(db, "notes"), orderBy("order")),
       (snapshot) => {
         const list = [];
         snapshot.forEach((doc) => {
-          list.push({
-            id: doc.id,
-            title: doc.data().title,
-            contentText: doc.data().contentText,
-            contentTextLower: doc.data().contentTextLower,
-            createdAt: doc.data().createdAt,
-            lastEditTime: doc.data().lastEditTime,
-            order: doc.data().order,
-            tags: doc.data().tags,
-          });
+          console.log("user: ", user.uid);
+          console.log("data: ", doc.data().uid);
+          if (user.uid === doc.data().uid) {
+            list.push({
+              id: doc.id,
+              uid: doc.data().uid,
+              title: doc.data().title,
+              contentText: doc.data().contentText,
+              contentTextLower: doc.data().contentTextLower,
+              createdAt: doc.data().createdAt,
+              lastEditTime: doc.data().lastEditTime,
+              order: doc.data().order,
+              tags: doc.data().tags,
+            });
+          }
         });
         setNotes(list);
         setIsLoading(false);
@@ -65,7 +67,7 @@ const Home = () => {
     );
 
     return () => unsubscribe();
-  }, []);
+  }, [user]);
 
   const handleAdjustOrder = async ({ data, from, to }) => {
     let needUpdate = false;
@@ -115,16 +117,19 @@ const Home = () => {
             const tagsFromNote = doc.data().tags;
             if (containsAllElements(tagsFromNote, activeTagsList)) {
               // Faça algo se tagsFromNote contém todos os elementos de activeTagsList
-              list.push({
-                id: doc.id,
-                title: doc.data().title,
-                contentText: doc.data().contentText,
-                contentTextLower: doc.data().contentTextLower,
-                createdAt: doc.data().createdAt,
-                lastEditTime: doc.data().lastEditTime,
-                order: doc.data().order,
-                tags: doc.data().tags,
-              });
+              if (user.uid === doc.data().uid) {
+                list.push({
+                  id: doc.id,
+                  uid: doc.data().uid,
+                  title: doc.data().title,
+                  contentText: doc.data().contentText,
+                  contentTextLower: doc.data().contentTextLower,
+                  createdAt: doc.data().createdAt,
+                  lastEditTime: doc.data().lastEditTime,
+                  order: doc.data().order,
+                  tags: doc.data().tags,
+                });
+              }
             }
           });
           if (activeTagsList.length !== 0) {
@@ -152,16 +157,19 @@ const Home = () => {
           snapshot.forEach((doc) => {
             const contentTextLower = doc.data().contentTextLower;
             if (contentTextLower.includes(searchTextLower)) {
-              list.push({
-                id: doc.id,
-                title: doc.data().title,
-                contentText: doc.data().contentText,
-                contentTextLower: contentTextLower,
-                createdAt: doc.data().createdAt,
-                lastEditTime: doc.data().lastEditTime,
-                order: doc.data().order,
-                tags: doc.data().tags,
-              });
+              if (user.uid === doc.data().uid) {
+                list.push({
+                  id: doc.id,
+                  uid: doc.data().uid,
+                  title: doc.data().title,
+                  contentText: doc.data().contentText,
+                  contentTextLower: doc.data().contentTextLower,
+                  createdAt: doc.data().createdAt,
+                  lastEditTime: doc.data().lastEditTime,
+                  order: doc.data().order,
+                  tags: doc.data().tags,
+                });
+              }
             }
           });
           setNotesSearch(list);
