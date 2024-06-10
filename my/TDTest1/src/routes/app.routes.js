@@ -14,15 +14,16 @@ const Stack = createNativeStackNavigator();
 
 const AppRoutes = () => {
   const [userAuth, setUserAuth] = useState(null);
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, EnterUser } = useContext(UserContext);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setUser(user);
+        // setUser(user);
+        EnterUser(user);
         setUserAuth(true);
       } else {
-        setUser({});
+        // setUser({});
         setUserAuth(false);
       }
     });

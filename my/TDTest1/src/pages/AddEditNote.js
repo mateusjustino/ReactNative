@@ -26,6 +26,8 @@ import {
 } from "firebase/firestore";
 import moment from "moment-timezone";
 import { UserContext } from "../context/userContext";
+import Tags from "../components/Tags";
+import CustomModal from "../components/CustomModal";
 
 const colorGreen = "#EAF9B2";
 const colorPurple = "#674CE8";
@@ -35,10 +37,11 @@ export default function AddEditNote() {
   const route = useRoute();
   const data = route.params?.data;
 
-  const { user } = useContext(UserContext);
+  const { user, tags } = useContext(UserContext);
   const [title, setTitle] = useState(data ? data.title : "");
   const [content, setContent] = useState(data ? data.contentText : "");
   const [activeTags, setActiveTags] = useState(data ? data.tags : []);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -143,14 +146,14 @@ export default function AddEditNote() {
   const tagsData = ["a", "b", "c"];
   return (
     <>
-      <Header showContent />
+      <Header showContent note setModalVisible={setModalVisible} />
       <View style={styles.fullScreen}>
         {data ? (
           <Button title="save" onPress={handleUpdate} />
         ) : (
           <Button title="add" onPress={handleAdd} />
         )}
-        <View
+        {/* <View
           style={{
             margin: 10,
             flexDirection: "row",
@@ -159,25 +162,33 @@ export default function AddEditNote() {
           }}
         >
           <FlatList
-            data={tagsData}
+            data={tags}
             renderItem={({ item }) => {
               return (
-                <TouchableOpacity
-                  style={[
-                    styles.tag,
-                    Array.isArray(activeTags) && activeTags.includes(item)
-                      ? { borderColor: "green" }
-                      : { borderColor: "red" },
-                  ]}
-                  onPress={() => activeTagsFunction(item)}
-                >
-                  <Text>{item}</Text>
-                </TouchableOpacity>
+                <Tags
+                  item={item}
+                  activeTags={activeTags}
+                  onPressFunc={() => activeTagsFunction(item)}
+                />
               );
+              // <TouchableOpacity
+              //   style={[
+              //     styles.tag,
+              //     Array.isArray(activeTags) && activeTags.includes(item)
+              //       ? { borderColor: "green" }
+              //       : { borderColor: "red" },
+              //   ]}
+              //   onPress={() => activeTagsFunction(item)}
+              // >
+              //   <Text>{item}</Text>
+              // </TouchableOpacity>
             }}
             horizontal
           />
-        </View>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <Text style={{ fontSize: 30 }}>+</Text>
+          </TouchableOpacity>
+        </View> */}
         <TextInput
           style={styles.input}
           placeholder="Title"
@@ -191,6 +202,13 @@ export default function AddEditNote() {
           onChangeText={(text) => setContent(text)}
           textAlignVertical="top"
           multiline
+        />
+
+        <CustomModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          activeTags={activeTags}
+          setActiveTags={setActiveTags}
         />
       </View>
     </>

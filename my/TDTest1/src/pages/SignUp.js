@@ -7,27 +7,31 @@ import {
 } from "react-native";
 import React, { useContext, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { auth } from "../firebaseConnection";
+import { auth, db } from "../firebaseConnection";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { UserContext } from "../context/userContext";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 
 const SignUp = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, EnterUser } = useContext(UserContext);
 
   const handleRegister = () => {
     if (email && password) {
       createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
+        .then(async (userCredential) => {
           // Signed up
           // const user = userCredential.user;
           // console.log(user);
-          setUser(userCredential.user);
+          EnterUser(userCredential.user);
+
+          // provavel que nao precise criar um doc vazio no banco aqui
+          // await setDoc(doc(db, "settings", userCredential.user.uid), {});
 
           signInWithEmailAndPassword(auth, email, password)
             .then(() => {

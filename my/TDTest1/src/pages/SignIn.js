@@ -15,7 +15,7 @@ const SignIn = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState("@email.com");
   const [password, setPassword] = useState("123123");
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, EnterUser } = useContext(UserContext);
 
   const handleLogin = () => {
     if (email && password) {
@@ -23,7 +23,9 @@ const SignIn = () => {
         .then((userCredential) => {
           // const user = userCredential.user;
           // console.log(userCredential.user);
-          setUser(userCredential.user);
+
+          // setUser(userCredential.user);
+          EnterUser(userCredential.user);
 
           navigation.navigate("Home");
         })

@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
@@ -26,6 +25,8 @@ import DraggableFlatList from "react-native-draggable-flatlist";
 import { UserContext } from "../context/userContext";
 import Loading from "../components/Loading";
 import { useFocusEffect } from "@react-navigation/native";
+import CustomModal from "../components/CustomModal";
+import Tags from "../components/Tags";
 
 const Home = () => {
   const [notes, setNotes] = useState([]);
@@ -35,18 +36,18 @@ const Home = () => {
   const [searchText, setSearchText] = useState("");
   const [activeTags, setActiveTags] = useState([]);
   const [draggingItem, setDraggingItem] = useState(null);
-  const { selectedNotes, setSelectedNotes, user, setUser } =
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const { selectedNotes, setSelectedNotes, user, setUser, tags } =
     useContext(UserContext);
 
   useEffect(() => {
     setIsLoading(true);
-    const unsubscribe = onSnapshot(
+    const unsubscribeNotes = onSnapshot(
       query(collection(db, "notes"), orderBy("order")),
       (snapshot) => {
         const list = [];
         snapshot.forEach((doc) => {
-          console.log("user: ", user.uid);
-          console.log("data: ", doc.data().uid);
           if (user.uid === doc.data().uid) {
             list.push({
               id: doc.id,
@@ -66,7 +67,7 @@ const Home = () => {
       }
     );
 
-    return () => unsubscribe();
+    return () => unsubscribeNotes();
   }, [user]);
 
   const handleAdjustOrder = async ({ data, from, to }) => {
@@ -195,8 +196,6 @@ const Home = () => {
     }
   };
 
-  const tagsData = ["a", "b", "c"];
-
   if (isLoading) {
     return <Loading />;
   }
@@ -237,26 +236,32 @@ const Home = () => {
                 style={{
                   margin: 10,
                   flexDirection: "row",
-                  width: "100%",
+                  // width: "100%",
                   padding: 10,
                 }}
               >
                 <FlatList
-                  data={tagsData}
+                  data={tags}
                   renderItem={({ item }) => {
                     return (
-                      <TouchableOpacity
-                        style={[
-                          styles.tag,
-                          Array.isArray(activeTags) && activeTags.includes(item)
-                            ? { borderColor: "green" }
-                            : { borderColor: "red" },
-                        ]}
-                        onPress={() => searchNotes("tags", item)}
-                      >
-                        <Text>{item}</Text>
-                      </TouchableOpacity>
+                      <Tags
+                        item={item}
+                        activeTags={activeTags}
+                        onPressFunc={() => searchNotes("tags", item)}
+                      />
                     );
+                    // <TouchableOpacity
+                    //   style={[
+                    //     styles.tag,
+                    //     Array.isArray(activeTags) && activeTags.includes(item)
+                    //       ? { borderColor: "green" }
+                    //       : { borderColor: "red" },
+                    //   ]}
+                    //   onPress={() => searchNotes("tags", item)}
+                    //   onLongPress={() => console.log(item)}
+                    // >
+                    //   <Text>{item}</Text>
+                    // </TouchableOpacity>
                   }}
                   horizontal
                 />
@@ -288,21 +293,59 @@ const Home = () => {
         <View style={styles.favContainer}>
           <FavButton style={styles.favButton} />
         </View>
+
+        <CustomModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+        />
+        {/* <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <TouchableOpacity
+            style={{
+              backgroundColor: "rgba(0,0,0,0.5)",
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onPress={() => setModalVisible(!modalVisible)}
+            activeOpacity={1}
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                padding: 20,
+                borderRadius: 10,
+              }}
+            >
+              <Text>Hello World!</Text>
+              <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+                <Text>Hide Modal</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </Modal> */}
       </View>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  tag: {
-    width: 35,
-    height: 20,
-    backgroundColor: "gray",
-    borderTopEndRadius: 10,
-    borderBottomEndRadius: 10,
-    marginEnd: 20,
-    borderWidth: 1,
-  },
+  // tag: {
+  //   width: 35,
+  //   height: 20,
+  //   backgroundColor: "gray",
+  //   borderTopEndRadius: 10,
+  //   borderBottomEndRadius: 10,
+  //   marginEnd: 20,
+  //   borderWidth: 1,
+  // },
   favContainer: {
     position: "absolute",
     bottom: 30,

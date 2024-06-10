@@ -12,8 +12,9 @@ import { auth } from "../firebaseConnection";
 import { useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
 import { UserContext } from "../context/userContext";
+import { SimpleLineIcons } from "@expo/vector-icons";
 
-export default function Header({ showContent }) {
+export default function Header({ showContent, note, setModalVisible }) {
   const navigation = useNavigation();
   const { user, setUser } = useContext(UserContext);
 
@@ -28,14 +29,34 @@ export default function Header({ showContent }) {
       });
   };
 
+  const handleOptions = () => {
+    // console.log("saddsasda");
+    setModalVisible(true);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {showContent && (
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text>uid: {user.uid}</Text>
-          <TouchableOpacity onPress={handleLogOut}>
-            <Text>LogOut</Text>
-          </TouchableOpacity>
+          {note ? (
+            <>
+              <Text>note</Text>
+              <TouchableOpacity onPress={handleOptions}>
+                <SimpleLineIcons
+                  name="options-vertical"
+                  size={24}
+                  color="black"
+                />
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <Text>uid: {user.uid}</Text>
+              <TouchableOpacity onPress={handleLogOut}>
+                <Text>LogOut</Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       )}
     </SafeAreaView>
@@ -45,5 +66,7 @@ export default function Header({ showContent }) {
 const styles = StyleSheet.create({
   container: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    marginHorizontal: 10,
+    marginTop: 10,
   },
 });
