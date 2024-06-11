@@ -18,6 +18,7 @@ const CustomModal = ({
   setModalVisible,
   activeTags,
   setActiveTags,
+  setBackgroundColorNote,
 }) => {
   const [tagName, setTagName] = useState("");
   const { user, tags, setTags } = useContext(UserContext);
@@ -42,6 +43,21 @@ const CustomModal = ({
         return [...prevTags, tag].sort();
       }
     });
+  };
+
+  const ColorComponent = ({ colorValue }) => {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.7}
+        style={{
+          backgroundColor: colorValue,
+          width: 40,
+          height: 40,
+          borderRadius: 20,
+        }}
+        onPress={() => setBackgroundColorNote(colorValue)}
+      />
+    );
   };
   return (
     <Modal
@@ -75,10 +91,13 @@ const CustomModal = ({
             style={styles.input}
             value={tagName}
             onChangeText={(text) => setTagName(text)}
+            placeholder="Enter a tag"
           />
-          <TouchableOpacity onPress={addTags}>
-            <Text>AddTag</Text>
-          </TouchableOpacity>
+          {tagName && (
+            <TouchableOpacity onPress={addTags}>
+              <Text>AddTag</Text>
+            </TouchableOpacity>
+          )}
 
           <View
             style={{
@@ -110,11 +129,17 @@ const CustomModal = ({
                 //   <Text>{item}</Text>
                 // </TouchableOpacity>
               }}
-              horizontal
+              horizontal // deixar horizontal?
             />
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
+            {/* <TouchableOpacity onPress={() => setModalVisible(true)}>
               <Text style={{ fontSize: 30 }}>+</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+          </View>
+
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            <ColorComponent colorValue="red" />
+            <ColorComponent colorValue="green" />
+            <ColorComponent colorValue="blue" />
           </View>
         </View>
       </TouchableOpacity>

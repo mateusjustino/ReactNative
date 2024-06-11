@@ -42,6 +42,7 @@ export default function AddEditNote() {
   const [content, setContent] = useState(data ? data.contentText : "");
   const [activeTags, setActiveTags] = useState(data ? data.tags : []);
   const [modalVisible, setModalVisible] = useState(false);
+  const [backgroundColorNote, setBackgroundColorNote] = useState("");
 
   useFocusEffect(
     React.useCallback(() => {
@@ -147,7 +148,16 @@ export default function AddEditNote() {
   return (
     <>
       <Header showContent note setModalVisible={setModalVisible} />
-      <View style={styles.fullScreen}>
+      <View
+        style={[
+          styles.fullScreen,
+          {
+            backgroundColor: backgroundColorNote
+              ? backgroundColorNote
+              : "#f2f2f2",
+          },
+        ]}
+      >
         {data ? (
           <Button title="save" onPress={handleUpdate} />
         ) : (
@@ -209,6 +219,7 @@ export default function AddEditNote() {
           setModalVisible={setModalVisible}
           activeTags={activeTags}
           setActiveTags={setActiveTags}
+          setBackgroundColorNote={setBackgroundColorNote}
         />
       </View>
     </>

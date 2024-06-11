@@ -36,6 +36,7 @@ export default function Header({ showContent, note, setModalVisible }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar animated={true} backgroundColor="red" />
       {showContent && (
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           {note ? (
