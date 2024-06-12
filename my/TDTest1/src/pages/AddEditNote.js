@@ -219,6 +219,7 @@ export default function AddEditNote() {
           setModalVisible={setModalVisible}
           activeTags={activeTags}
           setActiveTags={setActiveTags}
+          backgroundColorNote={backgroundColorNote}
           setBackgroundColorNote={setBackgroundColorNote}
         />
       </View>

@@ -8,6 +8,7 @@ export default function UserContextProvider({ children }) {
   const [selectedNotes, setSelectedNotes] = useState([]);
   const [user, setUser] = useState({});
   const [tags, setTags] = useState([]);
+  const [statusBarColor, setStatusBarColor] = useState("#f2f2f2");
 
   const EnterUser = async (userInfo) => {
     setUser(userInfo);
@@ -31,6 +32,8 @@ export default function UserContextProvider({ children }) {
         EnterUser,
         tags,
         setTags,
+        statusBarColor,
+        setStatusBarColor,
       }}
     >
       {children}

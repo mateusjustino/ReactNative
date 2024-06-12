@@ -7,7 +7,7 @@ import {
   TextInput,
   FlatList,
 } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { db } from "../firebaseConnection";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { UserContext } from "../context/userContext";
@@ -18,10 +18,32 @@ const CustomModal = ({
   setModalVisible,
   activeTags,
   setActiveTags,
+  backgroundColorNote,
   setBackgroundColorNote,
 }) => {
   const [tagName, setTagName] = useState("");
-  const { user, tags, setTags } = useContext(UserContext);
+  const { user, tags, setTags, setStatusBarColor, statusBarColor } =
+    useContext(UserContext);
+
+  useEffect(() => {
+    if (modalVisible) {
+      if (statusBarColor === "red") {
+        setStatusBarColor("#7f0000");
+      } else if (statusBarColor === "green") {
+        setStatusBarColor("#004000");
+      } else if (statusBarColor === "blue") {
+        setStatusBarColor("#00007f");
+      }
+    } else {
+      if (statusBarColor === "red") {
+        setStatusBarColor("red");
+      } else if (statusBarColor === "green") {
+        setStatusBarColor("green");
+      } else if (statusBarColor === "blue") {
+        setStatusBarColor("blue");
+      }
+    }
+  }, [modalVisible]);
 
   const addTags = async () => {
     let list = [...tags, tagName];
@@ -46,6 +68,16 @@ const CustomModal = ({
   };
 
   const ColorComponent = ({ colorValue }) => {
+    const changeColor = () => {
+      setBackgroundColorNote(colorValue);
+      if (colorValue === "red") {
+        setStatusBarColor("#7f0000");
+      } else if (colorValue === "green") {
+        setStatusBarColor("#004000");
+      } else if (colorValue === "blue") {
+        setStatusBarColor("#00007f");
+      }
+    };
     return (
       <TouchableOpacity
         activeOpacity={0.7}
@@ -55,7 +87,8 @@ const CustomModal = ({
           height: 40,
           borderRadius: 20,
         }}
-        onPress={() => setBackgroundColorNote(colorValue)}
+        // onPress={() => setBackgroundColorNote(colorValue)}
+        onPress={changeColor}
       />
     );
   };
@@ -67,6 +100,7 @@ const CustomModal = ({
       onRequestClose={() => {
         // Alert.alert("Modal has been closed.");
         setModalVisible(!modalVisible);
+        setStatusBarColor(backgroundColorNote);
       }}
     >
       <TouchableOpacity
@@ -76,7 +110,10 @@ const CustomModal = ({
           justifyContent: "flex-end",
           alignItems: "center",
         }}
-        onPress={() => setModalVisible(!modalVisible)}
+        onPress={() => {
+          setModalVisible(!modalVisible);
+          setStatusBarColor(backgroundColorNote);
+        }}
         activeOpacity={1}
       >
         <View
@@ -136,6 +173,7 @@ const CustomModal = ({
             </TouchableOpacity> */}
           </View>
 
+          <Text>a: {backgroundColorNote}</Text>
           <View style={{ flexDirection: "row", gap: 10 }}>
             <ColorComponent colorValue="red" />
             <ColorComponent colorValue="green" />

@@ -10,13 +10,17 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { auth } from "../firebaseConnection";
 import { useNavigation } from "@react-navigation/native";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../context/userContext";
 import { SimpleLineIcons } from "@expo/vector-icons";
 
 export default function Header({ showContent, note, setModalVisible }) {
   const navigation = useNavigation();
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, statusBarColor } = useContext(UserContext);
+
+  useEffect(() => {
+    colorBackground();
+  }, [statusBarColor]);
 
   const handleLogOut = () => {
     signOut(auth)
@@ -34,9 +38,26 @@ export default function Header({ showContent, note, setModalVisible }) {
     setModalVisible(true);
   };
 
+  const colorBackground = () => {
+    if (statusBarColor === "#7f0000" || statusBarColor === "red") {
+      return "red";
+    } else if (statusBarColor === "#004000" || statusBarColor === "green") {
+      return "green";
+    } else if (statusBarColor === "#00007f" || statusBarColor === "blue") {
+      return "blue";
+    }
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar animated={true} backgroundColor="red" />
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colorBackground() }]}
+    >
+      <StatusBar
+        // animated={true}
+        backgroundColor={statusBarColor}
+        // backgroundColor="#7f0000"
+        barStyle="dark-content"
+      />
       {showContent && (
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           {note ? (
@@ -67,7 +88,7 @@ export default function Header({ showContent, note, setModalVisible }) {
 const styles = StyleSheet.create({
   container: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    marginHorizontal: 10,
-    marginTop: 10,
+    paddingHorizontal: 10,
+    paddingTop: 10,
   },
 });
