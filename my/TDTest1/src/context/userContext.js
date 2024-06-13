@@ -22,6 +22,10 @@ export default function UserContextProvider({ children }) {
     }
   };
 
+  const delTag = () => {
+    console.log("dssda");
+  };
+
   return (
     <UserContext.Provider
       value={{

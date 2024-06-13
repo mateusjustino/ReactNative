@@ -51,7 +51,7 @@ const CustomModal = ({
       tags: list,
     });
     setTags(list);
-    setModalVisible(false);
+    // setModalVisible(false);
     setTagName("");
   };
 

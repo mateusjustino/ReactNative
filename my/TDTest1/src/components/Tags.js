@@ -2,6 +2,9 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 
 const Tags = ({ item, activeTags, onPressFunc }) => {
+  const delTag = () => {
+    alert("sdasd");
+  };
   return (
     <TouchableOpacity
       style={[
@@ -11,7 +14,7 @@ const Tags = ({ item, activeTags, onPressFunc }) => {
           : { borderColor: "red" },
       ]}
       onPress={onPressFunc}
-      onLongPress={() => console.log(item)}
+      onLongPress={delTag}
     >
       <Text>{item}</Text>
     </TouchableOpacity>

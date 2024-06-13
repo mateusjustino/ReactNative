@@ -37,18 +37,23 @@ export default function AddEditNote() {
   const route = useRoute();
   const data = route.params?.data;
 
-  const { user, tags } = useContext(UserContext);
+  const { user, tags, setStatusBarColor, statusBarColor } =
+    useContext(UserContext);
   const [title, setTitle] = useState(data ? data.title : "");
   const [content, setContent] = useState(data ? data.contentText : "");
   const [activeTags, setActiveTags] = useState(data ? data.tags : []);
   const [modalVisible, setModalVisible] = useState(false);
-  const [backgroundColorNote, setBackgroundColorNote] = useState("");
+  const [backgroundColorNote, setBackgroundColorNote] = useState(
+    data ? data.backgroundColor : "#f2f2f2"
+  );
 
   useFocusEffect(
     React.useCallback(() => {
       const unsubscribe = navigation.addListener("beforeRemove", () => {
         console.log("retornou");
         // aqui consigo executar algo quando volto para a tela anterior
+        setStatusBarColor("#f2f2f2");
+        setBackgroundColorNote("#f2f2f2");
         return true;
       });
 
@@ -56,7 +61,11 @@ export default function AddEditNote() {
     }, [navigation])
   );
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (data) {
+      setStatusBarColor(data.backgroundColor);
+    }
+  }, []);
 
   const handleAdd = async () => {
     const now = moment().format("YYYY-MM-DD HH:mm:ss");
@@ -87,6 +96,7 @@ export default function AddEditNote() {
       tags: activeTags,
       createdAt: now,
       uid: user.uid,
+      backgroundColor: statusBarColor,
     })
       .then(async () => {
         navigation.goBack();
@@ -108,6 +118,7 @@ export default function AddEditNote() {
       order: 0,
       tags: activeTags,
       lastEditTime: now,
+      backgroundColor: statusBarColor,
     })
       .then(async () => {
         let orderVar = 1;

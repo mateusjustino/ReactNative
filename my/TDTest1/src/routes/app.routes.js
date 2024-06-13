@@ -38,7 +38,7 @@ const AppRoutes = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        animation: "fade",
+        animation: "fade_from_bottom",
         headerShown: false,
       }}
       initialRouteName={userAuth ? "Home" : "SignIn"}
@@ -49,9 +49,9 @@ const AppRoutes = () => {
       <Stack.Screen
         name="AddEditNote"
         component={AddEditNote}
-        options={{
-          animation: "slide_from_right",
-        }}
+        // options={{
+        //   animation: "slide_from_right",
+        // }}
       />
     </Stack.Navigator>
   );

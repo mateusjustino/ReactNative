@@ -59,6 +59,7 @@ const Home = () => {
               lastEditTime: doc.data().lastEditTime,
               order: doc.data().order,
               tags: doc.data().tags,
+              backgroundColor: doc.data().backgroundColor,
             });
           }
         });
@@ -129,6 +130,7 @@ const Home = () => {
                   lastEditTime: doc.data().lastEditTime,
                   order: doc.data().order,
                   tags: doc.data().tags,
+                  backgroundColor: doc.data().backgroundColor,
                 });
               }
             }
@@ -169,6 +171,7 @@ const Home = () => {
                   lastEditTime: doc.data().lastEditTime,
                   order: doc.data().order,
                   tags: doc.data().tags,
+                  backgroundColor: doc.data().backgroundColor,
                 });
               }
             }
