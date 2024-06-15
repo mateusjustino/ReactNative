@@ -9,6 +9,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebaseConnection";
 import Loading from "../components/Loading";
 import { UserContext } from "../context/userContext";
+import Settings from "../pages/Settings";
 
 const Stack = createNativeStackNavigator();
 
@@ -53,6 +54,7 @@ const AppRoutes = () => {
         //   animation: "slide_from_right",
         // }}
       />
+      <Stack.Screen name="Settings" component={Settings} />
     </Stack.Navigator>
   );
 };

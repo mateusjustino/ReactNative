@@ -11,72 +11,39 @@ import React, { useContext, useEffect, useState } from "react";
 import { db } from "../firebaseConnection";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { UserContext } from "../context/userContext";
-import Tags from "./Tags";
 
 const CustomModal = ({
   modalVisible,
   setModalVisible,
-  activeTags,
-  setActiveTags,
   backgroundColorNote,
   setBackgroundColorNote,
 }) => {
-  const [tagName, setTagName] = useState("");
-  const { user, tags, setTags, setStatusBarColor, statusBarColor } =
-    useContext(UserContext);
+  const { user, setStatusBarColor, statusBarColor } = useContext(UserContext);
 
   useEffect(() => {
-    if (modalVisible) {
-      if (statusBarColor === "red") {
-        setStatusBarColor("#7f0000");
-      } else if (statusBarColor === "green") {
-        setStatusBarColor("#004000");
-      } else if (statusBarColor === "blue") {
-        setStatusBarColor("#00007f");
-      }
-    } else {
-      if (statusBarColor === "red") {
-        setStatusBarColor("red");
-      } else if (statusBarColor === "green") {
-        setStatusBarColor("green");
-      } else if (statusBarColor === "blue") {
-        setStatusBarColor("blue");
-      }
-    }
+    // if (modalVisible) {
+    //   if (statusBarColor === "red") {
+    //     setStatusBarColor("#7f0000");
+    //   } else if (statusBarColor === "green") {
+    //     setStatusBarColor("#004000");
+    //   } else if (statusBarColor === "blue") {
+    //     setStatusBarColor("#00007f");
+    //   }
+    // } else {
+    //   if (statusBarColor === "red") {
+    //     setStatusBarColor("red");
+    //   } else if (statusBarColor === "green") {
+    //     setStatusBarColor("green");
+    //   } else if (statusBarColor === "blue") {
+    //     setStatusBarColor("blue");
+    //   }
+    // }
   }, [modalVisible]);
-
-  const addTags = async () => {
-    let list = [...tags, tagName];
-    await setDoc(doc(db, "settings", user.uid), {
-      tags: list,
-    });
-    setTags(list);
-    // setModalVisible(false);
-    setTagName("");
-  };
-
-  const activeTagsFunction = (tag) => {
-    setActiveTags((prevTags) => {
-      if (prevTags.includes(tag)) {
-        // Se a tag já existe, remove-a
-        return prevTags.filter((t) => t !== tag).sort();
-      } else {
-        // Se a tag não existe, adiciona-a
-        return [...prevTags, tag].sort();
-      }
-    });
-  };
 
   const ColorComponent = ({ colorValue }) => {
     const changeColor = () => {
       setBackgroundColorNote(colorValue);
-      if (colorValue === "red") {
-        setStatusBarColor("#7f0000");
-      } else if (colorValue === "green") {
-        setStatusBarColor("#004000");
-      } else if (colorValue === "blue") {
-        setStatusBarColor("#00007f");
-      }
+      setStatusBarColor(colorValue);
     };
     return (
       <TouchableOpacity
@@ -105,7 +72,7 @@ const CustomModal = ({
     >
       <TouchableOpacity
         style={{
-          backgroundColor: "rgba(0,0,0,0.5)",
+          // backgroundColor: "rgba(0,0,0,0.5)",
           flex: 1,
           justifyContent: "flex-end",
           alignItems: "center",
@@ -124,61 +91,17 @@ const CustomModal = ({
             width: "100%",
           }}
         >
-          <TextInput
-            style={styles.input}
-            value={tagName}
-            onChangeText={(text) => setTagName(text)}
-            placeholder="Enter a tag"
-          />
-          {tagName && (
-            <TouchableOpacity onPress={addTags}>
-              <Text>AddTag</Text>
-            </TouchableOpacity>
-          )}
-
-          <View
-            style={{
-              margin: 10,
-              flexDirection: "row",
-              width: "100%",
-              padding: 10,
-            }}
-          >
-            <FlatList
-              data={tags}
-              renderItem={({ item }) => {
-                return (
-                  <Tags
-                    item={item}
-                    activeTags={activeTags}
-                    onPressFunc={() => activeTagsFunction(item)}
-                  />
-                );
-                // <TouchableOpacity
-                //   style={[
-                //     styles.tag,
-                //     Array.isArray(activeTags) && activeTags.includes(item)
-                //       ? { borderColor: "green" }
-                //       : { borderColor: "red" },
-                //   ]}
-                //   onPress={() => activeTagsFunction(item)}
-                // >
-                //   <Text>{item}</Text>
-                // </TouchableOpacity>
-              }}
-              horizontal // deixar horizontal?
-            />
-            {/* <TouchableOpacity onPress={() => setModalVisible(true)}>
-              <Text style={{ fontSize: 30 }}>+</Text>
-            </TouchableOpacity> */}
-          </View>
-
           <Text>a: {backgroundColorNote}</Text>
           <View style={{ flexDirection: "row", gap: 10 }}>
             <ColorComponent colorValue="red" />
             <ColorComponent colorValue="green" />
             <ColorComponent colorValue="blue" />
           </View>
+
+          <Text>
+            aparecer escrito a tag e ter a opação de editar ela, tanto o nome
+            quanto se deseja excluir
+          </Text>
         </View>
       </TouchableOpacity>
     </Modal>

@@ -38,7 +38,9 @@ const Home = () => {
   const [draggingItem, setDraggingItem] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const { selectedNotes, setSelectedNotes, user, setUser, tags } =
+  const [forceUpdate, setForceUpdate] = useState(false);
+
+  const { selectedNotes, setSelectedNotes, user, setUser, tags, setTags } =
     useContext(UserContext);
 
   useEffect(() => {
@@ -68,8 +70,17 @@ const Home = () => {
       }
     );
 
+    // setUpdateListTags([...tags]);
+
     return () => unsubscribeNotes();
   }, [user]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // setTags([...tags]);
+      setForceUpdate((prev) => !prev);
+    }, [])
+  );
 
   const handleAdjustOrder = async ({ data, from, to }) => {
     let needUpdate = false;
@@ -253,20 +264,9 @@ const Home = () => {
                         onPressFunc={() => searchNotes("tags", item)}
                       />
                     );
-                    // <TouchableOpacity
-                    //   style={[
-                    //     styles.tag,
-                    //     Array.isArray(activeTags) && activeTags.includes(item)
-                    //       ? { borderColor: "green" }
-                    //       : { borderColor: "red" },
-                    //   ]}
-                    //   onPress={() => searchNotes("tags", item)}
-                    //   onLongPress={() => console.log(item)}
-                    // >
-                    //   <Text>{item}</Text>
-                    // </TouchableOpacity>
                   }}
                   horizontal
+                  extraData={forceUpdate}
                 />
               </View>
             </>
@@ -301,54 +301,12 @@ const Home = () => {
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
         />
-        {/* <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              backgroundColor: "rgba(0,0,0,0.5)",
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={() => setModalVisible(!modalVisible)}
-            activeOpacity={1}
-          >
-            <View
-              style={{
-                backgroundColor: "white",
-                padding: 20,
-                borderRadius: 10,
-              }}
-            >
-              <Text>Hello World!</Text>
-              <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                <Text>Hide Modal</Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        </Modal> */}
       </View>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  // tag: {
-  //   width: 35,
-  //   height: 20,
-  //   backgroundColor: "gray",
-  //   borderTopEndRadius: 10,
-  //   borderBottomEndRadius: 10,
-  //   marginEnd: 20,
-  //   borderWidth: 1,
-  // },
   favContainer: {
     position: "absolute",
     bottom: 30,

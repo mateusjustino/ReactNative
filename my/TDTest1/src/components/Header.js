@@ -73,7 +73,10 @@ export default function Header({ showContent, note, setModalVisible }) {
             </>
           ) : (
             <>
-              <Text>uid: {user.uid}</Text>
+              <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
+                <Text>menu</Text>
+              </TouchableOpacity>
+              <Text>{user.email}</Text>
               <TouchableOpacity onPress={handleLogOut}>
                 <Text>LogOut</Text>
               </TouchableOpacity>

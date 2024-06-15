@@ -225,6 +225,40 @@ export default function AddEditNote() {
           multiline
         />
 
+        <View
+          style={{
+            margin: 10,
+            flexDirection: "row",
+            width: "100%",
+            padding: 10,
+          }}
+        >
+          <FlatList
+            data={tags}
+            renderItem={({ item }) => {
+              return (
+                <Tags
+                  item={item}
+                  activeTags={activeTags}
+                  onPressFunc={() => activeTagsFunction(item)}
+                />
+              );
+              // <TouchableOpacity
+              //   style={[
+              //     styles.tag,
+              //     Array.isArray(activeTags) && activeTags.includes(item)
+              //       ? { borderColor: "green" }
+              //       : { borderColor: "red" },
+              //   ]}
+              //   onPress={() => activeTagsFunction(item)}
+              // >
+              //   <Text>{item}</Text>
+              // </TouchableOpacity>
+            }}
+            horizontal
+          />
+        </View>
+
         <CustomModal
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
