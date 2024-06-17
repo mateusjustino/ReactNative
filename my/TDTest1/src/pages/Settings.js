@@ -5,16 +5,20 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import Header from "../components/Header";
 import { UserContext } from "../context/userContext";
 import { doc, setDoc } from "firebase/firestore";
-import { db } from "../firebaseConnection";
+import { auth, db } from "../firebaseConnection";
 import TagsSettings from "../components/TagsSettings";
+import { signOut } from "firebase/auth";
+import { useNavigation } from "@react-navigation/native";
 
 const Settings = () => {
-  const { user, tags, setTags } = useContext(UserContext);
+  const navigation = useNavigation();
+  const { user, setUser, tags, setTags } = useContext(UserContext);
   const [tagName, setTagName] = useState("");
   const [theTagIsEditing, setTheTagIsEditing] = useState(null);
 
@@ -23,24 +27,36 @@ const Settings = () => {
   // };
 
   const addTag = async () => {
+    // setTags([]);
     if (tags.includes(tagName)) {
       console.log("ja existe");
       return;
     }
     let list = [...tags, tagName];
+    list.sort((a, b) => a.localeCompare(b));
     await setDoc(doc(db, "settings", user.uid), {
       tags: list,
     });
     setTags(list);
-    // setModalVisible(false);
     setTagName("");
+  };
+
+  const handleLogOut = () => {
+    signOut(auth)
+      .then(() => {
+        navigation.navigate("SignIn");
+        setUser({});
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
   };
 
   return (
     <>
-      <Header />
-      <View style={styles.container}>
-        <Text>Settings Screen</Text>
+      <Header fromSettings />
+      <ScrollView style={styles.container}>
+        <Text>Tags:</Text>
         <TextInput
           style={styles.input}
           value={tagName}
@@ -67,8 +83,26 @@ const Settings = () => {
               // onEditItem={() => handleEditItem(item)}
             />
           )}
+          scrollEnabled={false}
         />
-      </View>
+
+        {/* <FlatList
+          data={tags}
+          renderItem={({ item }) => <Text>{item}</Text>}
+          horizontal
+          ItemSeparatorComponent={() => <Text>_</Text>}
+        /> */}
+
+        <Text>darkmode</Text>
+        <Text>config da conta</Text>
+        <Text>config da conta</Text>
+        <Text>config da conta</Text>
+        <Text>config da conta</Text>
+        <Text>config da conta</Text>
+        <TouchableOpacity onPress={handleLogOut}>
+          <Text>logout</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </>
   );
 };

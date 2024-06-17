@@ -215,7 +215,7 @@ const Home = () => {
   }
   return (
     <>
-      <Header showContent />
+      <Header fromHome />
       <View style={{ flex: 1, alignItems: "center" }}>
         <View
           style={{
@@ -227,7 +227,8 @@ const Home = () => {
               <View
                 style={{
                   flexDirection: "row",
-                  gap: 10,
+                  // gap: 10,
+                  justifyContent: "space-between",
                 }}
               >
                 <TouchableOpacity onPress={() => setSelectedNotes([])}>
@@ -267,6 +268,7 @@ const Home = () => {
                   }}
                   horizontal
                   extraData={forceUpdate}
+                  showsHorizontalScrollIndicator={false}
                 />
               </View>
             </>

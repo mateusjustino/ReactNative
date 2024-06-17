@@ -8,13 +8,21 @@ import {
   View,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { auth } from "../firebaseConnection";
+import { auth, db } from "../firebaseConnection";
 import { useNavigation } from "@react-navigation/native";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../context/userContext";
 import { SimpleLineIcons } from "@expo/vector-icons";
+import { deleteDoc, doc } from "firebase/firestore";
 
-export default function Header({ showContent, note, setModalVisible }) {
+export default function Header({
+  fromHome,
+  fromAddEditNote,
+  fromSettings,
+  setModalVisible,
+  // idNote,
+  canDelete,
+}) {
   const navigation = useNavigation();
   const { user, setUser, statusBarColor } = useContext(UserContext);
 
@@ -22,68 +30,65 @@ export default function Header({ showContent, note, setModalVisible }) {
     colorBackground();
   }, [statusBarColor]);
 
-  const handleLogOut = () => {
-    signOut(auth)
-      .then(() => {
-        navigation.navigate("SignIn");
-        setUser({});
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
-  };
-
-  const handleOptions = () => {
-    // console.log("saddsasda");
-    setModalVisible(true);
-  };
-
   const colorBackground = () => {
-    if (statusBarColor === "#7f0000" || statusBarColor === "red") {
+    if (statusBarColor === "#b20000" || statusBarColor === "red") {
       return "red";
-    } else if (statusBarColor === "#004000" || statusBarColor === "green") {
+    } else if (statusBarColor === "#005900" || statusBarColor === "green") {
       return "green";
-    } else if (statusBarColor === "#00007f" || statusBarColor === "blue") {
+    } else if (statusBarColor === "#0000b2" || statusBarColor === "blue") {
       return "blue";
+    } else if (statusBarColor === "#a9a9a9" || statusBarColor === "#f2f2f2") {
+      return "#f2f2f2";
     }
   };
+
+  // const delNote = async () => {
+  //   setModalVisible(true);
+  //   // await deleteDoc(doc(db, "notes", idNote));
+  //   // navigation.goBack();
+  // };
 
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: colorBackground() }]}
     >
       <StatusBar
-        // animated={true}
         backgroundColor={statusBarColor}
-        // backgroundColor="#7f0000"
         barStyle="dark-content"
+        // animated
       />
-      {showContent && (
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          {note ? (
-            <>
-              <Text>note</Text>
-              <TouchableOpacity onPress={handleOptions}>
-                <SimpleLineIcons
-                  name="options-vertical"
-                  size={24}
-                  color="black"
-                />
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        {fromHome && (
+          <>
+            <View style={{ flexDirection: "row", gap: 5 }}>
+              <Text>logo</Text>
+              <Text>Olá, {user.email}</Text>
+            </View>
+            <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
+              <Text>menu</Text>
+            </TouchableOpacity>
+          </>
+        )}
+        {fromAddEditNote && (
+          <>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Text> &#60; </Text>
+            </TouchableOpacity>
+            {canDelete && (
+              <TouchableOpacity onPress={() => setModalVisible(true)}>
+                <Text>del</Text>
               </TouchableOpacity>
-            </>
-          ) : (
-            <>
-              <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
-                <Text>menu</Text>
-              </TouchableOpacity>
-              <Text>{user.email}</Text>
-              <TouchableOpacity onPress={handleLogOut}>
-                <Text>LogOut</Text>
-              </TouchableOpacity>
-            </>
-          )}
-        </View>
-      )}
+            )}
+          </>
+        )}
+        {fromSettings && (
+          <>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Text> &#60; </Text>
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
     </SafeAreaView>
   );
 }

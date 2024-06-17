@@ -46,11 +46,11 @@ export default function AddEditNote() {
   const [backgroundColorNote, setBackgroundColorNote] = useState(
     data ? data.backgroundColor : "#f2f2f2"
   );
+  const [showOptions, setShowOptions] = useState(null);
 
   useFocusEffect(
     React.useCallback(() => {
       const unsubscribe = navigation.addListener("beforeRemove", () => {
-        console.log("retornou");
         // aqui consigo executar algo quando volto para a tela anterior
         setStatusBarColor("#f2f2f2");
         setBackgroundColorNote("#f2f2f2");
@@ -63,9 +63,34 @@ export default function AddEditNote() {
 
   useEffect(() => {
     if (data) {
+      console.log("oi");
+      console.log(data.backgroundColor);
       setStatusBarColor(data.backgroundColor);
     }
-  }, []);
+    if (modalVisible) {
+      if (statusBarColor === "red") {
+        setStatusBarColor("#b20000");
+      } else if (statusBarColor === "green") {
+        setStatusBarColor("#005900");
+      } else if (statusBarColor === "blue") {
+        setStatusBarColor("#0000b2");
+      } else if (statusBarColor === "#f2f2f2") {
+        setStatusBarColor("#a9a9a9");
+      }
+    } else {
+      if (statusBarColor === "#b20000") {
+        setStatusBarColor("red");
+      } else if (statusBarColor === "#005900") {
+        setStatusBarColor("green");
+      } else if (statusBarColor === "#0000b2") {
+        setStatusBarColor("blue");
+      } else if (statusBarColor === "#a9a9a9") {
+        setStatusBarColor("#f2f2f2");
+      }
+    }
+  }, [modalVisible]);
+
+  // useEffect(() => {}, [modalVisible]);
 
   const handleAdd = async () => {
     const now = moment().format("YYYY-MM-DD HH:mm:ss");
@@ -155,10 +180,35 @@ export default function AddEditNote() {
     });
   };
 
-  const tagsData = ["a", "b", "c"];
+  const ColorComponent = ({ colorValue }) => {
+    const changeColor = () => {
+      setBackgroundColorNote(colorValue);
+      setStatusBarColor(colorValue);
+    };
+    return (
+      <TouchableOpacity
+        activeOpacity={0.7}
+        style={{
+          backgroundColor: colorValue,
+          width: 40,
+          height: 40,
+          borderRadius: 20,
+        }}
+        // onPress={() => setBackgroundColorNote(colorValue)}
+        onPress={changeColor}
+      />
+    );
+  };
+
   return (
     <>
-      <Header showContent note setModalVisible={setModalVisible} />
+      <Header
+        setModalVisible={setModalVisible}
+        // modalVisible={modalVisible}
+        fromAddEditNote
+        // idNote={data ? data.id : null}
+        canDelete={data ? true : false}
+      />
       <View
         style={[
           styles.fullScreen,
@@ -174,42 +224,7 @@ export default function AddEditNote() {
         ) : (
           <Button title="add" onPress={handleAdd} />
         )}
-        {/* <View
-          style={{
-            margin: 10,
-            flexDirection: "row",
-            width: "100%",
-            padding: 10,
-          }}
-        >
-          <FlatList
-            data={tags}
-            renderItem={({ item }) => {
-              return (
-                <Tags
-                  item={item}
-                  activeTags={activeTags}
-                  onPressFunc={() => activeTagsFunction(item)}
-                />
-              );
-              // <TouchableOpacity
-              //   style={[
-              //     styles.tag,
-              //     Array.isArray(activeTags) && activeTags.includes(item)
-              //       ? { borderColor: "green" }
-              //       : { borderColor: "red" },
-              //   ]}
-              //   onPress={() => activeTagsFunction(item)}
-              // >
-              //   <Text>{item}</Text>
-              // </TouchableOpacity>
-            }}
-            horizontal
-          />
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <Text style={{ fontSize: 30 }}>+</Text>
-          </TouchableOpacity>
-        </View> */}
+
         <TextInput
           style={styles.input}
           placeholder="Title"
@@ -225,12 +240,11 @@ export default function AddEditNote() {
           multiline
         />
 
-        <View
+        {/* <View
           style={{
-            margin: 10,
             flexDirection: "row",
             width: "100%",
-            padding: 10,
+            marginBottom: 10,
           }}
         >
           <FlatList
@@ -243,29 +257,90 @@ export default function AddEditNote() {
                   onPressFunc={() => activeTagsFunction(item)}
                 />
               );
-              // <TouchableOpacity
-              //   style={[
-              //     styles.tag,
-              //     Array.isArray(activeTags) && activeTags.includes(item)
-              //       ? { borderColor: "green" }
-              //       : { borderColor: "red" },
-              //   ]}
-              //   onPress={() => activeTagsFunction(item)}
-              // >
-              //   <Text>{item}</Text>
-              // </TouchableOpacity>
             }}
             horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ marginRight: 20 }}
           />
+          <TouchableOpacity style={{ paddingHorizontal: 10 }}>
+            <Text>cor</Text>
+          </TouchableOpacity>
+        </View> */}
+
+        <View
+          style={{
+            flexDirection: "row",
+            width: "100%",
+            marginBottom: 10,
+            justifyContent: "space-between",
+          }}
+        >
+          {!showOptions && (
+            <>
+              <TouchableOpacity onPress={() => setShowOptions("tags")}>
+                <Text>tags</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setShowOptions("colors")}>
+                <Text>colors</Text>
+              </TouchableOpacity>
+            </>
+          )}
+          {showOptions === "tags" && (
+            <View
+              style={{
+                flexDirection: "row",
+                width: "100%",
+                marginBottom: 10,
+                justifyContent: "space-between",
+              }}
+            >
+              <TouchableOpacity onPress={() => setShowOptions(null)}>
+                <Text>X</Text>
+              </TouchableOpacity>
+              <FlatList
+                data={tags}
+                renderItem={({ item }) => {
+                  return (
+                    <Tags
+                      item={item}
+                      activeTags={activeTags}
+                      onPressFunc={() => activeTagsFunction(item)}
+                    />
+                  );
+                }}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={{ marginRight: 20 }}
+              />
+            </View>
+          )}
+          {showOptions === "colors" && (
+            <View
+              style={{
+                flexDirection: "row",
+                width: "100%",
+                marginBottom: 10,
+                justifyContent: "space-between",
+              }}
+            >
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                <ColorComponent colorValue="red" />
+                <ColorComponent colorValue="green" />
+                <ColorComponent colorValue="blue" />
+              </View>
+              <TouchableOpacity onPress={() => setShowOptions(null)}>
+                <Text>close colors</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
 
         <CustomModal
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
-          activeTags={activeTags}
-          setActiveTags={setActiveTags}
-          backgroundColorNote={backgroundColorNote}
-          setBackgroundColorNote={setBackgroundColorNote}
+          idNote={data ? data.id : null}
+          // backgroundColorNote={backgroundColorNote}
+          // setBackgroundColorNote={setBackgroundColorNote}
         />
       </View>
     </>

@@ -72,7 +72,7 @@ const NoteList = ({ data, drag }) => {
               borderWidth: 1,
               margin: 10,
               borderRadius: 10,
-              backgroundColor: "rgb(240,240,240)",
+              backgroundColor: data.backgroundColor,
               borderColor: activeSelected ? "green" : "black",
             }}
             onPress={() =>
@@ -114,7 +114,7 @@ const NoteList = ({ data, drag }) => {
                         borderRadius: 5,
                       }}
                     >
-                      <Text>{item}</Text>
+                      <Text>#{item}</Text>
                     </View>
                   );
                 }}

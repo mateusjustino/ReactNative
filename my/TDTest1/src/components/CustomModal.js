@@ -6,59 +6,23 @@ import {
   TouchableOpacity,
   TextInput,
   FlatList,
+  Button,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { db } from "../firebaseConnection";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, setDoc } from "firebase/firestore";
 import { UserContext } from "../context/userContext";
+import { useNavigation } from "@react-navigation/native";
 
-const CustomModal = ({
-  modalVisible,
-  setModalVisible,
-  backgroundColorNote,
-  setBackgroundColorNote,
-}) => {
-  const { user, setStatusBarColor, statusBarColor } = useContext(UserContext);
+const CustomModal = ({ modalVisible, setModalVisible, idNote }) => {
+  const navigation = useNavigation();
 
-  useEffect(() => {
-    // if (modalVisible) {
-    //   if (statusBarColor === "red") {
-    //     setStatusBarColor("#7f0000");
-    //   } else if (statusBarColor === "green") {
-    //     setStatusBarColor("#004000");
-    //   } else if (statusBarColor === "blue") {
-    //     setStatusBarColor("#00007f");
-    //   }
-    // } else {
-    //   if (statusBarColor === "red") {
-    //     setStatusBarColor("red");
-    //   } else if (statusBarColor === "green") {
-    //     setStatusBarColor("green");
-    //   } else if (statusBarColor === "blue") {
-    //     setStatusBarColor("blue");
-    //   }
-    // }
-  }, [modalVisible]);
-
-  const ColorComponent = ({ colorValue }) => {
-    const changeColor = () => {
-      setBackgroundColorNote(colorValue);
-      setStatusBarColor(colorValue);
-    };
-    return (
-      <TouchableOpacity
-        activeOpacity={0.7}
-        style={{
-          backgroundColor: colorValue,
-          width: 40,
-          height: 40,
-          borderRadius: 20,
-        }}
-        // onPress={() => setBackgroundColorNote(colorValue)}
-        onPress={changeColor}
-      />
-    );
+  const delNote = async () => {
+    // console.log("excurirrr");
+    await deleteDoc(doc(db, "notes", idNote));
+    navigation.goBack();
   };
+
   return (
     <Modal
       animationType="fade"
@@ -67,19 +31,17 @@ const CustomModal = ({
       onRequestClose={() => {
         // Alert.alert("Modal has been closed.");
         setModalVisible(!modalVisible);
-        setStatusBarColor(backgroundColorNote);
       }}
     >
       <TouchableOpacity
         style={{
-          // backgroundColor: "rgba(0,0,0,0.5)",
+          backgroundColor: "rgba(0,0,0,0.3)",
           flex: 1,
-          justifyContent: "flex-end",
+          justifyContent: "center",
           alignItems: "center",
         }}
         onPress={() => {
           setModalVisible(!modalVisible);
-          setStatusBarColor(backgroundColorNote);
         }}
         activeOpacity={1}
       >
@@ -88,20 +50,24 @@ const CustomModal = ({
             backgroundColor: "white",
             padding: 20,
             borderRadius: 10,
-            width: "100%",
           }}
         >
-          <Text>a: {backgroundColorNote}</Text>
-          <View style={{ flexDirection: "row", gap: 10 }}>
-            <ColorComponent colorValue="red" />
-            <ColorComponent colorValue="green" />
-            <ColorComponent colorValue="blue" />
+          <Text>Deseja excluir</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              gap: 10,
+              marginTop: 20,
+            }}
+          >
+            <TouchableOpacity onPress={() => setModalVisible(false)}>
+              <Text>nao</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={delNote}>
+              <Text>sim</Text>
+            </TouchableOpacity>
           </View>
-
-          <Text>
-            aparecer escrito a tag e ter a opação de editar ela, tanto o nome
-            quanto se deseja excluir
-          </Text>
         </View>
       </TouchableOpacity>
     </Modal>

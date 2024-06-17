@@ -15,15 +15,14 @@ export default function UserContextProvider({ children }) {
 
     const docRef = doc(db, "settings", userInfo.uid);
     const docSnap = await getDoc(docRef);
+
     if (docSnap.exists()) {
-      setTags(docSnap.data().tags);
+      let list = docSnap.data().tags;
+      list.sort((a, b) => a.localeCompare(b));
+      setTags(list);
     } else {
       setTags([]);
     }
-  };
-
-  const delTag = () => {
-    console.log("dssda");
   };
 
   return (
