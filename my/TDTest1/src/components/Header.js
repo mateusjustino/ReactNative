@@ -14,6 +14,8 @@ import { useContext, useEffect } from "react";
 import { UserContext } from "../context/userContext";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import { deleteDoc, doc } from "firebase/firestore";
+import { Ionicons } from "@expo/vector-icons";
+import { StatusBar as StatusBarExpo } from "expo-status-bar";
 
 export default function Header({
   fromHome,
@@ -52,20 +54,28 @@ export default function Header({
     <SafeAreaView
       style={[styles.container, { backgroundColor: colorBackground() }]}
     >
-      <StatusBar
+      <StatusBarExpo
         backgroundColor={statusBarColor}
-        barStyle="dark-content"
+        style="dark-content"
         // animated
       />
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingTop: 15,
+        }}
+      >
         {fromHome && (
           <>
-            <View style={{ flexDirection: "row", gap: 5 }}>
-              <Text>logo</Text>
+            <View
+              style={{ flexDirection: "row", gap: 5, alignItems: "center" }}
+            >
+              <Ionicons name="logo-react" size={24} color="black" />
               <Text>Olá, {user.email}</Text>
             </View>
             <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
-              <Text>menu</Text>
+              <Ionicons name="menu-outline" size={24} color="black" />
             </TouchableOpacity>
           </>
         )}
@@ -96,7 +106,7 @@ export default function Header({
 const styles = StyleSheet.create({
   container: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    paddingHorizontal: 10,
-    paddingTop: 10,
+    paddingHorizontal: 15,
+    backgroundColor: "green",
   },
 });

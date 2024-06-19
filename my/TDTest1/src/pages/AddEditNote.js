@@ -63,8 +63,6 @@ export default function AddEditNote() {
 
   useEffect(() => {
     if (data) {
-      console.log("oi");
-      console.log(data.backgroundColor);
       setStatusBarColor(data.backgroundColor);
     }
     if (modalVisible) {
@@ -240,33 +238,6 @@ export default function AddEditNote() {
           multiline
         />
 
-        {/* <View
-          style={{
-            flexDirection: "row",
-            width: "100%",
-            marginBottom: 10,
-          }}
-        >
-          <FlatList
-            data={tags}
-            renderItem={({ item }) => {
-              return (
-                <Tags
-                  item={item}
-                  activeTags={activeTags}
-                  onPressFunc={() => activeTagsFunction(item)}
-                />
-              );
-            }}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{ marginRight: 20 }}
-          />
-          <TouchableOpacity style={{ paddingHorizontal: 10 }}>
-            <Text>cor</Text>
-          </TouchableOpacity>
-        </View> */}
-
         <View
           style={{
             flexDirection: "row",
@@ -339,8 +310,6 @@ export default function AddEditNote() {
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
           idNote={data ? data.id : null}
-          // backgroundColorNote={backgroundColorNote}
-          // setBackgroundColorNote={setBackgroundColorNote}
         />
       </View>
     </>

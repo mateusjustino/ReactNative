@@ -10,17 +10,69 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { db } from "../firebaseConnection";
-import { addDoc, collection, deleteDoc, doc, setDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { UserContext } from "../context/userContext";
 import { useNavigation } from "@react-navigation/native";
 
-const CustomModal = ({ modalVisible, setModalVisible, idNote }) => {
+const CustomModal = ({
+  modalVisible,
+  setModalVisible,
+  idNote,
+  theTagIsEditing,
+  setTheTagIsEditing,
+}) => {
   const navigation = useNavigation();
+  const { tags, setTags, user } = useContext(UserContext);
 
   const delNote = async () => {
-    // console.log("excurirrr");
     await deleteDoc(doc(db, "notes", idNote));
     navigation.goBack();
+  };
+
+  const delTag = async () => {
+    const item = theTagIsEditing;
+    setTags([]);
+    let list = tags;
+    const indexItem = list.indexOf(item);
+    if (indexItem !== -1) {
+      list.splice(indexItem, 1);
+    }
+
+    list.sort((a, b) => a.localeCompare(b));
+    setTags(list);
+    await setDoc(doc(db, "settings", user.uid), {
+      tags: list,
+    }).then(async () => {
+      const q = query(collection(db, "notes"));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach(async (document) => {
+        if (user.uid === document.data().uid) {
+          let listTags = document.data().tags;
+          const indexItem = listTags.indexOf(item);
+          if (indexItem !== -1) {
+            listTags.splice(indexItem, 1);
+            const ref = doc(db, "notes", document.id);
+            await updateDoc(ref, {
+              tags: listTags,
+            })
+              .then(() => console.log("tudo certo"))
+              .catch((error) => console.log(error.message));
+          }
+        }
+      });
+    });
+
+    setTheTagIsEditing(null);
+    setModalVisible(false);
   };
 
   return (
@@ -64,7 +116,7 @@ const CustomModal = ({ modalVisible, setModalVisible, idNote }) => {
             <TouchableOpacity onPress={() => setModalVisible(false)}>
               <Text>nao</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={delNote}>
+            <TouchableOpacity onPress={idNote ? delNote : delTag}>
               <Text>sim</Text>
             </TouchableOpacity>
           </View>

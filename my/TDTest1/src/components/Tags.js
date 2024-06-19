@@ -8,7 +8,7 @@ const Tags = ({ item, activeTags, onPressFunc }) => {
         styles.tag,
         Array.isArray(activeTags) && activeTags.includes(item)
           ? { borderColor: "green" }
-          : { borderColor: "red" },
+          : { borderColor: "rgba(0,0,0,0.1)" },
       ]}
       onPress={onPressFunc}
     >
@@ -21,14 +21,12 @@ export default Tags;
 
 const styles = StyleSheet.create({
   tag: {
-    // width: 35,
-    height: 20,
-    backgroundColor: "gray",
-    borderTopEndRadius: 10,
-    borderBottomEndRadius: 10,
-    marginEnd: 20,
+    backgroundColor: "rgb(220,220,220)",
+    marginVertical: 10,
+    padding: 5,
+    paddingHorizontal: 10,
+    marginRight: 10,
+    borderRadius: 10,
     borderWidth: 1,
-    paddingStart: 5,
-    paddingEnd: 5,
   },
 });

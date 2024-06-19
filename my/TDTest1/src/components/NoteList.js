@@ -14,6 +14,7 @@ import {
   OpacityDecorator,
 } from "react-native-draggable-flatlist";
 import { UserContext } from "../context/userContext";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const NoteList = ({ data, drag }) => {
   const navigation = useNavigation();
@@ -70,10 +71,10 @@ const NoteList = ({ data, drag }) => {
             }}
             style={{
               borderWidth: 1,
-              margin: 10,
               borderRadius: 10,
               backgroundColor: data.backgroundColor,
-              borderColor: activeSelected ? "green" : "black",
+              borderColor: activeSelected ? "green" : "rgba(0,0,0,0.1)",
+              marginBottom: 10,
             }}
             onPress={() =>
               selectedNotes.length !== 0
@@ -84,9 +85,7 @@ const NoteList = ({ data, drag }) => {
             }
           >
             <View style={{ margin: 10 }}>
-              <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-                {data.title}
-              </Text>
+              <Text style={{ fontWeight: "bold" }}>{data.title}</Text>
             </View>
 
             <View style={{ margin: 10 }}>
@@ -122,21 +121,41 @@ const NoteList = ({ data, drag }) => {
               />
               <View style={{ alignItems: "flex-end", margin: 10 }}>
                 {data.lastEditTime ? (
-                  <Text style={{ fontSize: 12 }}>
-                    Last time edited:
-                    <Text style={{ fontStyle: "italic" }}>
-                      {" "}
+                  // <Text style={{}}>
+                  //   Last time edited:
+                  //   <Text style={{ fontStyle: "italic" }}>
+                  //     {" "}
+                  //     {formatDateTime(data.lastEditTime)}
+                  //   </Text>
+                  // </Text>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <MaterialCommunityIcons
+                      name="clock-edit-outline"
+                      size={18}
+                      color="black"
+                    />
+                    <Text style={{ fontStyle: "italic", marginStart: 5 }}>
                       {formatDateTime(data.lastEditTime)}
                     </Text>
-                  </Text>
+                  </View>
                 ) : (
-                  <Text style={{ fontSize: 12 }}>
-                    Created at:
-                    <Text style={{ fontStyle: "italic" }}>
-                      {" "}
+                  // <Text style={{}}>
+                  //   Created at:
+                  //   <Text style={{ fontStyle: "italic" }}>
+                  //     {" "}
+                  //     {formatDateTime(data.createdAt)}
+                  //   </Text>
+                  // </Text>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <MaterialCommunityIcons
+                      name="clock-edit-outline"
+                      size={18}
+                      color="black"
+                    />
+                    <Text style={{ fontStyle: "italic", marginStart: 5 }}>
                       {formatDateTime(data.createdAt)}
                     </Text>
-                  </Text>
+                  </View>
                 )}
               </View>
             </View>

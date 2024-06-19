@@ -18,7 +18,12 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebaseConnection";
 
-const TagsSettings = ({ item, theTagIsEditing, setTheTagIsEditing }) => {
+const TagsSettings = ({
+  item,
+  theTagIsEditing,
+  setTheTagIsEditing,
+  setModalVisible,
+}) => {
   const { user, tags, setTags } = useContext(UserContext);
   const [tagNameItem, setTagNameItem] = useState(item);
   const [editItem, setEditItem] = useState(false);
@@ -49,38 +54,37 @@ const TagsSettings = ({ item, theTagIsEditing, setTheTagIsEditing }) => {
   };
 
   const delTag = async (item) => {
-    setTags([]);
-    let list = tags;
-    const indexItem = list.indexOf(item);
-    if (indexItem !== -1) {
-      list.splice(indexItem, 1);
-    }
-
-    list.sort((a, b) => a.localeCompare(b));
-    setTags(list);
-    await setDoc(doc(db, "settings", user.uid), {
-      tags: list,
-    }).then(async () => {
-      const q = query(collection(db, "notes"));
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach(async (document) => {
-        if (user.uid === document.data().uid) {
-          let listTags = document.data().tags;
-          const indexItem = listTags.indexOf(item);
-          if (indexItem !== -1) {
-            listTags.splice(indexItem, 1);
-            const ref = doc(db, "notes", document.id);
-            await updateDoc(ref, {
-              tags: listTags,
-            })
-              .then(() => console.log("tudo certo"))
-              .catch((error) => console.log(error.message));
-          }
-        }
-      });
-    });
-
-    setTheTagIsEditing(null);
+    setModalVisible(true);
+    // setTags([]);
+    // let list = tags;
+    // const indexItem = list.indexOf(item);
+    // if (indexItem !== -1) {
+    //   list.splice(indexItem, 1);
+    // }
+    // list.sort((a, b) => a.localeCompare(b));
+    // setTags(list);
+    // await setDoc(doc(db, "settings", user.uid), {
+    //   tags: list,
+    // }).then(async () => {
+    //   const q = query(collection(db, "notes"));
+    //   const querySnapshot = await getDocs(q);
+    //   querySnapshot.forEach(async (document) => {
+    //     if (user.uid === document.data().uid) {
+    //       let listTags = document.data().tags;
+    //       const indexItem = listTags.indexOf(item);
+    //       if (indexItem !== -1) {
+    //         listTags.splice(indexItem, 1);
+    //         const ref = doc(db, "notes", document.id);
+    //         await updateDoc(ref, {
+    //           tags: listTags,
+    //         })
+    //           .then(() => console.log("tudo certo"))
+    //           .catch((error) => console.log(error.message));
+    //       }
+    //     }
+    //   });
+    // });
+    // setTheTagIsEditing(null);
   };
 
   return (

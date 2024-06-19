@@ -15,12 +15,14 @@ import { auth, db } from "../firebaseConnection";
 import TagsSettings from "../components/TagsSettings";
 import { signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
+import CustomModal from "../components/CustomModal";
 
 const Settings = () => {
   const navigation = useNavigation();
   const { user, setUser, tags, setTags } = useContext(UserContext);
   const [tagName, setTagName] = useState("");
   const [theTagIsEditing, setTheTagIsEditing] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   // const handleEditItem = (name) => {
   //   setIsEditingTag(name);
@@ -79,6 +81,7 @@ const Settings = () => {
               item={item}
               theTagIsEditing={theTagIsEditing}
               setTheTagIsEditing={setTheTagIsEditing}
+              setModalVisible={setModalVisible}
               // isEditing={isEditingTag === item}
               // onEditItem={() => handleEditItem(item)}
             />
@@ -102,6 +105,13 @@ const Settings = () => {
         <TouchableOpacity onPress={handleLogOut}>
           <Text>logout</Text>
         </TouchableOpacity>
+
+        <CustomModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          theTagIsEditing={theTagIsEditing}
+          setTheTagIsEditing={setTheTagIsEditing}
+        />
       </ScrollView>
     </>
   );

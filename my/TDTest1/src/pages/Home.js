@@ -216,7 +216,14 @@ const Home = () => {
   return (
     <>
       <Header fromHome />
-      <View style={{ flex: 1, alignItems: "center" }}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          paddingHorizontal: 15,
+          paddingTop: 10,
+        }}
+      >
         <View
           style={{
             width: "100%",
@@ -245,14 +252,14 @@ const Home = () => {
                 style={styles.input}
                 value={searchText}
                 onChangeText={(text) => searchNotes("input", text)}
-                placeholder="search..."
+                placeholder="Search..."
               />
               <View
                 style={{
-                  margin: 10,
+                  // margin: 10,
                   flexDirection: "row",
                   // width: "100%",
-                  padding: 10,
+                  // padding: 10,
                 }}
               >
                 <FlatList
@@ -315,11 +322,12 @@ const styles = StyleSheet.create({
   },
   favButton: {},
   input: {
-    margin: 10,
+    // margin: 10,
     padding: 10,
     borderRadius: 10,
     borderWidth: 1,
     lineHeight: 20,
+    borderColor: "rgba(0,0,0,0.1)",
   },
 });
 
