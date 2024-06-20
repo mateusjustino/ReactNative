@@ -28,6 +28,7 @@ import moment from "moment-timezone";
 import { UserContext } from "../context/userContext";
 import Tags from "../components/Tags";
 import CustomModal from "../components/CustomModal";
+import { Ionicons } from "@expo/vector-icons";
 
 const colorGreen = "#EAF9B2";
 const colorPurple = "#674CE8";
@@ -54,6 +55,9 @@ export default function AddEditNote() {
         // aqui consigo executar algo quando volto para a tela anterior
         setStatusBarColor("#f2f2f2");
         setBackgroundColorNote("#f2f2f2");
+        // if (data) {
+        //   handleUpdate();
+        // }
         return true;
       });
 
@@ -188,9 +192,11 @@ export default function AddEditNote() {
         activeOpacity={0.7}
         style={{
           backgroundColor: colorValue,
-          width: 40,
-          height: 40,
-          borderRadius: 20,
+          width: 30,
+          height: 30,
+          borderRadius: 30,
+          borderColor: "rgba(0,0,0,0.1)",
+          borderWidth: 1,
         }}
         // onPress={() => setBackgroundColorNote(colorValue)}
         onPress={changeColor}
@@ -217,14 +223,8 @@ export default function AddEditNote() {
           },
         ]}
       >
-        {data ? (
-          <Button title="save" onPress={handleUpdate} />
-        ) : (
-          <Button title="add" onPress={handleAdd} />
-        )}
-
         <TextInput
-          style={styles.input}
+          style={[styles.input, { fontWeight: "bold" }]}
           placeholder="Title"
           value={title}
           onChangeText={(text) => setTitle(text)}
@@ -244,15 +244,21 @@ export default function AddEditNote() {
             width: "100%",
             marginBottom: 10,
             justifyContent: "space-between",
+            height: 30,
+            alignItems: "center",
           }}
         >
           {!showOptions && (
             <>
               <TouchableOpacity onPress={() => setShowOptions("tags")}>
-                <Text>tags</Text>
+                <Ionicons name="pricetags-outline" size={20} color="black" />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => setShowOptions("colors")}>
-                <Text>colors</Text>
+                <Ionicons
+                  name="color-palette-outline"
+                  size={20}
+                  color="black"
+                />
               </TouchableOpacity>
             </>
           )}
@@ -261,12 +267,14 @@ export default function AddEditNote() {
               style={{
                 flexDirection: "row",
                 width: "100%",
-                marginBottom: 10,
                 justifyContent: "space-between",
+                alignItems: "center",
+                gap: 10,
+                // backgroundColor: "red",
               }}
             >
               <TouchableOpacity onPress={() => setShowOptions(null)}>
-                <Text>X</Text>
+                <Ionicons name="close" size={20} color="black" />
               </TouchableOpacity>
               <FlatList
                 data={tags}
@@ -290,21 +298,35 @@ export default function AddEditNote() {
               style={{
                 flexDirection: "row",
                 width: "100%",
-                marginBottom: 10,
                 justifyContent: "space-between",
+                alignItems: "center",
+                gap: 10,
               }}
             >
               <View style={{ flexDirection: "row", gap: 10 }}>
-                <ColorComponent colorValue="red" />
-                <ColorComponent colorValue="green" />
-                <ColorComponent colorValue="blue" />
+                <ColorComponent colorValue="#f2f2f2" />
+                <ColorComponent colorValue="rgb(250,200,200)" />
+                <ColorComponent colorValue="rgb(200,250,200)" />
+                <ColorComponent colorValue="rgb(200,200,250)" />
               </View>
               <TouchableOpacity onPress={() => setShowOptions(null)}>
-                <Text>close colors</Text>
+                <Ionicons name="close" size={20} color="black" />
               </TouchableOpacity>
             </View>
           )}
         </View>
+
+        <TouchableOpacity
+          onPress={data ? handleUpdate : handleAdd}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>{data ? "Update" : "Add"}</Text>
+        </TouchableOpacity>
+        {/* {data ? (
+          <Button title="save" onPress={handleUpdate} />
+        ) : (
+          <Button title="add" onPress={handleAdd} />
+        )} */}
 
         <CustomModal
           modalVisible={modalVisible}
@@ -327,6 +349,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     lineHeight: 20,
+    borderColor: "rgba(0,0,0,0.1)",
   },
   tag: {
     width: 35,
@@ -336,5 +359,15 @@ const styles = StyleSheet.create({
     borderBottomEndRadius: 10,
     marginEnd: 20,
     borderWidth: 1,
+  },
+  button: {
+    backgroundColor: "lightgreen",
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 10,
+    borderColor: "rgba(0,0,0,0.1)",
+  },
+  buttonText: {
+    fontWeight: "bold",
   },
 });

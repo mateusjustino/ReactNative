@@ -73,6 +73,7 @@ const NoteList = ({ data, drag }) => {
               borderWidth: 1,
               borderRadius: 10,
               backgroundColor: data.backgroundColor,
+              // backgroundColor: "rgb(200,200,250)",
               borderColor: activeSelected ? "green" : "rgba(0,0,0,0.1)",
               marginBottom: 10,
             }}

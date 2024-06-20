@@ -33,22 +33,22 @@ export default function Header({
   }, [statusBarColor]);
 
   const colorBackground = () => {
-    if (statusBarColor === "#b20000" || statusBarColor === "red") {
-      return "red";
-    } else if (statusBarColor === "#005900" || statusBarColor === "green") {
-      return "green";
-    } else if (statusBarColor === "#0000b2" || statusBarColor === "blue") {
-      return "blue";
+    if (statusBarColor === "#b20000" || statusBarColor === "rgb(250,200,200)") {
+      return "rgb(250,200,200)";
+    } else if (
+      statusBarColor === "#005900" ||
+      statusBarColor === "rgb(200,250,200)"
+    ) {
+      return "rgb(200,250,200)";
+    } else if (
+      statusBarColor === "#0000b2" ||
+      statusBarColor === "rgb(200,200,250)"
+    ) {
+      return "rgb(200,200,250)";
     } else if (statusBarColor === "#a9a9a9" || statusBarColor === "#f2f2f2") {
       return "#f2f2f2";
     }
   };
-
-  // const delNote = async () => {
-  //   setModalVisible(true);
-  //   // await deleteDoc(doc(db, "notes", idNote));
-  //   // navigation.goBack();
-  // };
 
   return (
     <SafeAreaView
@@ -71,22 +71,22 @@ export default function Header({
             <View
               style={{ flexDirection: "row", gap: 5, alignItems: "center" }}
             >
-              <Ionicons name="logo-react" size={24} color="black" />
+              <Ionicons name="logo-react" size={20} color="black" />
               <Text>Olá, {user.email}</Text>
             </View>
             <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
-              <Ionicons name="menu-outline" size={24} color="black" />
+              <Ionicons name="menu-outline" size={20} color="black" />
             </TouchableOpacity>
           </>
         )}
         {fromAddEditNote && (
           <>
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Text> &#60; </Text>
+              <Ionicons name="chevron-back" size={20} color="black" />
             </TouchableOpacity>
             {canDelete && (
               <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <Text>del</Text>
+                <Ionicons name="trash-outline" size={20} color="red" />
               </TouchableOpacity>
             )}
           </>

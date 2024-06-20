@@ -65,6 +65,9 @@ const Home = () => {
             });
           }
         });
+        // setTimeout(() => {
+        //   setNotes(list);
+        // }, 1000);
         setNotes(list);
         setIsLoading(false);
       }
@@ -91,7 +94,7 @@ const Home = () => {
       }
     }
     if (needUpdate) {
-      setNotes(data);
+      // setNotes(data);
       // Itera sobre os itens reordenados e atualiza a ordem dos documentos no Firestore
       await Promise.all(
         data.map(async (item, index) => {
@@ -99,10 +102,16 @@ const Home = () => {
           await updateDoc(noteRef, { order: index });
         })
       )
-        .then(() => console.log("Ordem atualizada no Firestore"))
+        .then(() => {
+          // console.log("Ordem atualizada no Firestore");
+          setNotes(data);
+        })
         .catch((error) =>
           console.log("Erro ao atualizar a ordem no Firestore:", error)
         );
+      // setTimeout(() => {
+      //   setNotes(data);
+      // }, 5000);
     } else {
       setSelectedNotes([draggingItem]);
     }
@@ -256,7 +265,7 @@ const Home = () => {
               />
               <View
                 style={{
-                  // margin: 10,
+                  marginVertical: 10,
                   flexDirection: "row",
                   // width: "100%",
                   // padding: 10,

@@ -22,7 +22,7 @@ export default Tags;
 const styles = StyleSheet.create({
   tag: {
     backgroundColor: "rgb(220,220,220)",
-    marginVertical: 10,
+    // marginVertical: 10,
     padding: 5,
     paddingHorizontal: 10,
     marginRight: 10,
