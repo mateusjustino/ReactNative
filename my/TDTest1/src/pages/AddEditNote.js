@@ -29,6 +29,7 @@ import { UserContext } from "../context/userContext";
 import Tags from "../components/Tags";
 import CustomModal from "../components/CustomModal";
 import { Ionicons } from "@expo/vector-icons";
+import colors from "../theme/colors";
 
 const colorGreen = "#EAF9B2";
 const colorPurple = "#674CE8";
@@ -45,7 +46,7 @@ export default function AddEditNote() {
   const [activeTags, setActiveTags] = useState(data ? data.tags : []);
   const [modalVisible, setModalVisible] = useState(false);
   const [backgroundColorNote, setBackgroundColorNote] = useState(
-    data ? data.backgroundColor : "#f2f2f2"
+    data ? data.backgroundColor : colors.backgroundWhite
   );
   const [showOptions, setShowOptions] = useState(null);
 
@@ -53,8 +54,8 @@ export default function AddEditNote() {
     React.useCallback(() => {
       const unsubscribe = navigation.addListener("beforeRemove", () => {
         // aqui consigo executar algo quando volto para a tela anterior
-        setStatusBarColor("#f2f2f2");
-        setBackgroundColorNote("#f2f2f2");
+        setStatusBarColor(colors.backgroundWhite);
+        setBackgroundColorNote(colors.backgroundWhite);
         // if (data) {
         //   handleUpdate();
         // }
@@ -76,7 +77,7 @@ export default function AddEditNote() {
         setStatusBarColor("#005900");
       } else if (statusBarColor === "blue") {
         setStatusBarColor("#0000b2");
-      } else if (statusBarColor === "#f2f2f2") {
+      } else if (statusBarColor === colors.backgroundWhite) {
         setStatusBarColor("#a9a9a9");
       }
     } else {
@@ -87,7 +88,7 @@ export default function AddEditNote() {
       } else if (statusBarColor === "#0000b2") {
         setStatusBarColor("blue");
       } else if (statusBarColor === "#a9a9a9") {
-        setStatusBarColor("#f2f2f2");
+        setStatusBarColor(colors.backgroundWhite);
       }
     }
   }, [modalVisible]);
@@ -219,7 +220,7 @@ export default function AddEditNote() {
           {
             backgroundColor: backgroundColorNote
               ? backgroundColorNote
-              : "#f2f2f2",
+              : colors.backgroundWhite,
           },
         ]}
       >
@@ -304,7 +305,7 @@ export default function AddEditNote() {
               }}
             >
               <View style={{ flexDirection: "row", gap: 10 }}>
-                <ColorComponent colorValue="#f2f2f2" />
+                <ColorComponent colorValue={colors.backgroundWhite} />
                 <ColorComponent colorValue="rgb(250,200,200)" />
                 <ColorComponent colorValue="rgb(200,250,200)" />
                 <ColorComponent colorValue="rgb(200,200,250)" />

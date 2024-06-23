@@ -16,6 +16,8 @@ import TagsSettings from "../components/TagsSettings";
 import { signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import CustomModal from "../components/CustomModal";
+import colors from "../theme/colors";
+import { Ionicons } from "@expo/vector-icons";
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -23,10 +25,6 @@ const Settings = () => {
   const [tagName, setTagName] = useState("");
   const [theTagIsEditing, setTheTagIsEditing] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-
-  // const handleEditItem = (name) => {
-  //   setIsEditingTag(name);
-  // };
 
   const addTag = async () => {
     // setTags([]);
@@ -57,22 +55,44 @@ const Settings = () => {
   return (
     <>
       <Header fromSettings />
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{ alignItems: "center" }}
+      >
         <Text>Tags:</Text>
-        <TextInput
-          style={styles.input}
-          value={tagName}
-          onChangeText={(text) => setTagName(text)}
-          placeholder="Enter a tag"
-        />
-        {tagName && (
-          <TouchableOpacity
-            style={{ backgroundColor: "blue" }}
-            onPress={addTag}
-          >
-            <Text>Add: {tagName}</Text>
+        <View
+          style={[
+            {
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            },
+            styles.inputView,
+          ]}
+        >
+          <TextInput
+            style={{ flex: 1 }}
+            value={tagName}
+            onChangeText={(text) => setTagName(text)}
+            placeholder="Create a tag..."
+          />
+          {tagName ? (
+            <>
+              <TouchableOpacity onPress={addTag}>
+                <Ionicons
+                  name="checkmark"
+                  size={24}
+                  color={colors.primaryBlue}
+                />
+              </TouchableOpacity>
+            </>
+          ) : null}
+        </View>
+        {/* {tagName && (
+          <TouchableOpacity style={styles.button} onPress={addTag}>
+            <Text>Create tag: {tagName}</Text>
           </TouchableOpacity>
-        )}
+        )} */}
 
         <FlatList
           data={tags}
@@ -87,14 +107,8 @@ const Settings = () => {
             />
           )}
           scrollEnabled={false}
+          style={{ marginVertical: 10 }}
         />
-
-        {/* <FlatList
-          data={tags}
-          renderItem={({ item }) => <Text>{item}</Text>}
-          horizontal
-          ItemSeparatorComponent={() => <Text>_</Text>}
-        /> */}
 
         <Text>darkmode</Text>
         <Text>config da conta</Text>
@@ -122,13 +136,15 @@ export default Settings;
 const styles = StyleSheet.create({
   container: {
     // flex: 1,
-    // backgroundColor: "red",
+    backgroundColor: colors.backgroundWhite,
+    padding: 10,
   },
-  input: {
-    margin: 10,
+  inputView: {
+    // margin: 10,
+    marginVertical: 10,
     padding: 10,
     borderRadius: 10,
     borderWidth: 1,
-    lineHeight: 20,
+    borderColor: "rgba(0,0,0,0.1)",
   },
 });

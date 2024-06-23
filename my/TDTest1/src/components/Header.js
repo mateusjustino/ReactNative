@@ -6,6 +6,7 @@ import {
   StatusBar,
   Platform,
   View,
+  Image,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { auth, db } from "../firebaseConnection";
@@ -16,6 +17,7 @@ import { SimpleLineIcons } from "@expo/vector-icons";
 import { deleteDoc, doc } from "firebase/firestore";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar as StatusBarExpo } from "expo-status-bar";
+import colors from "../theme/colors";
 
 export default function Header({
   fromHome,
@@ -45,8 +47,11 @@ export default function Header({
       statusBarColor === "rgb(200,200,250)"
     ) {
       return "rgb(200,200,250)";
-    } else if (statusBarColor === "#a9a9a9" || statusBarColor === "#f2f2f2") {
-      return "#f2f2f2";
+    } else if (
+      statusBarColor === "#a9a9a9" ||
+      statusBarColor === colors.backgroundWhite
+    ) {
+      return colors.backgroundWhite;
     }
   };
 
@@ -71,7 +76,10 @@ export default function Header({
             <View
               style={{ flexDirection: "row", gap: 5, alignItems: "center" }}
             >
-              <Ionicons name="logo-react" size={20} color="black" />
+              <Image
+                style={{ height: 34, width: 64, marginRight: 10 }}
+                source={require("../images/logotipo principal_2.png")}
+              />
               <Text>Olá, {user.email}</Text>
             </View>
             <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
@@ -107,6 +115,5 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     paddingHorizontal: 15,
-    backgroundColor: "green",
   },
 });

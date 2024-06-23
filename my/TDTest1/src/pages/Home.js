@@ -27,6 +27,7 @@ import Loading from "../components/Loading";
 import { useFocusEffect } from "@react-navigation/native";
 import CustomModal from "../components/CustomModal";
 import Tags from "../components/Tags";
+import colors from "../theme/colors";
 
 const Home = () => {
   const [notes, setNotes] = useState([]);
@@ -231,6 +232,7 @@ const Home = () => {
           alignItems: "center",
           paddingHorizontal: 15,
           paddingTop: 10,
+          backgroundColor: colors.backgroundWhite,
         }}
       >
         <View
@@ -306,8 +308,10 @@ const Home = () => {
             />
           )}
           // scrollEnabled={false}
-          containerStyle={{ width: "100%", flex: 1 }}
-          style={{}}
+          containerStyle={{
+            width: "100%",
+            flex: 1,
+          }}
           showsVerticalScrollIndicator={false}
         />
 

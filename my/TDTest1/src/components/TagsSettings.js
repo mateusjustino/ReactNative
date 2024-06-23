@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Button,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../context/userContext";
 import {
   collection,
@@ -17,6 +17,9 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebaseConnection";
+import { Feather } from "@expo/vector-icons";
+import colors from "../theme/colors";
+import { Ionicons } from "@expo/vector-icons";
 
 const TagsSettings = ({
   item,
@@ -38,53 +41,25 @@ const TagsSettings = ({
   }, [theTagIsEditing, item]);
 
   const confirmEditing = async (oldTag, newTag) => {
-    let list = tags;
-    const indexItem = list.indexOf(oldTag);
-    if (indexItem !== -1) {
-      list[indexItem] = newTag;
-    }
+    if (item != tagNameItem) {
+      let list = tags;
+      const indexItem = list.indexOf(oldTag);
+      if (indexItem !== -1) {
+        list[indexItem] = newTag;
+      }
 
-    list.sort((a, b) => a.localeCompare(b));
-    setTags(list);
-    await setDoc(doc(db, "settings", user.uid), {
-      tags: list,
-    });
+      list.sort((a, b) => a.localeCompare(b));
+      setTags(list);
+      await setDoc(doc(db, "settings", user.uid), {
+        tags: list,
+      });
+    }
 
     setTheTagIsEditing(null);
   };
 
   const delTag = async (item) => {
     setModalVisible(true);
-    // setTags([]);
-    // let list = tags;
-    // const indexItem = list.indexOf(item);
-    // if (indexItem !== -1) {
-    //   list.splice(indexItem, 1);
-    // }
-    // list.sort((a, b) => a.localeCompare(b));
-    // setTags(list);
-    // await setDoc(doc(db, "settings", user.uid), {
-    //   tags: list,
-    // }).then(async () => {
-    //   const q = query(collection(db, "notes"));
-    //   const querySnapshot = await getDocs(q);
-    //   querySnapshot.forEach(async (document) => {
-    //     if (user.uid === document.data().uid) {
-    //       let listTags = document.data().tags;
-    //       const indexItem = listTags.indexOf(item);
-    //       if (indexItem !== -1) {
-    //         listTags.splice(indexItem, 1);
-    //         const ref = doc(db, "notes", document.id);
-    //         await updateDoc(ref, {
-    //           tags: listTags,
-    //         })
-    //           .then(() => console.log("tudo certo"))
-    //           .catch((error) => console.log(error.message));
-    //       }
-    //     }
-    //   });
-    // });
-    // setTheTagIsEditing(null);
   };
 
   return (
@@ -92,61 +67,69 @@ const TagsSettings = ({
       style={{
         flexDirection: "row",
         justifyContent: "space-between",
-        borderWidth: 1,
         alignItems: "center",
-        margin: 10,
-        padding: 10,
+        paddingVertical: 15,
+        height: 50,
+        borderBottomWidth: theTagIsEditing ? 0 : 1,
         borderRadius: 10,
-        height: 60,
+        borderColor: "rgba(0,0,0,.1)",
+        // backgroundColor: "red",
+        marginVertical: 5,
       }}
     >
       {editItem ? (
-        <>
+        <View
+          style={[
+            styles.input,
+            {
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
+              borderRadius: 10,
+              borderWidth: 1,
+              height: 50,
+              borderColor: "rgba(0,0,0,0.1)",
+              paddingHorizontal: 10,
+            },
+          ]}
+        >
           <TextInput
             value={tagNameItem}
             onChangeText={(text) => setTagNameItem(text)}
-            style={styles.input}
+            style={{ width: "80%" }}
           />
           <View style={{ flexDirection: "row", gap: 10 }}>
-            <TouchableOpacity
-              onPress={() => delTag(item)}
-              style={{
-                borderWidth: 1,
-                borderRadius: 10,
-                borderColor: "red",
-                paddingHorizontal: 10,
-              }}
-            >
-              <Text>del</Text>
+            <TouchableOpacity onPress={() => delTag(item)}>
+              <Ionicons name="trash-outline" size={20} color="red" />
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => confirmEditing(item, tagNameItem)}
-              style={{
-                borderWidth: 1,
-                borderRadius: 10,
-                borderColor: "green",
-                paddingHorizontal: 10,
-              }}
-            >
-              <Text>ok</Text>
+            <TouchableOpacity onPress={() => confirmEditing(item, tagNameItem)}>
+              <Ionicons name="checkmark" size={24} color={colors.primaryBlue} />
             </TouchableOpacity>
           </View>
-        </>
+        </View>
       ) : (
-        <>
-          <Text>#{tagNameItem}</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            // backgroundColor: "red",
+            width: "100%",
+            paddingHorizontal: 10,
+          }}
+        >
+          <Text style={{ width: "80%" }} numberOfLines={1}>
+            #{tagNameItem}
+          </Text>
           <TouchableOpacity
-            onPress={() => setTheTagIsEditing(item)}
-            style={{
-              borderWidth: 1,
-              borderRadius: 10,
-              borderColor: "blue",
-              paddingHorizontal: 10,
+            onPress={() => {
+              setTheTagIsEditing(item);
             }}
           >
-            <Text>edit</Text>
+            <Feather name="edit" size={20} color={colors.primaryBlue} />
           </TouchableOpacity>
-        </>
+        </View>
       )}
     </View>
   );
@@ -155,9 +138,5 @@ const TagsSettings = ({
 export default TagsSettings;
 
 const styles = StyleSheet.create({
-  input: {
-    borderRadius: 10,
-    borderWidth: 1,
-    paddingHorizontal: 10,
-  },
+  input: {},
 });

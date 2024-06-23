@@ -15,6 +15,7 @@ import {
 } from "react-native-draggable-flatlist";
 import { UserContext } from "../context/userContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Tags from "./Tags";
 
 const NoteList = ({ data, drag }) => {
   const navigation = useNavigation();
@@ -99,28 +100,31 @@ const NoteList = ({ data, drag }) => {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
+                // margin: 10,
+                padding: 5,
               }}
             >
               <FlatList
                 data={data.tags}
                 renderItem={({ item }) => {
                   return (
-                    <View
-                      style={{
-                        margin: 10,
-                        backgroundColor: "#aaa",
-                        paddingVertical: 3,
-                        paddingHorizontal: 10,
-                        borderRadius: 5,
-                      }}
-                    >
-                      <Text>#{item}</Text>
-                    </View>
+                    // <View
+                    //   style={{
+                    //     margin: 10,
+                    //     backgroundColor: "#aaa",
+                    //     paddingVertical: 3,
+                    //     paddingHorizontal: 10,
+                    //     borderRadius: 5,
+                    //   }}
+                    // >
+                    //   <Text>#{item}</Text>
+                    // </View>
+                    <Tags item={item} />
                   );
                 }}
                 horizontal
               />
-              <View style={{ alignItems: "flex-end", margin: 10 }}>
+              <View style={{ alignItems: "flex-end", margin: 0 }}>
                 {data.lastEditTime ? (
                   // <Text style={{}}>
                   //   Last time edited:

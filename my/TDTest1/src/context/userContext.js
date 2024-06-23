@@ -1,6 +1,7 @@
 import { collection, doc, getDoc, getDocs, query } from "firebase/firestore";
 import { createContext, useEffect, useState } from "react";
 import { db } from "../firebaseConnection";
+import colors from "../theme/colors";
 
 export const UserContext = createContext({});
 
@@ -8,7 +9,7 @@ export default function UserContextProvider({ children }) {
   const [selectedNotes, setSelectedNotes] = useState([]);
   const [user, setUser] = useState({});
   const [tags, setTags] = useState([]);
-  const [statusBarColor, setStatusBarColor] = useState("#f2f2f2");
+  const [statusBarColor, setStatusBarColor] = useState(colors.backgroundWhite);
 
   const EnterUser = async (userInfo) => {
     setUser(userInfo);

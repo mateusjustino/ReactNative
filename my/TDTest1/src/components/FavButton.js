@@ -2,6 +2,7 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import colors from "../theme/colors";
 
 const FavButton = () => {
   const navigation = useNavigation();
@@ -23,6 +24,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "rgba(0,0,0,0.1)",
-    backgroundColor: "#f2f2f2",
+    backgroundColor: colors.backgroundWhite,
   },
 });
