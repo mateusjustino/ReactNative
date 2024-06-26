@@ -22,6 +22,8 @@ import {
 } from "firebase/firestore";
 import { UserContext } from "../context/userContext";
 import { useNavigation } from "@react-navigation/native";
+import { fontSize } from "../theme/font";
+import colors from "../theme/colors";
 
 const CustomModal = ({
   modalVisible,
@@ -31,9 +33,37 @@ const CustomModal = ({
   setTheTagIsEditing,
 }) => {
   const navigation = useNavigation();
-  const { tags, setTags, user } = useContext(UserContext);
+  const {
+    tags,
+    setTags,
+    user,
+    selectedNotes,
+    setSelectedNotes,
+    statusBarColor,
+    setStatusBarColor,
+  } = useContext(UserContext);
+
+  useEffect(() => {
+    // if (modalVisible) {
+    //   console.log(statusBarColor);
+    //   if (statusBarColor == colors.customBackgroundNoteRed) {
+    //     setStatusBarColor("green");
+    //     console.log("executou");
+    //   }
+    // }
+    // console.log("abriu");
+  }, [modalVisible]);
 
   const delNote = async () => {
+    if (selectedNotes) {
+      for (let i = 0; i < selectedNotes.length; i++) {
+        console.log(selectedNotes[i].title);
+        await deleteDoc(doc(db, "notes", selectedNotes[i].id));
+      }
+      setModalVisible(false);
+      setSelectedNotes([]);
+      return;
+    }
     await deleteDoc(doc(db, "notes", idNote));
     navigation.goBack();
   };
@@ -87,7 +117,7 @@ const CustomModal = ({
     >
       <TouchableOpacity
         style={{
-          backgroundColor: "rgba(0,0,0,0.3)",
+          backgroundColor: colors.backgroundColorBackModal,
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
@@ -104,7 +134,7 @@ const CustomModal = ({
             borderRadius: 10,
           }}
         >
-          <Text>Deseja excluir</Text>
+          <Text style={{ fontSize: fontSize.regular }}>Deseja excluir?</Text>
           <View
             style={{
               flexDirection: "row",
@@ -114,10 +144,12 @@ const CustomModal = ({
             }}
           >
             <TouchableOpacity onPress={() => setModalVisible(false)}>
-              <Text>nao</Text>
+              <Text style={{ fontSize: fontSize.regular }}>nao</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={idNote ? delNote : delTag}>
-              <Text>sim</Text>
+            <TouchableOpacity
+              onPress={idNote || selectedNotes ? delNote : delTag}
+            >
+              <Text style={{ fontSize: fontSize.regular }}>sim</Text>
             </TouchableOpacity>
           </View>
         </View>

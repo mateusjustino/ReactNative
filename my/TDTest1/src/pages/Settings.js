@@ -17,7 +17,9 @@ import { signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import CustomModal from "../components/CustomModal";
 import colors from "../theme/colors";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, FontAwesome6 } from "@expo/vector-icons";
+import { fontSize } from "../theme/font";
+import { iconSize } from "../theme/icon";
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -59,7 +61,7 @@ const Settings = () => {
         style={styles.container}
         contentContainerStyle={{ alignItems: "center" }}
       >
-        <Text>Tags:</Text>
+        <Text style={{ fontSize: fontSize.regular }}>Tags:</Text>
         <View
           style={[
             {
@@ -71,7 +73,7 @@ const Settings = () => {
           ]}
         >
           <TextInput
-            style={{ flex: 1 }}
+            style={{ flex: 1, fontSize: fontSize.regular }}
             value={tagName}
             onChangeText={(text) => setTagName(text)}
             placeholder="Create a tag..."
@@ -79,9 +81,9 @@ const Settings = () => {
           {tagName ? (
             <>
               <TouchableOpacity onPress={addTag}>
-                <Ionicons
-                  name="checkmark"
-                  size={24}
+                <FontAwesome6
+                  name="plus"
+                  size={iconSize.regular}
                   color={colors.primaryBlue}
                 />
               </TouchableOpacity>
@@ -136,7 +138,7 @@ export default Settings;
 const styles = StyleSheet.create({
   container: {
     // flex: 1,
-    backgroundColor: colors.backgroundWhite,
+    backgroundColor: colors.backgroundLight,
     padding: 10,
   },
   inputView: {
@@ -145,6 +147,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.1)",
+    borderColor: colors.borderColorLight,
   },
 });

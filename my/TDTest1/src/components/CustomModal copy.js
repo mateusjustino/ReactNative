@@ -12,6 +12,7 @@ import { db } from "../firebaseConnection";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { UserContext } from "../context/userContext";
 import Tags from "./Tags";
+import colors from "../theme/colors";
 
 const CustomModal = ({
   modalVisible,
@@ -105,7 +106,7 @@ const CustomModal = ({
     >
       <TouchableOpacity
         style={{
-          backgroundColor: "rgba(0,0,0,0.5)",
+          backgroundColor: colors.backgroundColorBackModal,
           flex: 1,
           justifyContent: "flex-end",
           alignItems: "center",

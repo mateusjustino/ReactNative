@@ -9,7 +9,7 @@ export default function UserContextProvider({ children }) {
   const [selectedNotes, setSelectedNotes] = useState([]);
   const [user, setUser] = useState({});
   const [tags, setTags] = useState([]);
-  const [statusBarColor, setStatusBarColor] = useState(colors.backgroundWhite);
+  const [statusBarColor, setStatusBarColor] = useState(colors.backgroundLight);
 
   const EnterUser = async (userInfo) => {
     setUser(userInfo);

@@ -73,7 +73,6 @@ const CustomModal = ({
     >
       <TouchableOpacity
         style={{
-          // backgroundColor: "rgba(0,0,0,0.5)",
           flex: 1,
           justifyContent: "flex-end",
           alignItems: "center",

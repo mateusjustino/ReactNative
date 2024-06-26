@@ -18,6 +18,8 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar as StatusBarExpo } from "expo-status-bar";
 import colors from "../theme/colors";
+import { iconSize, iconSource } from "../theme/icon";
+import { fontSize } from "../theme/font";
 
 export default function Header({
   fromHome,
@@ -30,28 +32,21 @@ export default function Header({
   const navigation = useNavigation();
   const { user, setUser, statusBarColor } = useContext(UserContext);
 
-  useEffect(() => {
-    colorBackground();
-  }, [statusBarColor]);
+  // useEffect(() => {
+  //   colorBackground();
+  // }, [statusBarColor]);
 
   const colorBackground = () => {
-    if (statusBarColor === "#b20000" || statusBarColor === "rgb(250,200,200)") {
-      return "rgb(250,200,200)";
-    } else if (
-      statusBarColor === "#005900" ||
-      statusBarColor === "rgb(200,250,200)"
+    if (
+      statusBarColor === "#b20000" ||
+      statusBarColor === colors.customBackgroundNoteRed
     ) {
-      return "rgb(200,250,200)";
-    } else if (
-      statusBarColor === "#0000b2" ||
-      statusBarColor === "rgb(200,200,250)"
-    ) {
-      return "rgb(200,200,250)";
+      return colors.customBackgroundNoteRed;
     } else if (
       statusBarColor === "#a9a9a9" ||
-      statusBarColor === colors.backgroundWhite
+      statusBarColor === colors.backgroundLight
     ) {
-      return colors.backgroundWhite;
+      return colors.backgroundLight;
     }
   };
 
@@ -59,15 +54,12 @@ export default function Header({
     <SafeAreaView
       style={[styles.container, { backgroundColor: colorBackground() }]}
     >
-      <StatusBarExpo
-        backgroundColor={statusBarColor}
-        style="dark-content"
-        // animated
-      />
+      <StatusBarExpo backgroundColor={statusBarColor} style="dark-content" />
       <View
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
+          alignItems: "center",
           paddingTop: 15,
         }}
       >
@@ -77,24 +69,42 @@ export default function Header({
               style={{ flexDirection: "row", gap: 5, alignItems: "center" }}
             >
               <Image
-                style={{ height: 34, width: 64, marginRight: 10 }}
-                source={require("../images/logotipo principal_2.png")}
+                style={{ height: 35, width: 64, marginRight: 10 }}
+                // source={require("../images/logotipo principal_2.png")}
+                source={iconSource.logoRoxo}
               />
-              <Text>Olá, {user.email}</Text>
+              <Text
+                style={{ fontSize: fontSize.regular, width: "70%" }}
+                numberOfLines={1}
+              >
+                Olá, {user.email}
+              </Text>
             </View>
             <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
-              <Ionicons name="menu-outline" size={20} color="black" />
+              <Ionicons
+                name="menu-outline"
+                size={iconSize.regular}
+                color="black"
+              />
             </TouchableOpacity>
           </>
         )}
         {fromAddEditNote && (
           <>
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={20} color="black" />
+              <Ionicons
+                name="chevron-back"
+                size={iconSize.regular}
+                color="black"
+              />
             </TouchableOpacity>
             {canDelete && (
               <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <Ionicons name="trash-outline" size={20} color="red" />
+                <Ionicons
+                  name="trash-outline"
+                  size={iconSize.regular}
+                  color="red"
+                />
               </TouchableOpacity>
             )}
           </>
@@ -102,7 +112,11 @@ export default function Header({
         {fromSettings && (
           <>
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Text> &#60; </Text>
+              <Ionicons
+                name="chevron-back"
+                size={iconSize.regular}
+                color="black"
+              />
             </TouchableOpacity>
           </>
         )}

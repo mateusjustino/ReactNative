@@ -16,6 +16,9 @@ import {
 import { UserContext } from "../context/userContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Tags from "./Tags";
+import { fontSize } from "../theme/font";
+import { iconSize } from "../theme/icon";
+import colors from "../theme/colors";
 
 const NoteList = ({ data, drag }) => {
   const navigation = useNavigation();
@@ -63,7 +66,7 @@ const NoteList = ({ data, drag }) => {
   };
 
   return (
-    <ScaleDecorator activeScale={1.03}>
+    <ScaleDecorator activeScale={0.95}>
       <OpacityDecorator activeOpacity={0.99}>
         <ShadowDecorator>
           <TouchableOpacity
@@ -74,8 +77,7 @@ const NoteList = ({ data, drag }) => {
               borderWidth: 1,
               borderRadius: 10,
               backgroundColor: data.backgroundColor,
-              // backgroundColor: "rgb(200,200,250)",
-              borderColor: activeSelected ? "green" : "rgba(0,0,0,0.1)",
+              borderColor: activeSelected ? "green" : colors.borderColorLight,
               marginBottom: 10,
             }}
             onPress={() =>
@@ -87,11 +89,16 @@ const NoteList = ({ data, drag }) => {
             }
           >
             <View style={{ margin: 10 }}>
-              <Text style={{ fontWeight: "bold" }}>{data.title}</Text>
+              <Text style={{ fontWeight: "bold", fontSize: fontSize.large }}>
+                {data.title}
+              </Text>
             </View>
 
             <View style={{ margin: 10 }}>
-              <Text numberOfLines={5} style={{ lineHeight: 20 }}>
+              <Text
+                numberOfLines={5}
+                style={{ lineHeight: 20, fontSize: fontSize.regular }}
+              >
                 {data.contentText}
               </Text>
             </View>
@@ -107,22 +114,11 @@ const NoteList = ({ data, drag }) => {
               <FlatList
                 data={data.tags}
                 renderItem={({ item }) => {
-                  return (
-                    // <View
-                    //   style={{
-                    //     margin: 10,
-                    //     backgroundColor: "#aaa",
-                    //     paddingVertical: 3,
-                    //     paddingHorizontal: 10,
-                    //     borderRadius: 5,
-                    //   }}
-                    // >
-                    //   <Text>#{item}</Text>
-                    // </View>
-                    <Tags item={item} />
-                  );
+                  return <Tags item={item} />;
                 }}
                 horizontal
+                showsHorizontalScrollIndicator={false}
+                style={{ marginRight: 10 }}
               />
               <View style={{ alignItems: "flex-end", margin: 0 }}>
                 {data.lastEditTime ? (
@@ -136,10 +132,16 @@ const NoteList = ({ data, drag }) => {
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <MaterialCommunityIcons
                       name="clock-edit-outline"
-                      size={18}
+                      size={iconSize.small}
                       color="black"
                     />
-                    <Text style={{ fontStyle: "italic", marginStart: 5 }}>
+                    <Text
+                      style={{
+                        fontStyle: "italic",
+                        marginStart: 5,
+                        fontSize: fontSize.small,
+                      }}
+                    >
                       {formatDateTime(data.lastEditTime)}
                     </Text>
                   </View>
@@ -154,10 +156,16 @@ const NoteList = ({ data, drag }) => {
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <MaterialCommunityIcons
                       name="clock-edit-outline"
-                      size={18}
+                      size={iconSize.small}
                       color="black"
                     />
-                    <Text style={{ fontStyle: "italic", marginStart: 5 }}>
+                    <Text
+                      style={{
+                        fontStyle: "italic",
+                        marginStart: 5,
+                        fontSize: fontSize.small,
+                      }}
+                    >
                       {formatDateTime(data.createdAt)}
                     </Text>
                   </View>

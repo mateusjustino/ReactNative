@@ -30,9 +30,8 @@ import Tags from "../components/Tags";
 import CustomModal from "../components/CustomModal";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../theme/colors";
-
-const colorGreen = "#EAF9B2";
-const colorPurple = "#674CE8";
+import { fontSize } from "../theme/font";
+import { iconSize } from "../theme/icon";
 
 export default function AddEditNote() {
   const navigation = useNavigation();
@@ -46,7 +45,7 @@ export default function AddEditNote() {
   const [activeTags, setActiveTags] = useState(data ? data.tags : []);
   const [modalVisible, setModalVisible] = useState(false);
   const [backgroundColorNote, setBackgroundColorNote] = useState(
-    data ? data.backgroundColor : colors.backgroundWhite
+    data ? data.backgroundColor : colors.backgroundLight
   );
   const [showOptions, setShowOptions] = useState(null);
 
@@ -54,8 +53,8 @@ export default function AddEditNote() {
     React.useCallback(() => {
       const unsubscribe = navigation.addListener("beforeRemove", () => {
         // aqui consigo executar algo quando volto para a tela anterior
-        setStatusBarColor(colors.backgroundWhite);
-        setBackgroundColorNote(colors.backgroundWhite);
+        setStatusBarColor(colors.backgroundLight);
+        setBackgroundColorNote(colors.backgroundLight);
         // if (data) {
         //   handleUpdate();
         // }
@@ -68,29 +67,31 @@ export default function AddEditNote() {
 
   useEffect(() => {
     if (data) {
-      setStatusBarColor(data.backgroundColor);
-    }
-    if (modalVisible) {
-      if (statusBarColor === "red") {
-        setStatusBarColor("#b20000");
-      } else if (statusBarColor === "green") {
-        setStatusBarColor("#005900");
-      } else if (statusBarColor === "blue") {
-        setStatusBarColor("#0000b2");
-      } else if (statusBarColor === colors.backgroundWhite) {
-        setStatusBarColor("#a9a9a9");
-      }
-    } else {
-      if (statusBarColor === "#b20000") {
-        setStatusBarColor("red");
-      } else if (statusBarColor === "#005900") {
-        setStatusBarColor("green");
-      } else if (statusBarColor === "#0000b2") {
-        setStatusBarColor("blue");
-      } else if (statusBarColor === "#a9a9a9") {
-        setStatusBarColor(colors.backgroundWhite);
+      if (!modalVisible) {
+        setStatusBarColor(data.backgroundColor);
       }
     }
+    // if (modalVisible) {
+    //   if (statusBarColor === "red") {
+    //     setStatusBarColor("#b20000");
+    //   } else if (statusBarColor === "green") {
+    //     setStatusBarColor("#005900");
+    //   } else if (statusBarColor === "blue") {
+    //     setStatusBarColor("#0000b2");
+    //   } else if (statusBarColor === colors.backgroundLight) {
+    //     setStatusBarColor("#a9a9a9");
+    //   }
+    // } else {
+    //   if (statusBarColor === "#b20000") {
+    //     setStatusBarColor("red");
+    //   } else if (statusBarColor === "#005900") {
+    //     setStatusBarColor("green");
+    //   } else if (statusBarColor === "#0000b2") {
+    //     setStatusBarColor("blue");
+    //   } else if (statusBarColor === "#a9a9a9") {
+    //     setStatusBarColor(colors.backgroundLight);
+    //   }
+    // }
   }, [modalVisible]);
 
   // useEffect(() => {}, [modalVisible]);
@@ -196,7 +197,7 @@ export default function AddEditNote() {
           width: 30,
           height: 30,
           borderRadius: 30,
-          borderColor: "rgba(0,0,0,0.1)",
+          borderColor: colors.borderColorLight,
           borderWidth: 1,
         }}
         // onPress={() => setBackgroundColorNote(colorValue)}
@@ -220,18 +221,21 @@ export default function AddEditNote() {
           {
             backgroundColor: backgroundColorNote
               ? backgroundColorNote
-              : colors.backgroundWhite,
+              : colors.backgroundLight,
           },
         ]}
       >
         <TextInput
-          style={[styles.input, { fontWeight: "bold" }]}
+          style={[
+            styles.input,
+            { fontWeight: "bold", fontSize: fontSize.large },
+          ]}
           placeholder="Title"
           value={title}
           onChangeText={(text) => setTitle(text)}
         />
         <TextInput
-          style={[styles.input, { flex: 1 }]}
+          style={[styles.input, { flex: 1, fontSize: fontSize.regular }]}
           placeholder="Content"
           value={content}
           onChangeText={(text) => setContent(text)}
@@ -252,12 +256,16 @@ export default function AddEditNote() {
           {!showOptions && (
             <>
               <TouchableOpacity onPress={() => setShowOptions("tags")}>
-                <Ionicons name="pricetags-outline" size={20} color="black" />
+                <Ionicons
+                  name="pricetags-outline"
+                  size={iconSize.regular}
+                  color="black"
+                />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => setShowOptions("colors")}>
                 <Ionicons
                   name="color-palette-outline"
-                  size={20}
+                  size={iconSize.regular}
                   color="black"
                 />
               </TouchableOpacity>
@@ -275,7 +283,7 @@ export default function AddEditNote() {
               }}
             >
               <TouchableOpacity onPress={() => setShowOptions(null)}>
-                <Ionicons name="close" size={20} color="black" />
+                <Ionicons name="close" size={iconSize.regular} color="black" />
               </TouchableOpacity>
               <FlatList
                 data={tags}
@@ -305,13 +313,13 @@ export default function AddEditNote() {
               }}
             >
               <View style={{ flexDirection: "row", gap: 10 }}>
-                <ColorComponent colorValue={colors.backgroundWhite} />
-                <ColorComponent colorValue="rgb(250,200,200)" />
-                <ColorComponent colorValue="rgb(200,250,200)" />
-                <ColorComponent colorValue="rgb(200,200,250)" />
+                <ColorComponent colorValue={colors.backgroundLight} />
+                <ColorComponent colorValue={colors.customBackgroundNoteRed} />
+                <ColorComponent colorValue={colors.customBackgroundNoteGreen} />
+                <ColorComponent colorValue={colors.customBackgroundNoteBlue} />
               </View>
               <TouchableOpacity onPress={() => setShowOptions(null)}>
-                <Ionicons name="close" size={20} color="black" />
+                <Ionicons name="close" size={iconSize.regular} color="black" />
               </TouchableOpacity>
             </View>
           )}
@@ -350,7 +358,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     lineHeight: 20,
-    borderColor: "rgba(0,0,0,0.1)",
+    borderColor: colors.borderColorLight,
   },
   tag: {
     width: 35,
@@ -366,7 +374,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     borderRadius: 10,
-    borderColor: "rgba(0,0,0,0.1)",
+    borderColor: colors.borderColorLight,
   },
   buttonText: {
     fontWeight: "bold",

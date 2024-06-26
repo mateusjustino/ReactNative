@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 import colors from "../theme/colors";
+import { fontSize } from "../theme/font";
 
 const Tags = ({ item, activeTags, onPressFunc }) => {
   return (
@@ -9,11 +10,12 @@ const Tags = ({ item, activeTags, onPressFunc }) => {
         styles.tag,
         Array.isArray(activeTags) && activeTags.includes(item)
           ? { borderColor: "rgba(0,0,0,0.3)" }
-          : { borderColor: "rgba(0,0,0,0.1)" },
+          : { borderColor: colors.borderColorLight },
       ]}
-      onPress={onPressFunc}
+      onPress={onPressFunc ? onPressFunc : null}
+      activeOpacity={onPressFunc ? 0.5 : 1}
     >
-      <Text>#{item}</Text>
+      <Text style={{ fontSize: fontSize.small }}>#{item}</Text>
     </TouchableOpacity>
   );
 };
@@ -22,9 +24,9 @@ export default Tags;
 
 const styles = StyleSheet.create({
   tag: {
-    backgroundColor: colors.primaryGreen,
+    backgroundColor: colors.primaryGreenAlfa,
     // marginVertical: 10,
-    padding: 5,
+    padding: 3,
     paddingHorizontal: 10,
     marginRight: 10,
     borderRadius: 10,

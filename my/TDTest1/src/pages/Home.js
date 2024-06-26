@@ -28,6 +28,9 @@ import { useFocusEffect } from "@react-navigation/native";
 import CustomModal from "../components/CustomModal";
 import Tags from "../components/Tags";
 import colors from "../theme/colors";
+import { iconSize } from "../theme/icon";
+import { Ionicons } from "@expo/vector-icons";
+import { fontSize } from "../theme/font";
 
 const Home = () => {
   const [notes, setNotes] = useState([]);
@@ -47,7 +50,11 @@ const Home = () => {
   useEffect(() => {
     setIsLoading(true);
     const unsubscribeNotes = onSnapshot(
-      query(collection(db, "notes"), orderBy("order")),
+      query(
+        collection(db, "notes"),
+        orderBy("order")
+        // where("uid", "==", user.uid)
+      ),
       (snapshot) => {
         const list = [];
         snapshot.forEach((doc) => {
@@ -232,45 +239,87 @@ const Home = () => {
           alignItems: "center",
           paddingHorizontal: 15,
           paddingTop: 10,
-          backgroundColor: colors.backgroundWhite,
+          backgroundColor: colors.backgroundLight,
         }}
       >
         <View
           style={{
             width: "100%",
+            height: 100,
+            alignItems: "center",
+            marginVertical: 10,
+            gap: 10,
           }}
         >
           {selectedNotes.length !== 0 ? (
             <>
               <View
                 style={{
-                  flexDirection: "row",
-                  // gap: 10,
-                  justifyContent: "space-between",
+                  flex: 1,
+                  width: "100%",
+                  // backgroundColor: "red",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                <TouchableOpacity onPress={() => setSelectedNotes([])}>
-                  <Text>ClearSelectedNotes</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleDeleteSelectedNotes}>
-                  <Text>DeleteNotes</Text>
-                </TouchableOpacity>
+                <View
+                  style={{
+                    borderWidth: 1,
+                    borderColor: colors.borderColorLight,
+                    borderRadius: 10,
+                    width: "100%",
+                    padding: 10,
+                    gap: 10,
+                  }}
+                >
+                  <Text style={{ fontSize: fontSize.regular }}>
+                    <Text
+                      style={{ fontWeight: "bold", fontSize: fontSize.regular }}
+                    >
+                      {selectedNotes.length}
+                    </Text>
+                    {selectedNotes.length == 1
+                      ? " nota selecionada"
+                      : " notas selecionadas"}
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <TouchableOpacity onPress={() => setSelectedNotes([])}>
+                      <Ionicons
+                        name="close"
+                        size={iconSize.regular}
+                        color="black"
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => setModalVisible(true)}>
+                      <Ionicons
+                        name="trash-outline"
+                        size={iconSize.regular}
+                        color="red"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
               </View>
             </>
           ) : (
             <>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  { width: "100%", fontSize: fontSize.regular },
+                ]}
                 value={searchText}
                 onChangeText={(text) => searchNotes("input", text)}
                 placeholder="Search..."
               />
               <View
                 style={{
-                  marginVertical: 10,
                   flexDirection: "row",
-                  // width: "100%",
-                  // padding: 10,
                 }}
               >
                 <FlatList
@@ -322,6 +371,7 @@ const Home = () => {
         <CustomModal
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
+          selectedNotes={selectedNotes}
         />
       </View>
     </>
@@ -339,8 +389,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     borderWidth: 1,
-    lineHeight: 20,
-    borderColor: "rgba(0,0,0,0.1)",
+    borderColor: colors.borderColorLight,
   },
 });
 

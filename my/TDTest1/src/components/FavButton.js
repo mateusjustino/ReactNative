@@ -3,6 +3,7 @@ import React from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import colors from "../theme/colors";
+import { iconSize } from "../theme/icon";
 
 const FavButton = () => {
   const navigation = useNavigation();
@@ -11,7 +12,11 @@ const FavButton = () => {
       style={styles.touch}
       onPress={() => navigation.navigate("AddEditNote")}
     >
-      <MaterialCommunityIcons name="pencil-plus" size={24} color="black" />
+      <MaterialCommunityIcons
+        name="pencil-plus"
+        size={iconSize.large}
+        color="black"
+      />
     </TouchableOpacity>
   );
 };
@@ -20,10 +25,10 @@ export default FavButton;
 
 const styles = StyleSheet.create({
   touch: {
-    padding: 15,
+    padding: 10,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.1)",
-    backgroundColor: colors.backgroundWhite,
+    borderColor: colors.borderColorLight,
+    backgroundColor: colors.backgroundLight,
   },
 });
