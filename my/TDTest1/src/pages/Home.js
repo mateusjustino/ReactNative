@@ -23,7 +23,7 @@ import FavButton from "../components/FavButton";
 import Header from "../components/Header";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { UserContext } from "../context/userContext";
-import Loading from "../components/Loading";
+import LoadingScreen from "../components/LoadingScreen";
 import { useFocusEffect } from "@react-navigation/native";
 import CustomModal from "../components/CustomModal";
 import Tags from "../components/Tags";
@@ -228,7 +228,7 @@ const Home = () => {
   };
 
   if (isLoading) {
-    return <Loading />;
+    return <LoadingScreen />;
   }
   return (
     <>

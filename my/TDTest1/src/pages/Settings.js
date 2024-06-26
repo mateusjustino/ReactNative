@@ -20,6 +20,7 @@ import colors from "../theme/colors";
 import { Ionicons, FontAwesome6 } from "@expo/vector-icons";
 import { fontSize } from "../theme/font";
 import { iconSize } from "../theme/icon";
+import Loading from "../components/Loading";
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -27,9 +28,10 @@ const Settings = () => {
   const [tagName, setTagName] = useState("");
   const [theTagIsEditing, setTheTagIsEditing] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [activeLoading, setActiveLoading] = useState(false);
 
   const addTag = async () => {
-    // setTags([]);
+    setActiveLoading(true);
     if (tags.includes(tagName)) {
       console.log("ja existe");
       return;
@@ -41,6 +43,7 @@ const Settings = () => {
     });
     setTags(list);
     setTagName("");
+    setActiveLoading(false);
   };
 
   const handleLogOut = () => {
@@ -80,12 +83,22 @@ const Settings = () => {
           />
           {tagName ? (
             <>
-              <TouchableOpacity onPress={addTag}>
-                <FontAwesome6
-                  name="plus"
-                  size={iconSize.regular}
-                  color={colors.primaryBlue}
-                />
+              <TouchableOpacity
+                onPress={() => {
+                  if (!activeLoading) {
+                    addTag();
+                  }
+                }}
+              >
+                {activeLoading ? (
+                  <Loading />
+                ) : (
+                  <FontAwesome6
+                    name="plus"
+                    size={iconSize.regular}
+                    color={colors.primaryBlue}
+                  />
+                )}
               </TouchableOpacity>
             </>
           ) : null}

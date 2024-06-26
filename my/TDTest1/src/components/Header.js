@@ -32,18 +32,28 @@ export default function Header({
   const navigation = useNavigation();
   const { user, setUser, statusBarColor } = useContext(UserContext);
 
-  // useEffect(() => {
-  //   colorBackground();
-  // }, [statusBarColor]);
+  useEffect(() => {
+    colorBackground();
+  }, [statusBarColor]);
 
   const colorBackground = () => {
     if (
-      statusBarColor === "#b20000" ||
+      statusBarColor === "#af8c8c" ||
       statusBarColor === colors.customBackgroundNoteRed
     ) {
       return colors.customBackgroundNoteRed;
     } else if (
-      statusBarColor === "#a9a9a9" ||
+      statusBarColor === "#8caf8c" ||
+      statusBarColor === colors.customBackgroundNoteGreen
+    ) {
+      return colors.customBackgroundNoteGreen;
+    } else if (
+      statusBarColor === "#8c8caf" ||
+      statusBarColor === colors.customBackgroundNoteBlue
+    ) {
+      return colors.customBackgroundNoteBlue;
+    } else if (
+      statusBarColor === "#acb09a" ||
       statusBarColor === colors.backgroundLight
     ) {
       return colors.backgroundLight;
@@ -98,7 +108,7 @@ export default function Header({
                 color="black"
               />
             </TouchableOpacity>
-            {canDelete && (
+            {canDelete ? (
               <TouchableOpacity onPress={() => setModalVisible(true)}>
                 <Ionicons
                   name="trash-outline"
@@ -106,6 +116,8 @@ export default function Header({
                   color="red"
                 />
               </TouchableOpacity>
+            ) : (
+              <Text style={{ fontSize: fontSize.regular }}>New Note</Text>
             )}
           </>
         )}
@@ -128,6 +140,6 @@ export default function Header({
 const styles = StyleSheet.create({
   container: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
   },
 });

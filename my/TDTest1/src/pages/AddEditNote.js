@@ -32,6 +32,7 @@ import { Ionicons } from "@expo/vector-icons";
 import colors from "../theme/colors";
 import { fontSize } from "../theme/font";
 import { iconSize } from "../theme/icon";
+import Loading from "../components/Loading";
 
 export default function AddEditNote() {
   const navigation = useNavigation();
@@ -48,6 +49,7 @@ export default function AddEditNote() {
     data ? data.backgroundColor : colors.backgroundLight
   );
   const [showOptions, setShowOptions] = useState(null);
+  const [activeLoading, setActiveLoading] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -71,32 +73,12 @@ export default function AddEditNote() {
         setStatusBarColor(data.backgroundColor);
       }
     }
-    // if (modalVisible) {
-    //   if (statusBarColor === "red") {
-    //     setStatusBarColor("#b20000");
-    //   } else if (statusBarColor === "green") {
-    //     setStatusBarColor("#005900");
-    //   } else if (statusBarColor === "blue") {
-    //     setStatusBarColor("#0000b2");
-    //   } else if (statusBarColor === colors.backgroundLight) {
-    //     setStatusBarColor("#a9a9a9");
-    //   }
-    // } else {
-    //   if (statusBarColor === "#b20000") {
-    //     setStatusBarColor("red");
-    //   } else if (statusBarColor === "#005900") {
-    //     setStatusBarColor("green");
-    //   } else if (statusBarColor === "#0000b2") {
-    //     setStatusBarColor("blue");
-    //   } else if (statusBarColor === "#a9a9a9") {
-    //     setStatusBarColor(colors.backgroundLight);
-    //   }
-    // }
   }, [modalVisible]);
 
   // useEffect(() => {}, [modalVisible]);
 
   const handleAdd = async () => {
+    setActiveLoading(true);
     const now = moment().format("YYYY-MM-DD HH:mm:ss");
     let orderVar = 1;
 
@@ -131,9 +113,12 @@ export default function AddEditNote() {
         navigation.goBack();
       })
       .catch((error) => console.log(error.message));
+
+    setActiveLoading(false);
   };
 
   const handleUpdate = async () => {
+    setActiveLoading(true);
     const contentLower = content.toLowerCase();
 
     const now = moment().format("YYYY-MM-DD HH:mm:ss");
@@ -170,6 +155,8 @@ export default function AddEditNote() {
         navigation.goBack();
       })
       .catch((error) => console.log(error.message));
+
+    setActiveLoading(false);
   };
 
   const activeTagsFunction = (tag) => {
@@ -326,16 +313,23 @@ export default function AddEditNote() {
         </View>
 
         <TouchableOpacity
-          onPress={data ? handleUpdate : handleAdd}
+          onPress={() => {
+            if (!activeLoading) {
+              if (data) {
+                handleUpdate();
+              } else {
+                handleAdd();
+              }
+            }
+          }}
           style={styles.button}
         >
-          <Text style={styles.buttonText}>{data ? "Update" : "Add"}</Text>
+          {activeLoading ? (
+            <Loading />
+          ) : (
+            <Text style={styles.buttonText}>{data ? "Update" : "Add"}</Text>
+          )}
         </TouchableOpacity>
-        {/* {data ? (
-          <Button title="save" onPress={handleUpdate} />
-        ) : (
-          <Button title="add" onPress={handleAdd} />
-        )} */}
 
         <CustomModal
           modalVisible={modalVisible}

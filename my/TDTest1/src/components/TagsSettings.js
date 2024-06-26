@@ -23,6 +23,7 @@ import colors from "../theme/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { fontSize } from "../theme/font";
 import { iconSize } from "../theme/icon";
+import Loading from "./Loading";
 
 const TagsSettings = ({
   item,
@@ -33,6 +34,7 @@ const TagsSettings = ({
   const { user, tags, setTags } = useContext(UserContext);
   const [tagNameItem, setTagNameItem] = useState(item);
   const [editItem, setEditItem] = useState(false);
+  const [activeLoading, setActiveLoading] = useState(false);
 
   useEffect(() => {
     if (theTagIsEditing === item) {
@@ -45,6 +47,7 @@ const TagsSettings = ({
 
   const confirmEditing = async (oldTag, newTag) => {
     if (item != tagNameItem) {
+      setActiveLoading(true);
       if (tags.includes(tagNameItem)) {
         console.log("ja existe");
         alert("já existe");
@@ -81,6 +84,7 @@ const TagsSettings = ({
           }
         });
       });
+      setActiveLoading(false);
     }
 
     setTheTagIsEditing(null);
@@ -135,12 +139,22 @@ const TagsSettings = ({
                 color="red"
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => confirmEditing(item, tagNameItem)}>
-              <Ionicons
-                name="checkmark"
-                size={iconSize.regular}
-                color={colors.primaryBlue}
-              />
+            <TouchableOpacity
+              onPress={() => {
+                if (!activeLoading) {
+                  confirmEditing(item, tagNameItem);
+                }
+              }}
+            >
+              {activeLoading ? (
+                <Loading />
+              ) : (
+                <Ionicons
+                  name="checkmark"
+                  size={iconSize.regular}
+                  color={colors.primaryBlue}
+                />
+              )}
             </TouchableOpacity>
           </View>
         </View>

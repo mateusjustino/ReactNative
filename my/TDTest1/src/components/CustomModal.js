@@ -42,29 +42,44 @@ const CustomModal = ({
     statusBarColor,
     setStatusBarColor,
   } = useContext(UserContext);
+  const [activeLoading, setActiveLoading] = useState(false);
 
   useEffect(() => {
-    // if (modalVisible) {
-    //   console.log(statusBarColor);
-    //   if (statusBarColor == colors.customBackgroundNoteRed) {
-    //     setStatusBarColor("green");
-    //     console.log("executou");
-    //   }
-    // }
-    // console.log("abriu");
+    if (modalVisible) {
+      if (statusBarColor == colors.customBackgroundNoteRed) {
+        setStatusBarColor("#af8c8c");
+      } else if (statusBarColor == colors.customBackgroundNoteGreen) {
+        setStatusBarColor("#8caf8c");
+      } else if (statusBarColor == colors.customBackgroundNoteBlue) {
+        setStatusBarColor("#8c8caf");
+      } else if (statusBarColor == colors.backgroundLight) {
+        setStatusBarColor("#acb09a");
+      }
+    } else {
+      setStatusBarColor(colors.backgroundLight);
+    }
   }, [modalVisible]);
 
   const delNote = async () => {
-    if (selectedNotes) {
+    setActiveLoading(true);
+    if (selectedNotes.length !== 0) {
       for (let i = 0; i < selectedNotes.length; i++) {
         console.log(selectedNotes[i].title);
         await deleteDoc(doc(db, "notes", selectedNotes[i].id));
       }
       setModalVisible(false);
       setSelectedNotes([]);
+      setActiveLoading(false);
+
       return;
     }
-    await deleteDoc(doc(db, "notes", idNote));
+
+    await deleteDoc(doc(db, "notes", idNote))
+      .then(() => console.log("deu certo"))
+      .catch((error) => {
+        console.log(error.message);
+      });
+    setActiveLoading(false);
     navigation.goBack();
   };
 
@@ -146,11 +161,15 @@ const CustomModal = ({
             <TouchableOpacity onPress={() => setModalVisible(false)}>
               <Text style={{ fontSize: fontSize.regular }}>nao</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={idNote || selectedNotes ? delNote : delTag}
-            >
-              <Text style={{ fontSize: fontSize.regular }}>sim</Text>
-            </TouchableOpacity>
+            {activeLoading ? (
+              <Text>...</Text>
+            ) : (
+              <TouchableOpacity
+                onPress={idNote || selectedNotes ? delNote : delTag}
+              >
+                <Text style={{ fontSize: fontSize.regular }}>sim</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </TouchableOpacity>

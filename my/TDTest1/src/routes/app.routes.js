@@ -7,7 +7,7 @@ import SignUp from "../pages/SignUp";
 import { useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebaseConnection";
-import Loading from "../components/Loading";
+import LoadingScreen from "../components/LoadingScreen";
 import { UserContext } from "../context/userContext";
 import Settings from "../pages/Settings";
 
@@ -33,7 +33,7 @@ const AppRoutes = () => {
   }, []);
 
   if (userAuth === null) {
-    return <Loading />;
+    return <LoadingScreen />;
   }
 
   return (
