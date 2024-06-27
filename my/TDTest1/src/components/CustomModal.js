@@ -84,10 +84,15 @@ const CustomModal = ({
   };
 
   const delTag = async () => {
+    console.log("sdassda");
+    setActiveLoading(true);
     const item = theTagIsEditing;
     setTags([]);
     let list = tags;
+    console.log("list: ", list);
+    console.log("item: ", item);
     const indexItem = list.indexOf(item);
+    console.log("indexItem: ", indexItem);
     if (indexItem !== -1) {
       list.splice(indexItem, 1);
     }
@@ -118,6 +123,7 @@ const CustomModal = ({
 
     setTheTagIsEditing(null);
     setModalVisible(false);
+    setActiveLoading(false);
   };
 
   return (
@@ -144,12 +150,17 @@ const CustomModal = ({
       >
         <View
           style={{
-            backgroundColor: "white",
+            backgroundColor: colors.backgroundLight,
             padding: 20,
             borderRadius: 10,
+            width: 280,
+            borderWidth: 1,
+            borderColor: colors.borderColorLight,
           }}
         >
-          <Text style={{ fontSize: fontSize.regular }}>Deseja excluir?</Text>
+          <Text style={{ fontSize: fontSize.regular, fontWeight: "bold" }}>
+            Deseja excluir?
+          </Text>
           <View
             style={{
               flexDirection: "row",
@@ -158,16 +169,30 @@ const CustomModal = ({
               marginTop: 20,
             }}
           >
-            <TouchableOpacity onPress={() => setModalVisible(false)}>
-              <Text style={{ fontSize: fontSize.regular }}>nao</Text>
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={{
+                padding: 5,
+              }}
+            >
+              <Text style={{ fontSize: fontSize.regular }}>No</Text>
             </TouchableOpacity>
             {activeLoading ? (
               <Text>...</Text>
             ) : (
               <TouchableOpacity
-                onPress={idNote || selectedNotes ? delNote : delTag}
+                onPress={
+                  idNote || selectedNotes.length !== 0 ? delNote : delTag
+                }
+                style={{
+                  padding: 5,
+                  borderRadius: 10,
+                  backgroundColor: "#ff313b",
+                }}
               >
-                <Text style={{ fontSize: fontSize.regular }}>sim</Text>
+                <Text style={{ fontSize: fontSize.regular, color: "white" }}>
+                  Yes
+                </Text>
               </TouchableOpacity>
             )}
           </View>

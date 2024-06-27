@@ -6,7 +6,7 @@ const colors = {
 
   borderColorLight: "rgba(0,0,0,.1)",
 
-  backgroundColorBackModal: "rgba(0,0,0,0.3)",
+  backgroundColorBackModal: "rgba(0,0,0,0.5)",
 
   customBackgroundNoteRed: "rgb(250,200,200)",
   customBackgroundNoteGreen: "rgb(200,250,200)",
