@@ -21,7 +21,7 @@ import { db } from "../firebaseConnection";
 import { Feather } from "@expo/vector-icons";
 import colors from "../theme/colors";
 import { Ionicons } from "@expo/vector-icons";
-import { fontSize } from "../theme/font";
+import { fontFamily, fontSize } from "../theme/font";
 import { iconSize } from "../theme/icon";
 import Loading from "./Loading";
 
@@ -129,7 +129,11 @@ const TagsSettings = ({
           <TextInput
             value={tagNameItem}
             onChangeText={(text) => setTagNameItem(text)}
-            style={{ width: "80%", fontSize: fontSize.regular }}
+            style={{
+              width: "80%",
+              fontSize: fontSize.regular,
+              fontFamily: fontFamily.PoppinsRegular400,
+            }}
           />
           <View style={{ flexDirection: "row", gap: 10 }}>
             <TouchableOpacity onPress={() => delTag(item)}>
@@ -170,7 +174,11 @@ const TagsSettings = ({
           }}
         >
           <Text
-            style={{ width: "85%", fontSize: fontSize.regular }}
+            style={{
+              width: "85%",
+              fontSize: fontSize.regular,
+              fontFamily: fontFamily.PoppinsRegular400,
+            }}
             numberOfLines={1}
           >
             #{tagNameItem}

@@ -18,7 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import CustomModal from "../components/CustomModal";
 import colors from "../theme/colors";
 import { Ionicons, FontAwesome6 } from "@expo/vector-icons";
-import { fontSize } from "../theme/font";
+import { fontFamily, fontSize } from "../theme/font";
 import { iconSize } from "../theme/icon";
 import Loading from "../components/Loading";
 
@@ -64,7 +64,14 @@ const Settings = () => {
         style={styles.container}
         contentContainerStyle={{ alignItems: "center" }}
       >
-        <Text style={{ fontSize: fontSize.regular }}>Tags:</Text>
+        <Text
+          style={{
+            fontSize: fontSize.regular,
+            fontFamily: fontFamily.PoppinsRegular400,
+          }}
+        >
+          Tags:
+        </Text>
         <View
           style={[
             {
@@ -76,7 +83,11 @@ const Settings = () => {
           ]}
         >
           <TextInput
-            style={{ flex: 1, fontSize: fontSize.regular }}
+            style={{
+              flex: 1,
+              fontSize: fontSize.regular,
+              fontFamily: fontFamily.PoppinsRegular400,
+            }}
             value={tagName}
             onChangeText={(text) => setTagName(text)}
             placeholder="Create a tag..."

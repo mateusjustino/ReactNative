@@ -19,7 +19,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { StatusBar as StatusBarExpo } from "expo-status-bar";
 import colors from "../theme/colors";
 import { iconSize, iconSource } from "../theme/icon";
-import { fontSize } from "../theme/font";
+import { fontFamily, fontSize } from "../theme/font";
 
 export default function Header({
   fromHome,
@@ -38,22 +38,22 @@ export default function Header({
 
   const colorBackground = () => {
     if (
-      statusBarColor === "#af8c8c" ||
+      statusBarColor === "#7d6464" ||
       statusBarColor === colors.customBackgroundNoteRed
     ) {
       return colors.customBackgroundNoteRed;
     } else if (
-      statusBarColor === "#8caf8c" ||
+      statusBarColor === "#647d64" ||
       statusBarColor === colors.customBackgroundNoteGreen
     ) {
       return colors.customBackgroundNoteGreen;
     } else if (
-      statusBarColor === "#8c8caf" ||
+      statusBarColor === "#64647d" ||
       statusBarColor === colors.customBackgroundNoteBlue
     ) {
       return colors.customBackgroundNoteBlue;
     } else if (
-      statusBarColor === "#acb09a" ||
+      statusBarColor === "#7b7e6e" ||
       statusBarColor === colors.backgroundLight
     ) {
       return colors.backgroundLight;
@@ -84,7 +84,11 @@ export default function Header({
                 source={iconSource.logoRoxo}
               />
               <Text
-                style={{ fontSize: fontSize.regular, width: "70%" }}
+                style={{
+                  fontSize: fontSize.regular,
+                  width: "70%",
+                  fontFamily: fontFamily.PoppinsRegular400,
+                }}
                 numberOfLines={1}
               >
                 Olá, {user.email}
@@ -117,7 +121,14 @@ export default function Header({
                 />
               </TouchableOpacity>
             ) : (
-              <Text style={{ fontSize: fontSize.regular }}>New Note</Text>
+              <Text
+                style={{
+                  fontSize: fontSize.regular,
+                  fontFamily: fontFamily.PoppinsRegular400,
+                }}
+              >
+                New Note
+              </Text>
             )}
           </>
         )}

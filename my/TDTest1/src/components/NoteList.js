@@ -16,7 +16,7 @@ import {
 import { UserContext } from "../context/userContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Tags from "./Tags";
-import { fontSize } from "../theme/font";
+import { fontFamily, fontSize } from "../theme/font";
 import { iconSize } from "../theme/icon";
 import colors from "../theme/colors";
 
@@ -89,7 +89,12 @@ const NoteList = ({ data, drag }) => {
             }
           >
             <View style={{ margin: 10 }}>
-              <Text style={{ fontWeight: "bold", fontSize: fontSize.large }}>
+              <Text
+                style={{
+                  fontSize: fontSize.large,
+                  fontFamily: fontFamily.PoppinsSemiBold600,
+                }}
+              >
                 {data.title}
               </Text>
             </View>
@@ -97,7 +102,10 @@ const NoteList = ({ data, drag }) => {
             <View style={{ margin: 10 }}>
               <Text
                 numberOfLines={5}
-                style={{ lineHeight: 20, fontSize: fontSize.regular }}
+                style={{
+                  fontSize: fontSize.regular,
+                  fontFamily: fontFamily.PoppinsRegular400,
+                }}
               >
                 {data.contentText}
               </Text>
@@ -107,7 +115,6 @@ const NoteList = ({ data, drag }) => {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                // margin: 10,
                 padding: 5,
               }}
             >
@@ -129,7 +136,12 @@ const NoteList = ({ data, drag }) => {
                   //     {formatDateTime(data.lastEditTime)}
                   //   </Text>
                   // </Text>
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
                     <MaterialCommunityIcons
                       name="clock-edit-outline"
                       size={iconSize.small}
@@ -137,9 +149,10 @@ const NoteList = ({ data, drag }) => {
                     />
                     <Text
                       style={{
-                        fontStyle: "italic",
                         marginStart: 5,
                         fontSize: fontSize.small,
+                        fontFamily: fontFamily.PoppinsRegularItalic400,
+                        marginTop: 4,
                       }}
                     >
                       {formatDateTime(data.lastEditTime)}
@@ -161,9 +174,10 @@ const NoteList = ({ data, drag }) => {
                     />
                     <Text
                       style={{
-                        fontStyle: "italic",
                         marginStart: 5,
                         fontSize: fontSize.small,
+                        fontFamily: fontFamily.PoppinsRegularItalic400,
+                        marginTop: 4,
                       }}
                     >
                       {formatDateTime(data.createdAt)}

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 import colors from "../theme/colors";
-import { fontSize } from "../theme/font";
+import { fontFamily, fontSize } from "../theme/font";
 
 const Tags = ({ item, activeTags, onPressFunc }) => {
   return (
@@ -15,7 +15,14 @@ const Tags = ({ item, activeTags, onPressFunc }) => {
       onPress={onPressFunc ? onPressFunc : null}
       activeOpacity={onPressFunc ? 0.5 : 1}
     >
-      <Text style={{ fontSize: fontSize.small }}>#{item}</Text>
+      <Text
+        style={{
+          fontSize: fontSize.small,
+          fontFamily: fontFamily.PoppinsRegular400,
+        }}
+      >
+        #{item}
+      </Text>
     </TouchableOpacity>
   );
 };

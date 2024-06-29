@@ -22,8 +22,9 @@ import {
 } from "firebase/firestore";
 import { UserContext } from "../context/userContext";
 import { useNavigation } from "@react-navigation/native";
-import { fontSize } from "../theme/font";
+import { fontFamily, fontSize } from "../theme/font";
 import colors from "../theme/colors";
+import { configureNavigationBar } from "../scripts/NavigationBar";
 
 const CustomModal = ({
   modalVisible,
@@ -47,14 +48,15 @@ const CustomModal = ({
   useEffect(() => {
     if (modalVisible) {
       if (statusBarColor == colors.customBackgroundNoteRed) {
-        setStatusBarColor("#af8c8c");
+        setStatusBarColor("#7d6464");
       } else if (statusBarColor == colors.customBackgroundNoteGreen) {
-        setStatusBarColor("#8caf8c");
+        setStatusBarColor("#647d64");
       } else if (statusBarColor == colors.customBackgroundNoteBlue) {
-        setStatusBarColor("#8c8caf");
+        setStatusBarColor("#64647d");
       } else if (statusBarColor == colors.backgroundLight) {
-        setStatusBarColor("#acb09a");
+        setStatusBarColor("#7b7e6e");
       }
+      configureNavigationBar("red");
     } else {
       setStatusBarColor(colors.backgroundLight);
     }
@@ -158,7 +160,12 @@ const CustomModal = ({
             borderColor: colors.borderColorLight,
           }}
         >
-          <Text style={{ fontSize: fontSize.regular, fontWeight: "bold" }}>
+          <Text
+            style={{
+              fontSize: fontSize.regular,
+              fontFamily: fontFamily.PoppinsSemiBold600,
+            }}
+          >
             Deseja excluir?
           </Text>
           <View
@@ -175,7 +182,14 @@ const CustomModal = ({
                 padding: 5,
               }}
             >
-              <Text style={{ fontSize: fontSize.regular }}>No</Text>
+              <Text
+                style={{
+                  fontSize: fontSize.regular,
+                  fontFamily: fontFamily.PoppinsRegular400,
+                }}
+              >
+                No
+              </Text>
             </TouchableOpacity>
             {activeLoading ? (
               <Text>...</Text>
@@ -190,7 +204,13 @@ const CustomModal = ({
                   backgroundColor: "#ff313b",
                 }}
               >
-                <Text style={{ fontSize: fontSize.regular, color: "white" }}>
+                <Text
+                  style={{
+                    fontSize: fontSize.regular,
+                    color: "white",
+                    fontFamily: fontFamily.PoppinsRegular400,
+                  }}
+                >
                   Yes
                 </Text>
               </TouchableOpacity>
@@ -210,6 +230,5 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     borderWidth: 1,
-    lineHeight: 20,
   },
 });

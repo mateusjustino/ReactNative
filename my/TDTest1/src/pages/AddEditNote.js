@@ -30,9 +30,11 @@ import Tags from "../components/Tags";
 import CustomModal from "../components/CustomModal";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../theme/colors";
-import { fontSize } from "../theme/font";
+import { fontFamily, fontSize } from "../theme/font";
 import { iconSize } from "../theme/icon";
 import Loading from "../components/Loading";
+import * as NavigationBar from "expo-navigation-bar";
+import { configureNavigationBar } from "../scripts/NavigationBar";
 
 export default function AddEditNote() {
   const navigation = useNavigation();
@@ -72,6 +74,7 @@ export default function AddEditNote() {
       if (!modalVisible) {
         setStatusBarColor(data.backgroundColor);
       }
+      configureNavigationBar(data.backgroundColor);
     }
   }, [modalVisible]);
 
@@ -175,6 +178,7 @@ export default function AddEditNote() {
     const changeColor = () => {
       setBackgroundColorNote(colorValue);
       setStatusBarColor(colorValue);
+      configureNavigationBar(colorValue);
     };
     return (
       <TouchableOpacity
@@ -215,14 +219,24 @@ export default function AddEditNote() {
         <TextInput
           style={[
             styles.input,
-            { fontWeight: "bold", fontSize: fontSize.large },
+            {
+              fontSize: fontSize.large,
+              fontFamily: fontFamily.PoppinsSemiBold600,
+            },
           ]}
           placeholder="Title"
           value={title}
           onChangeText={(text) => setTitle(text)}
         />
         <TextInput
-          style={[styles.input, { flex: 1, fontSize: fontSize.regular }]}
+          style={[
+            styles.input,
+            {
+              flex: 1,
+              fontSize: fontSize.regular,
+              fontFamily: fontFamily.PoppinsRegular400,
+            },
+          ]}
           placeholder="Content"
           value={content}
           onChangeText={(text) => setContent(text)}
@@ -327,7 +341,9 @@ export default function AddEditNote() {
           {activeLoading ? (
             <Loading />
           ) : (
-            <Text style={styles.buttonText}>{data ? "Update" : "Add"}</Text>
+            <Text style={{ fontFamily: fontFamily.PoppinsSemiBold600 }}>
+              {data ? "Update" : "Add"}
+            </Text>
           )}
         </TouchableOpacity>
 
@@ -351,7 +367,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     borderWidth: 1,
-    lineHeight: 20,
     borderColor: colors.borderColorLight,
   },
   tag: {
@@ -369,8 +384,5 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     borderColor: colors.borderColorLight,
-  },
-  buttonText: {
-    fontWeight: "bold",
   },
 });

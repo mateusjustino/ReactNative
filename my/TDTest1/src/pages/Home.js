@@ -30,7 +30,9 @@ import Tags from "../components/Tags";
 import colors from "../theme/colors";
 import { iconSize } from "../theme/icon";
 import { Ionicons } from "@expo/vector-icons";
-import { fontSize } from "../theme/font";
+import { fontFamily, fontSize } from "../theme/font";
+import * as NavigationBar from "expo-navigation-bar";
+import { configureNavigationBar } from "../scripts/NavigationBar";
 
 const Home = () => {
   const [notes, setNotes] = useState([]);
@@ -90,6 +92,8 @@ const Home = () => {
     React.useCallback(() => {
       // setTags([...tags]);
       setForceUpdate((prev) => !prev);
+
+      configureNavigationBar(colors.backgroundLight);
     }, [])
   );
 
@@ -272,9 +276,17 @@ const Home = () => {
                     gap: 10,
                   }}
                 >
-                  <Text style={{ fontSize: fontSize.regular }}>
+                  <Text
+                    style={{
+                      fontSize: fontSize.regular,
+                      fontFamily: fontFamily.PoppinsRegular400,
+                    }}
+                  >
                     <Text
-                      style={{ fontWeight: "bold", fontSize: fontSize.regular }}
+                      style={{
+                        fontSize: fontSize.regular,
+                        fontFamily: fontFamily.PoppinsSemiBold600,
+                      }}
                     >
                       {selectedNotes.length}
                     </Text>
@@ -311,7 +323,11 @@ const Home = () => {
               <TextInput
                 style={[
                   styles.input,
-                  { width: "100%", fontSize: fontSize.regular },
+                  {
+                    width: "100%",
+                    fontSize: fontSize.regular,
+                    fontFamily: fontFamily.PoppinsRegular400,
+                  },
                 ]}
                 value={searchText}
                 onChangeText={(text) => searchNotes("input", text)}
