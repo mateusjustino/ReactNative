@@ -85,7 +85,7 @@ export default function Header({
                 }}
                 numberOfLines={1}
               >
-                Olá, {user.email}
+                Olá, {user.displayName}
               </Text>
             </View>
             <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
@@ -135,6 +135,14 @@ export default function Header({
                 color="black"
               />
             </TouchableOpacity>
+            <Text
+              style={{
+                fontSize: fontSize.regular,
+                fontFamily: fontFamily.PoppinsRegular400,
+              }}
+            >
+              Settings
+            </Text>
           </>
         )}
       </View>

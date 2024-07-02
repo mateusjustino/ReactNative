@@ -212,13 +212,15 @@ export default function AddEditNote() {
           style={[
             styles.input,
             {
-              fontSize: fontSize.large,
+              fontSize: fontSize.regular,
               fontFamily: fontFamily.PoppinsSemiBold600,
             },
           ]}
           placeholder="Title"
           value={title}
           onChangeText={(text) => setTitle(text)}
+          cursorColor={colors.primaryBlue}
+          selectionColor={colors.primaryBlue}
         />
         <TextInput
           style={[
@@ -234,6 +236,8 @@ export default function AddEditNote() {
           onChangeText={(text) => setContent(text)}
           textAlignVertical="top"
           multiline
+          cursorColor={colors.primaryBlue}
+          selectionColor={colors.primaryBlue}
         />
 
         <View
@@ -355,10 +359,10 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   input: {
-    marginVertical: 10,
+    marginVertical: 5,
     padding: 10,
     borderRadius: 10,
-    borderWidth: 1,
+    // borderWidth: 1,
     borderColor: colors.borderColorLight,
   },
   tag: {

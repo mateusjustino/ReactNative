@@ -130,6 +130,8 @@ const TagsSettings = ({
               fontSize: fontSize.regular,
               fontFamily: fontFamily.PoppinsRegular400,
             }}
+            cursorColor={colors.primaryBlue}
+            selectionColor={colors.primaryBlue}
           />
           <View style={{ flexDirection: "row", gap: 10 }}>
             <TouchableOpacity onPress={() => delTag(item)}>

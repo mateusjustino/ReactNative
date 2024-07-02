@@ -11,7 +11,6 @@ import NoteList from "../components/NoteList";
 import { db } from "../firebaseConnection";
 import {
   collection,
-  deleteDoc,
   doc,
   onSnapshot,
   orderBy,
@@ -107,7 +106,7 @@ const Home = () => {
         })
       )
         .then(() => {
-          setNotes(data);
+          // setNotes(data);
         })
         .catch((error) =>
           console.log("Erro ao atualizar a ordem no Firestore:", error)
@@ -230,7 +229,7 @@ const Home = () => {
         <View
           style={{
             width: "100%",
-            height: 100,
+            // height: 100,
             alignItems: "center",
             marginVertical: 10,
             gap: 10,
@@ -240,10 +239,10 @@ const Home = () => {
             <>
               <View
                 style={{
-                  flex: 1,
                   width: "100%",
                   alignItems: "center",
                   justifyContent: "center",
+                  paddingBottom: 8,
                 }}
               >
                 <View
@@ -312,28 +311,32 @@ const Home = () => {
                 value={searchText}
                 onChangeText={(text) => searchNotes("input", text)}
                 placeholder="Search..."
+                cursorColor={colors.primaryBlue}
+                selectionColor={colors.primaryBlue}
               />
-              <View
-                style={{
-                  flexDirection: "row",
-                }}
-              >
-                <FlatList
-                  data={tags}
-                  renderItem={({ item }) => {
-                    return (
-                      <Tags
-                        item={item}
-                        activeTags={activeTags}
-                        onPressFunc={() => searchNotes("tags", item)}
-                      />
-                    );
+              {tags.length !== 0 && (
+                <View
+                  style={{
+                    flexDirection: "row",
                   }}
-                  horizontal
-                  extraData={forceUpdate}
-                  showsHorizontalScrollIndicator={false}
-                />
-              </View>
+                >
+                  <FlatList
+                    data={tags}
+                    renderItem={({ item }) => {
+                      return (
+                        <Tags
+                          item={item}
+                          activeTags={activeTags}
+                          onPressFunc={() => searchNotes("tags", item)}
+                        />
+                      );
+                    }}
+                    horizontal
+                    extraData={forceUpdate}
+                    showsHorizontalScrollIndicator={false}
+                  />
+                </View>
+              )}
             </>
           )}
         </View>
@@ -380,7 +383,9 @@ const styles = StyleSheet.create({
   },
   favButton: {},
   input: {
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    paddingBottom: 7,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: colors.borderColorLight,

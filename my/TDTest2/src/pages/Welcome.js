@@ -18,7 +18,7 @@ const Welcome = ({ navigation }) => {
     <>
       <Header />
       <View>
-        <Text style={{ fontSize: 50, fontStyle: "italic" }}>Welcome</Text>
+        <Text style={{ fontSize: 50 }}>Welcome</Text>
         <Text
           style={{
             fontSize: 40,

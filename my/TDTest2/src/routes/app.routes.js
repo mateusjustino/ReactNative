@@ -14,6 +14,7 @@ import * as NavigationBar from "expo-navigation-bar";
 import { startTransition } from "react";
 import colors from "../theme/colors";
 import { configureNavigationBar } from "../scripts/NavigationBar";
+import AccountSettings from "../pages/AccountSettings";
 
 const Stack = createNativeStackNavigator();
 
@@ -56,6 +57,7 @@ const AppRoutes = () => {
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="AddEditNote" component={AddEditNote} />
       <Stack.Screen name="Settings" component={Settings} />
+      <Stack.Screen name="AccountSettings" component={AccountSettings} />
     </Stack.Navigator>
   );
 };

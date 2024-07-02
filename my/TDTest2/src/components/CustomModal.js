@@ -46,7 +46,7 @@ const CustomModal = ({
       } else if (statusBarColor == colors.backgroundLight) {
         setStatusBarColor("#7b7e6e");
       }
-      configureNavigationBar("red");
+      // configureNavigationBar("red");
     } else {
       setStatusBarColor(colors.backgroundLight);
     }
@@ -67,7 +67,7 @@ const CustomModal = ({
     }
 
     await deleteDoc(doc(db, "notes", idNote))
-      .then(() => console.log("deu certo"))
+      .then(() => {})
       .catch((error) => {
         console.log(error.message);
       });
@@ -80,10 +80,7 @@ const CustomModal = ({
     const item = theTagIsEditing;
     setTags([]);
     let list = tags;
-    console.log("list: ", list);
-    console.log("item: ", item);
     const indexItem = list.indexOf(item);
-    console.log("indexItem: ", indexItem);
     if (indexItem !== -1) {
       list.splice(indexItem, 1);
     }

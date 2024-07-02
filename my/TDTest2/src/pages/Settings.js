@@ -21,6 +21,7 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import { fontFamily, fontSize } from "../theme/font";
 import { iconSize } from "../theme/icon";
 import Loading from "../components/Loading";
+import TextInputCustom from "../components/TextInputCustom";
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -91,6 +92,8 @@ const Settings = () => {
             value={tagName}
             onChangeText={(text) => setTagName(text)}
             placeholder="Create a tag..."
+            cursorColor={colors.primaryBlue}
+            selectionColor={colors.primaryBlue}
           />
           {tagName ? (
             <>
@@ -130,12 +133,20 @@ const Settings = () => {
         />
 
         <Text>darkmode</Text>
-        <Text>config da conta</Text>
-        <Text>config da conta</Text>
-        <Text>config da conta</Text>
-        <Text>config da conta</Text>
-        <Text>config da conta</Text>
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate("AccountSettings")}
+        >
+          <Text>Account Settings</Text>
+          <Text>Account Settings</Text>
+          <Text>Account Settings</Text>
+          <Text>Account Settings</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity onPress={handleLogOut}>
+          <Text>logout</Text>
+          <Text>logout</Text>
+          <Text>logout</Text>
           <Text>logout</Text>
         </TouchableOpacity>
 
@@ -160,6 +171,8 @@ const styles = StyleSheet.create({
   inputView: {
     marginVertical: 10,
     padding: 10,
+    paddingTop: 10,
+    paddingBottom: 7,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: colors.borderColorLight,
