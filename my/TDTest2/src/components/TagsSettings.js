@@ -97,12 +97,14 @@ const TagsSettings = ({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingVertical: 15,
-        height: 50,
+        paddingVertical: 5,
+        height: 60,
         borderBottomWidth: theTagIsEditing ? 0 : 1,
         borderRadius: 10,
         borderColor: colors.borderColorLight,
-        marginVertical: 5,
+        marginVertical: 3,
+        // backgroundColor: "lightgreen",
+        // paddingHorizontal: 10,
       }}
     >
       {editItem ? (
@@ -116,9 +118,11 @@ const TagsSettings = ({
               width: "100%",
               borderRadius: 10,
               borderWidth: 1,
-              height: 50,
               borderColor: colors.borderColorLight,
-              paddingHorizontal: 10,
+
+              padding: 10,
+              paddingStart: 17.5,
+              // backgroundColor: "red",
             },
           ]}
         >
@@ -133,7 +137,7 @@ const TagsSettings = ({
             cursorColor={colors.primaryBlue}
             selectionColor={colors.primaryBlue}
           />
-          <View style={{ flexDirection: "row", gap: 10 }}>
+          <View style={{ flexDirection: "row", gap: 20 }}>
             <TouchableOpacity onPress={() => delTag(item)}>
               <Ionicons
                 name="trash-outline"
@@ -161,13 +165,19 @@ const TagsSettings = ({
           </View>
         </View>
       ) : (
-        <View
+        <TouchableOpacity
           style={{
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
             width: "100%",
             paddingHorizontal: 10,
+            paddingStart: 5,
+            // paddingVertical: 7,
+            // height: 29,
+          }}
+          onPress={() => {
+            setTheTagIsEditing(item);
           }}
         >
           <Text
@@ -191,7 +201,7 @@ const TagsSettings = ({
               color={colors.primaryBlue}
             />
           </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
       )}
     </View>
   );

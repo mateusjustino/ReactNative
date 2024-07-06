@@ -15,6 +15,7 @@ import { startTransition } from "react";
 import colors from "../theme/colors";
 import { configureNavigationBar } from "../scripts/NavigationBar";
 import AccountSettings from "../pages/AccountSettings";
+import AccountSettingsUpdateName from "../pages/AccountSettingsUpdateName";
 
 const Stack = createNativeStackNavigator();
 
@@ -58,6 +59,10 @@ const AppRoutes = () => {
       <Stack.Screen name="AddEditNote" component={AddEditNote} />
       <Stack.Screen name="Settings" component={Settings} />
       <Stack.Screen name="AccountSettings" component={AccountSettings} />
+      <Stack.Screen
+        name="AccountSettingsUpdateName"
+        component={AccountSettingsUpdateName}
+      />
     </Stack.Navigator>
   );
 };

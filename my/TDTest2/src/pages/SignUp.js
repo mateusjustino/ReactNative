@@ -82,6 +82,7 @@ const SignUp = () => {
         onChangeText={(text) => setPassword(text)}
         placeholder="senha"
       />
+      <Text>adicionar campo para confirmar senha</Text>
 
       <TouchableOpacity style={styles.btn} onPress={handleRegister}>
         <Text>Registrar</Text>
