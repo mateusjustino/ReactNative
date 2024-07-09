@@ -22,6 +22,7 @@ import {
   orderBy,
   query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import moment from "moment";
 import { UserContext } from "../context/userContext";
@@ -64,21 +65,34 @@ export default function AddEditNote() {
     }, [navigation])
   );
 
+  // useEffect(() => {
+  //   if (data) {
+  //     // if (!modalVisible) {
+  //     //   setStatusBarColor(data.backgroundColor);
+  //     // }
+  //     // configureNavigationBar(data.backgroundColor);
+  //   }
+  // }, [modalVisible]);
   useEffect(() => {
     if (data) {
-      if (!modalVisible) {
-        setStatusBarColor(data.backgroundColor);
-      }
+      setStatusBarColor(data.backgroundColor);
       configureNavigationBar(data.backgroundColor);
+    } else {
+      setStatusBarColor(colors.backgroundLight);
+      configureNavigationBar(colors.backgroundLight);
     }
-  }, [modalVisible]);
+  }, []);
 
   const handleAdd = async () => {
     setActiveLoading(true);
     const now = moment().format("YYYY-MM-DD HH:mm:ss");
     let orderVar = 1;
 
-    const q = query(collection(db, "notes"), orderBy("order"));
+    const q = query(
+      collection(db, "notes"),
+      orderBy("order"),
+      where("uid", "==", user.uid)
+    );
     const querySnapshot = await getDocs(q);
     // primeiro vou aumentar a order de todos os itens
     for (let i = 0; i < querySnapshot.docs.length; i++) {
@@ -132,7 +146,11 @@ export default function AddEditNote() {
     })
       .then(async () => {
         let orderVar = 1;
-        const q = query(collection(db, "notes"), orderBy("order"));
+        const q = query(
+          collection(db, "notes"),
+          orderBy("order"),
+          where("uid", "==", user.uid)
+        );
         const querySnapshot = await getDocs(q);
         for (let i = 0; i < querySnapshot.docs.length; i++) {
           const item = querySnapshot.docs[i];

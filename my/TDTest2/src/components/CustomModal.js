@@ -39,16 +39,31 @@ const CustomModal = ({
     if (modalVisible) {
       if (statusBarColor == colors.customBackgroundNoteRed) {
         setStatusBarColor("#7d6464");
+        configureNavigationBar("#7d6464");
       } else if (statusBarColor == colors.customBackgroundNoteGreen) {
         setStatusBarColor("#647d64");
+        configureNavigationBar("#647d64");
       } else if (statusBarColor == colors.customBackgroundNoteBlue) {
         setStatusBarColor("#64647d");
+        configureNavigationBar("#64647d");
       } else if (statusBarColor == colors.backgroundLight) {
         setStatusBarColor("#7b7e6e");
+        configureNavigationBar("#7b7e6e");
       }
-      // configureNavigationBar("red");
     } else {
-      setStatusBarColor(colors.backgroundLight);
+      if (statusBarColor == "#7d6464") {
+        setStatusBarColor(colors.customBackgroundNoteRed);
+        configureNavigationBar(colors.customBackgroundNoteRed);
+      } else if (statusBarColor == "#647d64") {
+        setStatusBarColor(colors.customBackgroundNoteGreen);
+        configureNavigationBar(colors.customBackgroundNoteGreen);
+      } else if (statusBarColor == "#64647d") {
+        setStatusBarColor(colors.customBackgroundNoteBlue);
+        configureNavigationBar(colors.customBackgroundNoteBlue);
+      } else if (statusBarColor == "#7b7e6e") {
+        setStatusBarColor(colors.backgroundLight);
+        configureNavigationBar(colors.backgroundLight);
+      }
     }
   }, [modalVisible]);
 

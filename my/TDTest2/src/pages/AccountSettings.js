@@ -4,6 +4,7 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  Button,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import Header from "../components/Header";
@@ -13,13 +14,40 @@ import { UserContext } from "../context/userContext";
 import { Feather } from "@expo/vector-icons";
 import { iconSize } from "../theme/icon";
 import { useNavigation } from "@react-navigation/native";
+import { updateEmail, updateProfile } from "firebase/auth";
+import { auth } from "../firebaseConnection";
 
 const AccountSettings = () => {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const navigation = useNavigation();
-  const [text, setText] = useState("");
-  const [name, setname] = useState("");
-  const [showEditName, setShowEditName] = useState(false);
+  const [name, setName] = useState(user.displayName);
+  const [email, setEmail] = useState(user.email);
+
+  const profileUpdate = () => {
+    console.log("dassa");
+    if (name !== user.displayName) {
+      console.log("mudouuu");
+      updateProfile(auth.currentUser, {
+        displayName: name,
+      })
+        .then(() => {
+          setUser(auth.currentUser);
+        })
+        .catch((error) => {
+          // An error occurred
+          // ...
+        });
+    }
+    if (email !== user.email) {
+      if (user.emailVerified) {
+        updateEmail(auth.currentUser, email).then(() =>
+          setUser(auth.currentUser)
+        );
+      } else {
+        alert("nao verificado");
+      }
+    }
+  };
   return (
     <>
       <Header fromSettings />
@@ -30,27 +58,23 @@ const AccountSettings = () => {
         {/* <TextInputCustom text={text} setText={setText} placeholder="teste" /> */}
 
         <Text>Account Settings</Text>
+        {/* <Text>conta verificada? {user.emailVerified ? "sim" : "nao"}</Text> */}
 
-        <View>
-          <TouchableOpacity
-            style={styles.containerInfo}
-            onPress={() => setShowEditName(!showEditName)}
-          >
-            <Text>Nome: {user.displayName}</Text>
-            <TouchableOpacity>
-              <Feather
-                name="edit"
-                size={iconSize.regular}
-                color={colors.primaryBlue}
-              />
-            </TouchableOpacity>
-          </TouchableOpacity>
-          {showEditName && (
-            <View>
-              <Text>aaa</Text>
-            </View>
-          )}
-        </View>
+        <Text>Name</Text>
+        <TextInputCustom text={name} setText={setName} />
+
+        <Text>Email</Text>
+        <TextInputCustom text={email} setText={setEmail} />
+        <Text>email do userContext: {user.email}</Text>
+
+        <Text>Senha</Text>
+        <TextInputCustom text={email} setText={setEmail} />
+        <Text>Confirmar Senha</Text>
+        <TextInputCustom text={email} setText={setEmail} />
+
+        <Button title="confirm" onPress={profileUpdate} />
+
+        <View></View>
         <Text>verificação de email</Text>
         <Text>atualizar o nome</Text>
         <Text>atualizar o email</Text>

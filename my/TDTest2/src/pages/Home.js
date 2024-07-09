@@ -16,6 +16,7 @@ import {
   orderBy,
   query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import FavButton from "../components/FavButton";
 import Header from "../components/Header";
@@ -52,26 +53,24 @@ const Home = () => {
     const unsubscribeNotes = onSnapshot(
       query(
         collection(db, "notes"),
-        orderBy("order")
-        // where("uid", "==", user.uid)
+        orderBy("order"),
+        where("uid", "==", user.uid)
       ),
       (snapshot) => {
         const list = [];
         snapshot.forEach((doc) => {
-          if (user.uid === doc.data().uid) {
-            list.push({
-              id: doc.id,
-              uid: doc.data().uid,
-              title: doc.data().title,
-              contentText: doc.data().contentText,
-              contentTextLower: doc.data().contentTextLower,
-              createdAt: doc.data().createdAt,
-              lastEditTime: doc.data().lastEditTime,
-              order: doc.data().order,
-              tags: doc.data().tags,
-              backgroundColor: doc.data().backgroundColor,
-            });
-          }
+          list.push({
+            id: doc.id,
+            uid: doc.data().uid,
+            title: doc.data().title,
+            contentText: doc.data().contentText,
+            contentTextLower: doc.data().contentTextLower,
+            createdAt: doc.data().createdAt,
+            lastEditTime: doc.data().lastEditTime,
+            order: doc.data().order,
+            tags: doc.data().tags,
+            backgroundColor: doc.data().backgroundColor,
+          });
         });
         setNotes(list);
         setIsLoading(false);
@@ -132,7 +131,11 @@ const Home = () => {
       }
       setActiveTags(activeTagsList);
       const unsubscribe = onSnapshot(
-        query(collection(db, "notes"), orderBy("order")),
+        query(
+          collection(db, "notes"),
+          orderBy("order"),
+          where("uid", "==", user.uid)
+        ),
         (snapshot) => {
           const list = [];
           snapshot.forEach((doc) => {
@@ -174,7 +177,11 @@ const Home = () => {
       setSearchFilter(true);
       const searchTextLower = item.toLowerCase();
       const unsubscribe = onSnapshot(
-        query(collection(db, "notes"), orderBy("order")),
+        query(
+          collection(db, "notes"),
+          orderBy("order"),
+          where("uid", "==", user.uid)
+        ),
         (snapshot) => {
           const list = [];
           snapshot.forEach((doc) => {
