@@ -296,6 +296,23 @@ export default function AddEditNote() {
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 style={{ marginRight: 20 }}
+                contentContainerStyle={{ alignItems: "center" }}
+                ListFooterComponent={
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate("SettingsTags")}
+                    style={{
+                      backgroundColor: colors.primaryGreenAlfa,
+                      padding: 3,
+                      paddingHorizontal: 10,
+                      marginRight: 10,
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      borderColor: colors.borderColorLight,
+                    }}
+                  >
+                    <Text>+</Text>
+                  </TouchableOpacity>
+                }
               />
             </View>
           )}
@@ -337,7 +354,12 @@ export default function AddEditNote() {
           {activeLoading ? (
             <Loading />
           ) : (
-            <Text style={{ fontFamily: fontFamily.PoppinsSemiBold600 }}>
+            <Text
+              style={{
+                fontFamily: fontFamily.PoppinsSemiBold600,
+                color: "white",
+              }}
+            >
               {data ? "Update" : "Add"}
             </Text>
           )}
@@ -375,10 +397,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   button: {
-    backgroundColor: "lightgreen",
+    backgroundColor: colors.primaryBlue,
     alignItems: "center",
     padding: 10,
     borderRadius: 10,
     borderColor: colors.borderColorLight,
+    borderWidth: 1,
   },
 });

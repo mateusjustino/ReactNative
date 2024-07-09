@@ -9,7 +9,8 @@ const Tags = ({ item, activeTags, onPressFunc }) => {
       style={[
         styles.tag,
         Array.isArray(activeTags) && activeTags.includes(item)
-          ? { borderColor: "rgba(0,0,0,0.3)" }
+          ? // ? { borderColor: "rgba(0,0,0,0.3)" }
+            { borderColor: colors.primaryBlue }
           : { borderColor: colors.borderColorLight },
       ]}
       onPress={onPressFunc ? onPressFunc : null}

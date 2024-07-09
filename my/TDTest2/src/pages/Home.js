@@ -22,7 +22,7 @@ import Header from "../components/Header";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { UserContext } from "../context/userContext";
 import LoadingScreen from "../components/LoadingScreen";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import CustomModal from "../components/CustomModal";
 import Tags from "../components/Tags";
 import colors from "../theme/colors";
@@ -32,6 +32,7 @@ import { fontFamily, fontSize } from "../theme/font";
 import { configureNavigationBar } from "../scripts/NavigationBar";
 
 const Home = () => {
+  const navigation = useNavigation();
   const [notes, setNotes] = useState([]);
   const [notesSearch, setNotesSearch] = useState([]);
   const [searchFilter, setSearchFilter] = useState(false);
@@ -300,14 +301,7 @@ const Home = () => {
           ) : (
             <>
               <TextInput
-                style={[
-                  styles.input,
-                  {
-                    width: "100%",
-                    fontSize: fontSize.regular,
-                    fontFamily: fontFamily.PoppinsRegular400,
-                  },
-                ]}
+                style={[styles.input]}
                 value={searchText}
                 onChangeText={(text) => searchNotes("input", text)}
                 placeholder="Search..."
@@ -334,6 +328,23 @@ const Home = () => {
                     horizontal
                     extraData={forceUpdate}
                     showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{ alignItems: "center" }}
+                    ListFooterComponent={
+                      <TouchableOpacity
+                        onPress={() => navigation.navigate("SettingsTags")}
+                        style={{
+                          backgroundColor: colors.primaryGreenAlfa,
+                          padding: 5,
+                          paddingHorizontal: 10,
+                          marginRight: 10,
+                          borderRadius: 10,
+                          borderWidth: 1,
+                          borderColor: colors.borderColorLight,
+                        }}
+                      >
+                        <Text>+</Text>
+                      </TouchableOpacity>
+                    }
                   />
                 </View>
               )}
@@ -389,6 +400,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: colors.borderColorLight,
+    width: "100%",
+    fontSize: fontSize.regular,
+    fontFamily: fontFamily.PoppinsRegular400,
+    // backgroundColor: colors.primaryGreenDark,
   },
 });
 
