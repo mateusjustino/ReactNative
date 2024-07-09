@@ -142,20 +142,18 @@ const Home = () => {
             const tagsFromNote = doc.data().tags;
             if (containsAllElements(tagsFromNote, activeTagsList)) {
               // Faça algo se tagsFromNote contém todos os elementos de activeTagsList
-              if (user.uid === doc.data().uid) {
-                list.push({
-                  id: doc.id,
-                  uid: doc.data().uid,
-                  title: doc.data().title,
-                  contentText: doc.data().contentText,
-                  contentTextLower: doc.data().contentTextLower,
-                  createdAt: doc.data().createdAt,
-                  lastEditTime: doc.data().lastEditTime,
-                  order: doc.data().order,
-                  tags: doc.data().tags,
-                  backgroundColor: doc.data().backgroundColor,
-                });
-              }
+              list.push({
+                id: doc.id,
+                uid: doc.data().uid,
+                title: doc.data().title,
+                contentText: doc.data().contentText,
+                contentTextLower: doc.data().contentTextLower,
+                createdAt: doc.data().createdAt,
+                lastEditTime: doc.data().lastEditTime,
+                order: doc.data().order,
+                tags: doc.data().tags,
+                backgroundColor: doc.data().backgroundColor,
+              });
             }
           });
           if (activeTagsList.length !== 0) {
@@ -187,20 +185,18 @@ const Home = () => {
           snapshot.forEach((doc) => {
             const contentTextLower = doc.data().contentTextLower;
             if (contentTextLower.includes(searchTextLower)) {
-              if (user.uid === doc.data().uid) {
-                list.push({
-                  id: doc.id,
-                  uid: doc.data().uid,
-                  title: doc.data().title,
-                  contentText: doc.data().contentText,
-                  contentTextLower: doc.data().contentTextLower,
-                  createdAt: doc.data().createdAt,
-                  lastEditTime: doc.data().lastEditTime,
-                  order: doc.data().order,
-                  tags: doc.data().tags,
-                  backgroundColor: doc.data().backgroundColor,
-                });
-              }
+              list.push({
+                id: doc.id,
+                uid: doc.data().uid,
+                title: doc.data().title,
+                contentText: doc.data().contentText,
+                contentTextLower: doc.data().contentTextLower,
+                createdAt: doc.data().createdAt,
+                lastEditTime: doc.data().lastEditTime,
+                order: doc.data().order,
+                tags: doc.data().tags,
+                backgroundColor: doc.data().backgroundColor,
+              });
             }
           });
           setNotesSearch(list);

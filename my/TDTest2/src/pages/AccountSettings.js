@@ -14,7 +14,12 @@ import { UserContext } from "../context/userContext";
 import { Feather } from "@expo/vector-icons";
 import { iconSize } from "../theme/icon";
 import { useNavigation } from "@react-navigation/native";
-import { updateEmail, updateProfile } from "firebase/auth";
+import {
+  onAuthStateChanged,
+  sendEmailVerification,
+  updateEmail,
+  updateProfile,
+} from "firebase/auth";
 import { auth } from "../firebaseConnection";
 
 const AccountSettings = () => {
@@ -22,6 +27,7 @@ const AccountSettings = () => {
   const navigation = useNavigation();
   const [name, setName] = useState(user.displayName);
   const [email, setEmail] = useState(user.email);
+  const [verifiedEmail, setVerifiedEmail] = useState(user.emailVerified);
 
   const profileUpdate = () => {
     console.log("dassa");
@@ -48,6 +54,55 @@ const AccountSettings = () => {
       }
     }
   };
+
+  const sendVerifiedEmail = () => {
+    // auth.useDeviceLanguage() // para utilizar o idioma do navegador
+    sendEmailVerification(auth.currentUser)
+      .then(() => {
+        alert("email enviado");
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
+
+  const checkVerifiedEmail = () => {
+    // const unsub = onAuthStateChanged(auth, (user) => {
+    //   if (user) {
+    //     setUser(user);
+    //     console.log(user);
+    //     console.log(user.emailVerified);
+    //   }
+    // });
+
+    // return () => unsub();
+
+    const user = auth.currentUser;
+    user.reload().then(() => {
+      setUser(user);
+      console.log(user);
+      if (user.emailVerified) {
+        console.log("Email está verificado");
+        setVerifiedEmail(user.emailVerified);
+      }
+    });
+
+    // const checkEmailVerified = () => {
+    //   const user = firebase.auth().currentUser;
+    //   user.reload().then(() => {
+    //     if (user.emailVerified) {
+    //       setEmailVerified(true);
+    //       console.log("Email está verificado");
+    //     } else {
+    //       setEmailVerified(false);
+    //       console.log("Email não está verificado");
+    //     }
+    //   }).catch((error) => {
+    //     console.error('Erro ao recarregar o usuário:', error);
+    //   });
+    // };
+  };
+
   return (
     <>
       <Header fromSettings />
@@ -58,7 +113,20 @@ const AccountSettings = () => {
         {/* <TextInputCustom text={text} setText={setText} placeholder="teste" /> */}
 
         <Text>Account Settings</Text>
-        {/* <Text>conta verificada? {user.emailVerified ? "sim" : "nao"}</Text> */}
+
+        {!verifiedEmail && (
+          <>
+            <Text>conta nao verificada</Text>
+            <Text>para verificar email</Text>
+            <TouchableOpacity onPress={sendVerifiedEmail}>
+              <Text>Clique aqui</Text>
+            </TouchableOpacity>
+            <Text>Caso tenha acabado verificar</Text>
+            <TouchableOpacity onPress={checkVerifiedEmail}>
+              <Text>atualize aqui</Text>
+            </TouchableOpacity>
+          </>
+        )}
 
         <Text>Name</Text>
         <TextInputCustom text={name} setText={setName} />
