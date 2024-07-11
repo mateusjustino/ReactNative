@@ -122,6 +122,7 @@ const SettingsTags = () => {
           setModalVisible={setModalVisible}
           theTagIsEditing={theTagIsEditing}
           setTheTagIsEditing={setTheTagIsEditing}
+          source="SettingsTags"
         />
       </ScrollView>
     </>

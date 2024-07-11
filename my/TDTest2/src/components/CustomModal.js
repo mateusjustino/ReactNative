@@ -75,20 +75,17 @@ const CustomModal = ({
         console.log(selectedNotes[i].title);
         await deleteDoc(doc(db, "notes", selectedNotes[i].id));
       }
-      setModalVisible(false);
       setSelectedNotes([]);
-      setActiveLoading(false);
-
-      return;
+    } else {
+      await deleteDoc(doc(db, "notes", idNote))
+        .then(() => {})
+        .catch((error) => {
+          console.log(error.message);
+        });
+      navigation.goBack();
     }
-
-    await deleteDoc(doc(db, "notes", idNote))
-      .then(() => {})
-      .catch((error) => {
-        console.log(error.message);
-      });
+    setModalVisible(false);
     setActiveLoading(false);
-    navigation.goBack();
   };
 
   const delTag = async () => {
@@ -168,8 +165,9 @@ const CustomModal = ({
               fontFamily: fontFamily.PoppinsSemiBold600,
             }}
           >
-            {source === "home" && "Deseja excluir as notas selecionadas?"}
-            {source === "editNote" && "Deseja excluir esta nota?"}
+            {source === "Home" && "Deseja excluir as notas selecionadas?"}
+            {source === "EditNote" && "Deseja excluir esta nota?"}
+            {source === "SettingsTags" && "Deseja excluir esta tag?"}
           </Text>
           <View
             style={{
@@ -199,10 +197,10 @@ const CustomModal = ({
             ) : (
               <TouchableOpacity
                 onPress={() => {
-                  if (source === "home" || source === "editNote") {
+                  if (source === "Home" || source === "EditNote") {
                     delNote();
                   }
-                  if (source === "settingsTags") {
+                  if (source === "SettingsTags") {
                     delTag();
                   }
                   // idNote || selectedNotes.length !== 0 ? delNote : delTag
