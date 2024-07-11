@@ -62,6 +62,10 @@ const Settings = () => {
         <View style={{ height: 50 }} />
         <Text>send feedback?</Text>
         <View style={{ height: 50 }} />
+        <Text>
+          colocar algo ou uma tela para quando o usuario esta sem internet?
+        </Text>
+        <View style={{ height: 50 }} />
       </ScrollView>
     </>
   );

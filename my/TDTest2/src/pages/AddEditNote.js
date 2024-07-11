@@ -387,6 +387,7 @@ export default function AddEditNote() {
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
           idNote={data ? data.id : null}
+          source="editNote"
         />
       </View>
     </>

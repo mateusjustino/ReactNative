@@ -384,6 +384,7 @@ const Home = () => {
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
           selectedNotes={selectedNotes}
+          source="home"
         />
       </View>
     </>

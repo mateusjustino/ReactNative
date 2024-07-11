@@ -30,7 +30,6 @@ const AccountSettings = () => {
   const [verifiedEmail, setVerifiedEmail] = useState(user.emailVerified);
 
   const profileUpdate = () => {
-    console.log("dassa");
     if (name !== user.displayName) {
       console.log("mudouuu");
       updateProfile(auth.currentUser, {
@@ -46,11 +45,26 @@ const AccountSettings = () => {
     }
     if (email !== user.email) {
       if (user.emailVerified) {
-        updateEmail(auth.currentUser, email).then(() =>
-          setUser(auth.currentUser)
-        );
-      } else {
-        alert("nao verificado");
+        // aqui eu devo reauntenticar o usuario caso necessario
+        // voltar aqui
+        // voltar aqui
+        // voltar aqui
+        // voltar aqui
+        // voltar aqui
+        // voltar aqui
+        // voltar aqui
+        // voltar aqui
+        // voltar aqui
+        // voltar aqui
+        // voltar aqui
+        // voltar aqui
+        // voltar aqui
+        updateEmail(auth.currentUser, email)
+          .then(() => setUser(auth.currentUser))
+          .catch((error) => {
+            alert(error.message);
+            alert(error.code);
+          });
       }
     }
   };
@@ -67,40 +81,13 @@ const AccountSettings = () => {
   };
 
   const checkVerifiedEmail = () => {
-    // const unsub = onAuthStateChanged(auth, (user) => {
-    //   if (user) {
-    //     setUser(user);
-    //     console.log(user);
-    //     console.log(user.emailVerified);
-    //   }
-    // });
-
-    // return () => unsub();
-
     const user = auth.currentUser;
     user.reload().then(() => {
-      setUser(user);
-      console.log(user);
       if (user.emailVerified) {
-        console.log("Email está verificado");
+        setUser(user);
         setVerifiedEmail(user.emailVerified);
       }
     });
-
-    // const checkEmailVerified = () => {
-    //   const user = firebase.auth().currentUser;
-    //   user.reload().then(() => {
-    //     if (user.emailVerified) {
-    //       setEmailVerified(true);
-    //       console.log("Email está verificado");
-    //     } else {
-    //       setEmailVerified(false);
-    //       console.log("Email não está verificado");
-    //     }
-    //   }).catch((error) => {
-    //     console.error('Erro ao recarregar o usuário:', error);
-    //   });
-    // };
   };
 
   return (
@@ -110,10 +97,8 @@ const AccountSettings = () => {
         style={styles.container}
         contentContainerStyle={{ alignItems: "center" }}
       >
-        {/* <TextInputCustom text={text} setText={setText} placeholder="teste" /> */}
-
         <Text>Account Settings</Text>
-
+        <Text>email verified? {verifiedEmail ? "sim" : "nao"}</Text>
         {!verifiedEmail && (
           <>
             <Text>conta nao verificada</Text>

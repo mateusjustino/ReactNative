@@ -33,22 +33,22 @@ export default function Header({
 
   const colorBackground = () => {
     if (
-      statusBarColor == "#7d6464" ||
+      statusBarColor == colors.customStatusBarModalNoteRed ||
       statusBarColor == colors.customBackgroundNoteRed
     ) {
       return colors.customBackgroundNoteRed;
     } else if (
-      statusBarColor == "#647d64" ||
+      statusBarColor == colors.customStatusBarModalNoteGreen ||
       statusBarColor == colors.customBackgroundNoteGreen
     ) {
       return colors.customBackgroundNoteGreen;
     } else if (
-      statusBarColor == "#64647d" ||
+      statusBarColor == colors.customStatusBarModalNoteBlue ||
       statusBarColor == colors.customBackgroundNoteBlue
     ) {
       return colors.customBackgroundNoteBlue;
     } else if (
-      statusBarColor == "#7b7e6e" ||
+      statusBarColor == colors.backgroundLightStatusBarModal ||
       statusBarColor == colors.backgroundLight
     ) {
       return colors.backgroundLight;

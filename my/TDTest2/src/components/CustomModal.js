@@ -22,6 +22,7 @@ const CustomModal = ({
   idNote,
   theTagIsEditing,
   setTheTagIsEditing,
+  source,
 }) => {
   const navigation = useNavigation();
   const {
@@ -38,29 +39,29 @@ const CustomModal = ({
   useEffect(() => {
     if (modalVisible) {
       if (statusBarColor == colors.customBackgroundNoteRed) {
-        setStatusBarColor("#7d6464");
-        configureNavigationBar("#7d6464");
+        setStatusBarColor(colors.customStatusBarModalNoteRed);
+        configureNavigationBar(colors.customStatusBarModalNoteRed);
       } else if (statusBarColor == colors.customBackgroundNoteGreen) {
-        setStatusBarColor("#647d64");
-        configureNavigationBar("#647d64");
+        setStatusBarColor(colors.customStatusBarModalNoteGreen);
+        configureNavigationBar(colors.customStatusBarModalNoteGreen);
       } else if (statusBarColor == colors.customBackgroundNoteBlue) {
-        setStatusBarColor("#64647d");
-        configureNavigationBar("#64647d");
+        setStatusBarColor(colors.customStatusBarModalNoteBlue);
+        configureNavigationBar(colors.customStatusBarModalNoteBlue);
       } else if (statusBarColor == colors.backgroundLight) {
-        setStatusBarColor("#7b7e6e");
-        configureNavigationBar("#7b7e6e");
+        setStatusBarColor(colors.backgroundLightStatusBarModal);
+        configureNavigationBar(colors.backgroundLightStatusBarModal);
       }
     } else {
-      if (statusBarColor == "#7d6464") {
+      if (statusBarColor == colors.customStatusBarModalNoteRed) {
         setStatusBarColor(colors.customBackgroundNoteRed);
         configureNavigationBar(colors.customBackgroundNoteRed);
-      } else if (statusBarColor == "#647d64") {
+      } else if (statusBarColor == colors.customStatusBarModalNoteGreen) {
         setStatusBarColor(colors.customBackgroundNoteGreen);
         configureNavigationBar(colors.customBackgroundNoteGreen);
-      } else if (statusBarColor == "#64647d") {
+      } else if (statusBarColor == colors.customStatusBarModalNoteBlue) {
         setStatusBarColor(colors.customBackgroundNoteBlue);
         configureNavigationBar(colors.customBackgroundNoteBlue);
-      } else if (statusBarColor == "#7b7e6e") {
+      } else if (statusBarColor == colors.backgroundLightStatusBarModal) {
         setStatusBarColor(colors.backgroundLight);
         configureNavigationBar(colors.backgroundLight);
       }
@@ -167,7 +168,8 @@ const CustomModal = ({
               fontFamily: fontFamily.PoppinsSemiBold600,
             }}
           >
-            Deseja excluir?
+            {source === "home" && "Deseja excluir as notas selecionadas?"}
+            {source === "editNote" && "Deseja excluir esta nota?"}
           </Text>
           <View
             style={{
@@ -196,9 +198,15 @@ const CustomModal = ({
               <Text>...</Text>
             ) : (
               <TouchableOpacity
-                onPress={
-                  idNote || selectedNotes.length !== 0 ? delNote : delTag
-                }
+                onPress={() => {
+                  if (source === "home" || source === "editNote") {
+                    delNote();
+                  }
+                  if (source === "settingsTags") {
+                    delTag();
+                  }
+                  // idNote || selectedNotes.length !== 0 ? delNote : delTag
+                }}
                 style={{
                   padding: 5,
                   borderRadius: 10,
