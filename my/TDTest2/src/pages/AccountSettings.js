@@ -21,13 +21,17 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../firebaseConnection";
+import CustomModal from "../components/CustomModal";
 
 const AccountSettings = () => {
   const { user, setUser } = useContext(UserContext);
   const navigation = useNavigation();
   const [name, setName] = useState(user.displayName);
   const [email, setEmail] = useState(user.email);
+  const [password, setPassowrd] = useState("");
+  const [confirmPassword, setConfirmPassowrd] = useState("");
   const [verifiedEmail, setVerifiedEmail] = useState(user.emailVerified);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const profileUpdate = () => {
     if (name !== user.displayName) {
@@ -43,7 +47,7 @@ const AccountSettings = () => {
           // ...
         });
     }
-    if (email !== user.email) {
+    if (email !== user.email || (password && confirmPassword)) {
       if (user.emailVerified) {
         // aqui eu devo reauntenticar o usuario caso necessario
         // voltar aqui
@@ -59,12 +63,14 @@ const AccountSettings = () => {
         // voltar aqui
         // voltar aqui
         // voltar aqui
-        updateEmail(auth.currentUser, email)
-          .then(() => setUser(auth.currentUser))
-          .catch((error) => {
-            alert(error.message);
-            alert(error.code);
-          });
+        setModalVisible(true);
+        // updateEmail(auth.currentUser, email)
+        //   .then(() => setUser(auth.currentUser))
+        //   .catch((error) => {
+        //     // alert(error.message);
+        //     // alert(error.code);
+        //     setModalVisible(true);
+        //   });
       }
     }
   };
@@ -113,17 +119,16 @@ const AccountSettings = () => {
           </>
         )}
 
-        <Text>Name</Text>
-        <TextInputCustom text={name} setText={setName} />
+        <TextInputCustom text={name} setText={setName} label="Name" />
 
-        <Text>Email</Text>
-        <TextInputCustom text={email} setText={setEmail} />
-        <Text>email do userContext: {user.email}</Text>
+        <TextInputCustom text={email} setText={setEmail} label="Email" />
 
-        <Text>Senha</Text>
-        <TextInputCustom text={email} setText={setEmail} />
-        <Text>Confirmar Senha</Text>
-        <TextInputCustom text={email} setText={setEmail} />
+        <TextInputCustom text={password} setText={setPassowrd} label="Senha" />
+        <TextInputCustom
+          text={confirmPassword}
+          setText={setConfirmPassowrd}
+          label="Confirmar Senha"
+        />
 
         <Button title="confirm" onPress={profileUpdate} />
 
@@ -136,6 +141,15 @@ const AccountSettings = () => {
           enviar email para atualizar senha (isso posso colocar no login, em
           esqueceu a senha)
         </Text>
+
+        <CustomModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          source="AccountSettings"
+          newEmail={email}
+          newPassword={password}
+          newConfirmPassword={confirmPassword}
+        />
       </ScrollView>
     </>
   );

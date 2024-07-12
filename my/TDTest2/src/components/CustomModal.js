@@ -1,6 +1,6 @@
-import { Text, View, Modal, TouchableOpacity } from "react-native";
+import { Text, View, Modal, TouchableOpacity, Dimensions } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { db } from "../firebaseConnection";
+import { auth, db } from "../firebaseConnection";
 import {
   collection,
   deleteDoc,
@@ -15,6 +15,9 @@ import { useNavigation } from "@react-navigation/native";
 import { fontFamily, fontSize } from "../theme/font";
 import colors from "../theme/colors";
 import { configureNavigationBar } from "../scripts/NavigationBar";
+import TextInputCustom from "./TextInputCustom";
+
+const windowWidth = Dimensions.get("window").width;
 
 const CustomModal = ({
   modalVisible,
@@ -29,12 +32,15 @@ const CustomModal = ({
     tags,
     setTags,
     user,
+    setUser,
     selectedNotes,
     setSelectedNotes,
     statusBarColor,
     setStatusBarColor,
   } = useContext(UserContext);
   const [activeLoading, setActiveLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     if (modalVisible) {
@@ -127,6 +133,24 @@ const CustomModal = ({
     setActiveLoading(false);
   };
 
+  const handleLogin = () => {
+    // if (email && password) {
+    //   signInWithEmailAndPassword(auth, email, password)
+    //     .then((userCredential) => {
+    //       // const user = userCredential.user;
+    //       // console.log(userCredential.user);
+    //       setUser(userCredential.user);
+    //       // EnterUser(userCredential.user);
+    //       // navigation.navigate("Home");
+    //     })
+    //     .catch((error) => {
+    //       const errorCode = error.code;
+    //       const errorMessage = error.message;
+    //       alert(errorMessage);
+    //     });
+    // }
+  };
+
   return (
     <Modal
       animationType="fade"
@@ -154,21 +178,51 @@ const CustomModal = ({
             backgroundColor: colors.backgroundLight,
             padding: 20,
             borderRadius: 10,
-            width: 280,
             borderWidth: 1,
             borderColor: colors.borderColorLight,
+            // width: source === "AccountSettings" ? 01 : 100,
+            // source === ''
+            // backgroundColor: "red",
+            width: windowWidth > 400 ? 400 : "90%",
           }}
         >
-          <Text
-            style={{
-              fontSize: fontSize.regular,
-              fontFamily: fontFamily.PoppinsSemiBold600,
-            }}
-          >
-            {source === "Home" && "Deseja excluir as notas selecionadas?"}
-            {source === "EditNote" && "Deseja excluir esta nota?"}
-            {source === "SettingsTags" && "Deseja excluir esta tag?"}
-          </Text>
+          {source !== "AccountSettings" && (
+            <Text
+              style={{
+                fontSize: fontSize.regular,
+                fontFamily: fontFamily.PoppinsSemiBold600,
+              }}
+            >
+              {source === "Home" && "Deseja excluir as notas selecionadas?"}
+              {source === "EditNote" && "Deseja excluir esta nota?"}
+              {source === "SettingsTags" && "Deseja excluir esta tag?"}
+            </Text>
+          )}
+          {source === "AccountSettings" && (
+            <View>
+              <Text
+                style={{
+                  fontSize: fontSize.regular,
+                  fontFamily: fontFamily.PoppinsSemiBold600,
+                }}
+              >
+                Para confirmar o que foi alterado confirme seu usuario e senha
+                que estao sendo utilizados
+              </Text>
+              <TextInputCustom
+                label="Email"
+                text={email}
+                setText={setEmail}
+                placeholder="enter"
+              />
+              <TextInputCustom
+                label="Password"
+                text={password}
+                setText={setPassword}
+                placeholder="enter"
+              />
+            </View>
+          )}
           <View
             style={{
               flexDirection: "row",
@@ -202,6 +256,9 @@ const CustomModal = ({
                   }
                   if (source === "SettingsTags") {
                     delTag();
+                  }
+                  if (source === "AccountSettings") {
+                    handleLogin();
                   }
                   // idNote || selectedNotes.length !== 0 ? delNote : delTag
                 }}
