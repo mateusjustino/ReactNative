@@ -16,6 +16,7 @@ import { fontFamily, fontSize } from "../theme/font";
 import colors from "../theme/colors";
 import { configureNavigationBar } from "../scripts/NavigationBar";
 import TextInputCustom from "./TextInputCustom";
+import { signInWithEmailAndPassword, updateEmail } from "firebase/auth";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -26,6 +27,10 @@ const CustomModal = ({
   theTagIsEditing,
   setTheTagIsEditing,
   source,
+  newEmail,
+  newPassword,
+  newConfirmPassword,
+  checkVerifiedEmail,
 }) => {
   const navigation = useNavigation();
   const {
@@ -133,22 +138,34 @@ const CustomModal = ({
     setActiveLoading(false);
   };
 
+  ("mateus.justino.07@gmail.com");
+  ("mateus_justino_07@hotmail.com");
   const handleLogin = () => {
-    // if (email && password) {
-    //   signInWithEmailAndPassword(auth, email, password)
-    //     .then((userCredential) => {
-    //       // const user = userCredential.user;
-    //       // console.log(userCredential.user);
-    //       setUser(userCredential.user);
-    //       // EnterUser(userCredential.user);
-    //       // navigation.navigate("Home");
-    //     })
-    //     .catch((error) => {
-    //       const errorCode = error.code;
-    //       const errorMessage = error.message;
-    //       alert(errorMessage);
-    //     });
-    // }
+    if (email && password) {
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          updateEmail(auth.currentUser, newEmail)
+            .then(() => {
+              const userNow = auth.currentUser;
+              userNow.reload().then(() => {
+                setUser(userNow);
+              });
+              checkVerifiedEmail();
+              alert("email atualizado");
+              setModalVisible(false);
+            })
+            .catch((error) => {
+              if (error.code === "auth/requires-recent-login") {
+                setModalVisible(true);
+              } else {
+                alert(error.message);
+              }
+            });
+        })
+        .catch((error) => {});
+    }
+    // console.log("sdsd");
+    // setModalVisible(false);
   };
 
   return (
