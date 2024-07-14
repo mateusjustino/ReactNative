@@ -13,7 +13,7 @@ import TextInputCustom from "../components/TextInputCustom";
 import { UserContext } from "../context/userContext";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { iconSize } from "../theme/icon";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import {
   onAuthStateChanged,
   sendEmailVerification,
@@ -24,7 +24,7 @@ import { auth } from "../firebaseConnection";
 import CustomModal from "../components/CustomModal";
 
 const AccountSettings = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, setModalAction } = useContext(UserContext);
   const navigation = useNavigation();
   const [name, setName] = useState(user.displayName);
   const [email, setEmail] = useState(user.email);
@@ -32,10 +32,22 @@ const AccountSettings = () => {
   const [confirmPassword, setConfirmPassowrd] = useState("");
   const [verifiedEmail, setVerifiedEmail] = useState(user.emailVerified);
   const [modalVisible, setModalVisible] = useState(false);
+  const [source, setSource] = useState("");
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const unsubscribe = navigation.addListener("beforeRemove", () => {
+        setModalAction("");
+        return true;
+      });
+
+      return unsubscribe;
+    }, [])
+  );
 
   const profileUpdate = () => {
     if (name !== user.displayName) {
-      console.log("mudouuu");
+      // console.log("mudouuu");
       updateProfile(auth.currentUser, {
         displayName: name,
       })
@@ -49,29 +61,27 @@ const AccountSettings = () => {
     }
     if (email !== user.email) {
       if (user.emailVerified) {
-        // aqui eu devo reauntenticar o usuario caso necessario
-        // voltar aqui
-        // voltar aqui
         // ("mateus.justino.07@gmail.com");
         // ("mateus_justino_07@hotmail.com");
-        // voltar aqui
-        setModalVisible(true);
-        // updateEmail(auth.currentUser, email)
-        //   .then(() => {
-        //     const userNow = auth.currentUser;
-        //     userNow.reload().then(() => {
-        //       setUser(userNow);
-        //     });
-        //     checkVerifiedEmail();
-        //     alert("email atualizado");
-        //   })
-        //   .catch((error) => {
-        //     if (error.code === "auth/requires-recent-login") {
-        //       setModalVisible(true);
-        //     } else {
-        //       alert(error.message);
-        //     }
-        //   });
+        updateEmail(auth.currentUser, email)
+          .then(() => {
+            const userNow = auth.currentUser;
+            userNow.reload().then(() => {
+              setUser(userNow);
+            });
+            checkVerifiedEmail();
+            setModalAction("AccountSettingsConfirmMessageEmail");
+            // alert("email atualizado");
+            setModalVisible(true);
+          })
+          .catch((error) => {
+            if (error.code === "auth/requires-recent-login") {
+              setModalAction("AccountSettingsConfirmEmailPass");
+              setModalVisible(true);
+            } else {
+              alert(error.message);
+            }
+          });
       } else {
         alert("email nao verificado");
       }
@@ -79,10 +89,13 @@ const AccountSettings = () => {
   };
 
   const sendVerifiedEmail = () => {
-    // auth.useDeviceLanguage() // para utilizar o idioma do navegador
     sendEmailVerification(auth.currentUser)
       .then(() => {
-        alert("email enviado");
+        setModalAction("AccountSettingsSendEmail");
+        // console.log("enviado a verificação");
+        // console.log(source);
+        // alert("email enviado");
+        setModalVisible(true);
       })
       .catch((error) => {
         alert(error.message);
@@ -150,10 +163,15 @@ const AccountSettings = () => {
           esqueceu a senha)
         </Text>
 
+        <Button title="confirm" onPress={() => setModalVisible(true)} />
+
         <CustomModal
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
-          source="AccountSettings"
+          // source="AccountSettingsConfirmEmailPass"
+          // source={source}
+          // setSource={setSource}
+          // source={usar um objeto aqui dentro}
           newEmail={email}
           newPassword={password}
           newConfirmPassword={confirmPassword}

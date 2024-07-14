@@ -10,6 +10,7 @@ export default function UserContextProvider({ children }) {
   const [user, setUser] = useState({});
   const [tags, setTags] = useState([]);
   const [statusBarColor, setStatusBarColor] = useState(colors.backgroundLight);
+  const [modalAction, setModalAction] = useState("");
 
   const EnterUser = async (userInfo) => {
     setUser(userInfo);
@@ -38,6 +39,8 @@ export default function UserContextProvider({ children }) {
         setTags,
         statusBarColor,
         setStatusBarColor,
+        modalAction,
+        setModalAction,
       }}
     >
       {children}

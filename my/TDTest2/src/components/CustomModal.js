@@ -31,6 +31,7 @@ const CustomModal = ({
   newPassword,
   newConfirmPassword,
   checkVerifiedEmail,
+  setSource,
 }) => {
   const navigation = useNavigation();
   const {
@@ -42,10 +43,11 @@ const CustomModal = ({
     setSelectedNotes,
     statusBarColor,
     setStatusBarColor,
+    modalAction,
+    setModalAction,
   } = useContext(UserContext);
   const [activeLoading, setActiveLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("123123");
 
   useEffect(() => {
     if (modalVisible) {
@@ -141,8 +143,8 @@ const CustomModal = ({
   ("mateus.justino.07@gmail.com");
   ("mateus_justino_07@hotmail.com");
   const handleLogin = () => {
-    if (email && password) {
-      signInWithEmailAndPassword(auth, email, password)
+    if (password) {
+      signInWithEmailAndPassword(auth, user.email, password)
         .then(() => {
           updateEmail(auth.currentUser, newEmail)
             .then(() => {
@@ -151,21 +153,34 @@ const CustomModal = ({
                 setUser(userNow);
               });
               checkVerifiedEmail();
-              alert("email atualizado");
-              setModalVisible(false);
+              setModalAction("AccountSettingsConfirmMessageEmail");
+              // setModalVisible(true);
+              // alert("email atualizado");
             })
             .catch((error) => {
-              if (error.code === "auth/requires-recent-login") {
-                setModalVisible(true);
-              } else {
-                alert(error.message);
-              }
+              // if (error.code === "auth/requires-recent-login") {
+              //   // setModalVisible(true);
+              //   console.log("auth/requires-recent-login");
+              // } else {
+              //   alert(error.message);
+              // }
             });
         })
         .catch((error) => {});
     }
-    // console.log("sdsd");
-    // setModalVisible(false);
+  };
+
+  const TitleMsg = ({ message }) => {
+    return (
+      <Text
+        style={{
+          fontSize: fontSize.regular,
+          fontFamily: fontFamily.PoppinsSemiBold600,
+        }}
+      >
+        {message}
+      </Text>
+    );
   };
 
   return (
@@ -197,25 +212,51 @@ const CustomModal = ({
             borderRadius: 10,
             borderWidth: 1,
             borderColor: colors.borderColorLight,
-            // width: source === "AccountSettings" ? 01 : 100,
+            // width: source === "AccountSettingsConfirmEmailPass" ? 01 : 100,
             // source === ''
             // backgroundColor: "red",
             width: windowWidth > 400 ? 400 : "90%",
           }}
         >
-          {source !== "AccountSettings" && (
-            <Text
-              style={{
-                fontSize: fontSize.regular,
-                fontFamily: fontFamily.PoppinsSemiBold600,
-              }}
-            >
-              {source === "Home" && "Deseja excluir as notas selecionadas?"}
-              {source === "EditNote" && "Deseja excluir esta nota?"}
-              {source === "SettingsTags" && "Deseja excluir esta tag?"}
-            </Text>
+          {/* {source === "Home" ||
+            source === "EditNote" ||
+            source === "SettingsTags" ||
+            source === "AccountSettingsConfirmMessageEmail" ||
+            (source === "AccountSettingsSendEmail" && (
+              <Text
+                style={{
+                  fontSize: fontSize.regular,
+                  fontFamily: fontFamily.PoppinsSemiBold600,
+                }}
+              >
+                {source === "Home" && "Deseja excluir as notas selecionadas?"}
+                {source === "EditNote" && "Deseja excluir esta nota?"}
+                {source === "SettingsTags" && "Deseja excluir esta tag?"}
+                {source === "AccountSettingsConfirmMessageEmail" &&
+                  "Email alterado!"}
+                {source === "AccountSettingsSendEmail" &&
+                  "Email enviado, confirme ele!"}
+              </Text>
+            ))} */}
+          {source === "Home" && (
+            <TitleMsg message="Deseja excluir as notas selecionadas?" />
           )}
-          {source === "AccountSettings" && (
+          {source === "EditNote" && (
+            <TitleMsg message="Deseja excluir esta nota?" />
+          )}
+          {source === "SettingsTags" && (
+            <TitleMsg message="Deseja excluir esta tag?" />
+          )}
+          {modalAction === "AccountSettingsConfirmMessageEmail" && (
+            <TitleMsg message="Email alterado!" />
+          )}
+          {modalAction === "AccountSettingsSendEmail" && (
+            <TitleMsg message="Email enviado, confirme ele!" />
+          )}
+          {/* <Text>aquiiii{modalAction}</Text>
+          <TitleMsg message="teste" /> */}
+
+          {modalAction === "AccountSettingsConfirmEmailPass" && (
             <View>
               <Text
                 style={{
@@ -223,15 +264,9 @@ const CustomModal = ({
                   fontFamily: fontFamily.PoppinsSemiBold600,
                 }}
               >
-                Para confirmar o que foi alterado confirme seu usuario e senha
-                que estao sendo utilizados
+                Confirme sua senha antes das alterações
               </Text>
-              <TextInputCustom
-                label="Email"
-                text={email}
-                setText={setEmail}
-                placeholder="enter"
-              />
+
               <TextInputCustom
                 label="Password"
                 text={password}
@@ -248,21 +283,24 @@ const CustomModal = ({
               marginTop: 20,
             }}
           >
-            <TouchableOpacity
-              onPress={() => setModalVisible(false)}
-              style={{
-                padding: 5,
-              }}
-            >
-              <Text
+            {!modalAction && (
+              <TouchableOpacity
+                onPress={() => setModalVisible(false)}
                 style={{
-                  fontSize: fontSize.regular,
-                  fontFamily: fontFamily.PoppinsRegular400,
+                  padding: 5,
                 }}
               >
-                No
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    fontSize: fontSize.regular,
+                    fontFamily: fontFamily.PoppinsRegular400,
+                  }}
+                >
+                  No
+                </Text>
+              </TouchableOpacity>
+            )}
+
             {activeLoading ? (
               <Text>...</Text>
             ) : (
@@ -274,8 +312,14 @@ const CustomModal = ({
                   if (source === "SettingsTags") {
                     delTag();
                   }
-                  if (source === "AccountSettings") {
+                  if (modalAction === "AccountSettingsConfirmEmailPass") {
                     handleLogin();
+                  }
+                  if (modalAction === "AccountSettingsConfirmMessageEmail") {
+                    setModalVisible(false);
+                  }
+                  if (modalAction === "AccountSettingsSendEmail") {
+                    setModalVisible(false);
                   }
                   // idNote || selectedNotes.length !== 0 ? delNote : delTag
                 }}
