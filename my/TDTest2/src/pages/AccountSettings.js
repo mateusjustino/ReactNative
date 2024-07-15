@@ -59,8 +59,14 @@ const AccountSettings = () => {
           // ...
         });
     }
-    if (email !== user.email) {
-      if (user.emailVerified) {
+    if (user.emailVerified) {
+      if (
+        password !== "" &&
+        confirmPassword !== "" &&
+        password === confirmPassword
+      ) {
+        console.log("dsas");
+      } else if (email !== user.email) {
         // ("mateus.justino.07@gmail.com");
         // ("mateus_justino_07@hotmail.com");
         updateEmail(auth.currentUser, email)
@@ -71,7 +77,6 @@ const AccountSettings = () => {
             });
             checkVerifiedEmail();
             setModalAction("AccountSettingsConfirmMessageEmail");
-            // alert("email atualizado");
             setModalVisible(true);
           })
           .catch((error) => {
@@ -79,12 +84,13 @@ const AccountSettings = () => {
               setModalAction("AccountSettingsConfirmEmailPass");
               setModalVisible(true);
             } else {
-              alert(error.message);
+              alert(error.code);
             }
           });
-      } else {
-        alert("email nao verificado");
       }
+    } else {
+      setModalAction("AccountSettingsVerifyEmail");
+      setModalVisible(true);
     }
   };
 
@@ -122,6 +128,12 @@ const AccountSettings = () => {
         contentContainerStyle={{ alignItems: "center" }}
       >
         <Text>Account Settings</Text>
+        <Text>
+          estou com a ideia de ter salvo no banco "settings", um campo com a
+          data e hora da ultima vez que a pessoa tentou verificar seu email,
+          para que assim garanta que a pessoa nao fique tentando enviar email
+          toda hora
+        </Text>
 
         <TextInputCustom text={name} setText={setName} label="Name" />
 

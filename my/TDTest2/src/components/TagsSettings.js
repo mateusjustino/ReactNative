@@ -61,7 +61,9 @@ const TagsSettings = ({
 
       list.sort((a, b) => a.localeCompare(b));
       setTags(list);
-      await setDoc(doc(db, "settings", user.uid), {
+
+      const settingsRef = doc(db, "settings", user.uid);
+      await updateDoc(settingsRef, {
         tags: list,
       }).then(async () => {
         console.log("-".repeat("99"));
@@ -81,6 +83,27 @@ const TagsSettings = ({
           }
         });
       });
+
+      // await setDoc(doc(db, "settings", user.uid), {
+      //   tags: list,
+      // }).then(async () => {
+      //   console.log("-".repeat("99"));
+      //   const q = query(collection(db, "notes"), where("uid", "==", user.uid));
+      //   const querySnapshot = await getDocs(q);
+      //   querySnapshot.forEach(async (document) => {
+      //     let listOldTags = document.data().tags;
+      //     const indexItem = listOldTags.indexOf(oldTag);
+      //     if (indexItem !== -1) {
+      //       listOldTags[indexItem] = newTag;
+      //       listOldTags.sort((a, b) => a.localeCompare(b));
+
+      //       const noteRef = doc(db, "notes", document.id);
+      //       await updateDoc(noteRef, {
+      //         tags: listOldTags,
+      //       });
+      //     }
+      //   });
+      // });
       setActiveLoading(false);
     }
 

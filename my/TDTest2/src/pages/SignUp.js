@@ -38,7 +38,9 @@ const SignUp = () => {
           // EnterUser(userCredential.user); // era esse que eu estava utilizando
 
           // provavel que nao precise criar um doc vazio no banco aqui
-          // await setDoc(doc(db, "settings", userCredential.user.uid), {});
+          await setDoc(doc(db, "settings", userCredential.user.uid), {
+            tags: [],
+          });
 
           signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {

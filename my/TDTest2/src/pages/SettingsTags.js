@@ -17,7 +17,7 @@ import CustomModal from "../components/CustomModal";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { iconSize } from "../theme/icon";
 import Loading from "../components/Loading";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebaseConnection";
 
 const SettingsTags = () => {
@@ -35,9 +35,15 @@ const SettingsTags = () => {
     }
     let list = [...tags, tagName];
     list.sort((a, b) => a.localeCompare(b));
-    await setDoc(doc(db, "settings", user.uid), {
+
+    const settingsRef = doc(db, "settings", user.uid);
+    await updateDoc(settingsRef, {
       tags: list,
     });
+
+    // await setDoc(doc(db, "settings", user.uid), {
+    //   tags: list,
+    // });
     setTags(list);
     setTagName("");
     setActiveLoading(false);

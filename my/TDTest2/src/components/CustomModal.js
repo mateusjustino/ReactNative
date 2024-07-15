@@ -113,7 +113,9 @@ const CustomModal = ({
 
     list.sort((a, b) => a.localeCompare(b));
     setTags(list);
-    await setDoc(doc(db, "settings", user.uid), {
+
+    const settingsRef = doc(db, "settings", user.uid);
+    await updateDoc(settingsRef, {
       tags: list,
     }).then(async () => {
       const q = query(collection(db, "notes"));
@@ -134,6 +136,28 @@ const CustomModal = ({
         }
       });
     });
+
+    // await setDoc(doc(db, "settings", user.uid), {
+    //   tags: list,
+    // }).then(async () => {
+    //   const q = query(collection(db, "notes"));
+    //   const querySnapshot = await getDocs(q);
+    //   querySnapshot.forEach(async (document) => {
+    //     if (user.uid === document.data().uid) {
+    //       let listTags = document.data().tags;
+    //       const indexItem = listTags.indexOf(item);
+    //       if (indexItem !== -1) {
+    //         listTags.splice(indexItem, 1);
+    //         const ref = doc(db, "notes", document.id);
+    //         await updateDoc(ref, {
+    //           tags: listTags,
+    //         })
+    //           .then(() => console.log("tudo certo"))
+    //           .catch((error) => console.log(error.message));
+    //       }
+    //     }
+    //   });
+    // });
 
     setTheTagIsEditing(null);
     setModalVisible(false);
@@ -212,32 +236,9 @@ const CustomModal = ({
             borderRadius: 10,
             borderWidth: 1,
             borderColor: colors.borderColorLight,
-            // width: source === "AccountSettingsConfirmEmailPass" ? 01 : 100,
-            // source === ''
-            // backgroundColor: "red",
             width: windowWidth > 400 ? 400 : "90%",
           }}
         >
-          {/* {source === "Home" ||
-            source === "EditNote" ||
-            source === "SettingsTags" ||
-            source === "AccountSettingsConfirmMessageEmail" ||
-            (source === "AccountSettingsSendEmail" && (
-              <Text
-                style={{
-                  fontSize: fontSize.regular,
-                  fontFamily: fontFamily.PoppinsSemiBold600,
-                }}
-              >
-                {source === "Home" && "Deseja excluir as notas selecionadas?"}
-                {source === "EditNote" && "Deseja excluir esta nota?"}
-                {source === "SettingsTags" && "Deseja excluir esta tag?"}
-                {source === "AccountSettingsConfirmMessageEmail" &&
-                  "Email alterado!"}
-                {source === "AccountSettingsSendEmail" &&
-                  "Email enviado, confirme ele!"}
-              </Text>
-            ))} */}
           {source === "Home" && (
             <TitleMsg message="Deseja excluir as notas selecionadas?" />
           )}
@@ -253,8 +254,12 @@ const CustomModal = ({
           {modalAction === "AccountSettingsSendEmail" && (
             <TitleMsg message="Email enviado, confirme ele!" />
           )}
-          {/* <Text>aquiiii{modalAction}</Text>
-          <TitleMsg message="teste" /> */}
+          {modalAction === "AccountSettingsVerifyEmail" && (
+            <TitleMsg message="Antes de alterar é necessario verificar seu email" />
+          )}
+          {/* {modalAction === "AccountSettingsTooManyRequests" && (
+            <TitleMsg message="Email já enviado para o destinatario" />
+          )} */}
 
           {modalAction === "AccountSettingsConfirmEmailPass" && (
             <View>
@@ -308,35 +313,36 @@ const CustomModal = ({
                 onPress={() => {
                   if (source === "Home" || source === "EditNote") {
                     delNote();
-                  }
-                  if (source === "SettingsTags") {
+                  } else if (source === "SettingsTags") {
                     delTag();
-                  }
-                  if (modalAction === "AccountSettingsConfirmEmailPass") {
+                  } else if (
+                    modalAction === "AccountSettingsConfirmEmailPass"
+                  ) {
                     handleLogin();
-                  }
-                  if (modalAction === "AccountSettingsConfirmMessageEmail") {
+                  } else {
                     setModalVisible(false);
                   }
-                  if (modalAction === "AccountSettingsSendEmail") {
-                    setModalVisible(false);
-                  }
-                  // idNote || selectedNotes.length !== 0 ? delNote : delTag
+                  // if (modalAction === "AccountSettingsConfirmMessageEmail") {
+                  //   setModalVisible(false);
+                  // }
+                  // if (modalAction === "AccountSettingsSendEmail") {
+                  //   setModalVisible(false);
+                  // }
                 }}
                 style={{
                   padding: 5,
                   borderRadius: 10,
-                  backgroundColor: "#ff313b",
+                  backgroundColor: modalAction ? colors.primaryBlue : "#ff313b",
                 }}
               >
                 <Text
                   style={{
                     fontSize: fontSize.regular,
-                    color: "white",
+                    color: colors.backgroundLight,
                     fontFamily: fontFamily.PoppinsRegular400,
                   }}
                 >
-                  Yes
+                  {modalAction ? "Ok" : "Yes"}
                 </Text>
               </TouchableOpacity>
             )}
