@@ -40,6 +40,7 @@ const SignUp = () => {
           // provavel que nao precise criar um doc vazio no banco aqui
           await setDoc(doc(db, "settings", userCredential.user.uid), {
             tags: [],
+            LastTimeSendVerifiedEmail: null,
           });
 
           signInWithEmailAndPassword(auth, email, password)

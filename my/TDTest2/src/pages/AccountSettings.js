@@ -20,8 +20,10 @@ import {
   updateEmail,
   updateProfile,
 } from "firebase/auth";
-import { auth } from "../firebaseConnection";
+import { auth, db } from "../firebaseConnection";
 import CustomModal from "../components/CustomModal";
+import moment from "moment";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 const AccountSettings = () => {
   const { user, setUser, setModalAction } = useContext(UserContext);
@@ -32,7 +34,7 @@ const AccountSettings = () => {
   const [confirmPassword, setConfirmPassowrd] = useState("");
   const [verifiedEmail, setVerifiedEmail] = useState(user.emailVerified);
   const [modalVisible, setModalVisible] = useState(false);
-  const [source, setSource] = useState("");
+  // const [source, setSource] = useState("");
 
   useFocusEffect(
     React.useCallback(() => {
@@ -70,7 +72,7 @@ const AccountSettings = () => {
         // ("mateus.justino.07@gmail.com");
         // ("mateus_justino_07@hotmail.com");
         updateEmail(auth.currentUser, email)
-          .then(() => {
+          .then(async () => {
             const userNow = auth.currentUser;
             userNow.reload().then(() => {
               setUser(userNow);
@@ -78,6 +80,11 @@ const AccountSettings = () => {
             checkVerifiedEmail();
             setModalAction("AccountSettingsConfirmMessageEmail");
             setModalVisible(true);
+
+            const settingsRef = doc(db, "settings", user.uid);
+            await updateDoc(settingsRef, {
+              LastTimeSendVerifiedEmail: null,
+            });
           })
           .catch((error) => {
             if (error.code === "auth/requires-recent-login") {
@@ -94,18 +101,35 @@ const AccountSettings = () => {
     }
   };
 
-  const sendVerifiedEmail = () => {
-    sendEmailVerification(auth.currentUser)
-      .then(() => {
-        setModalAction("AccountSettingsSendEmail");
-        // console.log("enviado a verificação");
-        // console.log(source);
-        // alert("email enviado");
-        setModalVisible(true);
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
+  const sendVerifiedEmail = async () => {
+    ("mateus.justino.07@gmail.com");
+    ("mateus_justino_07@hotmail.com");
+    const docRef = doc(db, "settings", user.uid);
+    const docSnap = await getDoc(docRef);
+    const lastDate = docSnap.data().LastTimeSendVerifiedEmail;
+    const lastDateMoment = moment(lastDate, "YYYY-MM-DD HH:mm:ss");
+    // const now = moment().format("YYYY-MM-DD HH:mm:ss");
+    const now = moment();
+
+    const lastDatePlus = lastDateMoment.add(1, "minutes");
+
+    if (now.isAfter(lastDatePlus) || !lastDate) {
+      sendEmailVerification(auth.currentUser)
+        .then(async () => {
+          setModalAction("AccountSettingsSendEmail");
+          setModalVisible(true);
+          const nowDate = moment().format("YYYY-MM-DD HH:mm:ss");
+          const settingsRef = doc(db, "settings", user.uid);
+          await updateDoc(settingsRef, {
+            LastTimeSendVerifiedEmail: nowDate,
+          });
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    } else {
+      console.log("Ainda não passaram 1 minuto desde a data salva.");
+    }
   };
 
   const checkVerifiedEmail = () => {
@@ -128,12 +152,12 @@ const AccountSettings = () => {
         contentContainerStyle={{ alignItems: "center" }}
       >
         <Text>Account Settings</Text>
-        <Text>
+        {/* <Text>
           estou com a ideia de ter salvo no banco "settings", um campo com a
           data e hora da ultima vez que a pessoa tentou verificar seu email,
           para que assim garanta que a pessoa nao fique tentando enviar email
           toda hora
-        </Text>
+        </Text> */}
 
         <TextInputCustom text={name} setText={setName} label="Name" />
 

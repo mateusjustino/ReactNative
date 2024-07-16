@@ -18,13 +18,17 @@ export default function UserContextProvider({ children }) {
     const docRef = doc(db, "settings", userInfo.uid);
     const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      let list = docSnap.data().tags;
-      list.sort((a, b) => a.localeCompare(b));
-      setTags(list);
-    } else {
-      setTags([]);
-    }
+    const list = docSnap.data().tags;
+    list.sort((a, b) => a.localeCompare(b));
+    setTags(list);
+
+    // if (docSnap.exists()) {
+    //   let list = docSnap.data().tags;
+    //   list.sort((a, b) => a.localeCompare(b));
+    //   setTags(list);
+    // } else {
+    //   setTags([]);
+    // }
   };
 
   return (
