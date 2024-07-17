@@ -16,7 +16,11 @@ import { fontFamily, fontSize } from "../theme/font";
 import colors from "../theme/colors";
 import { configureNavigationBar } from "../scripts/NavigationBar";
 import TextInputCustom from "./TextInputCustom";
-import { signInWithEmailAndPassword, updateEmail } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  updateEmail,
+  updatePassword,
+} from "firebase/auth";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -29,7 +33,6 @@ const CustomModal = ({
   source,
   newEmail,
   newPassword,
-  newConfirmPassword,
   checkVerifiedEmail,
   setSource,
 }) => {
@@ -170,25 +173,33 @@ const CustomModal = ({
     if (password) {
       signInWithEmailAndPassword(auth, user.email, password)
         .then(() => {
-          updateEmail(auth.currentUser, newEmail)
-            .then(() => {
-              const userNow = auth.currentUser;
-              userNow.reload().then(() => {
-                setUser(userNow);
+          if (modalAction === "AccountSettingsConfirmPassForEmail") {
+            updateEmail(auth.currentUser, newEmail)
+              .then(async () => {
+                const userNow = auth.currentUser;
+                userNow.reload().then(() => {
+                  setUser(userNow);
+                });
+                checkVerifiedEmail();
+                setModalAction("AccountSettingsConfirmMessageEmail");
+                const settingsRef = doc(db, "settings", user.uid);
+                await updateDoc(settingsRef, {
+                  LastTimeSendVerifiedEmail: null,
+                });
+              })
+              .catch((error) => {
+                alert(error.message);
               });
-              checkVerifiedEmail();
-              setModalAction("AccountSettingsConfirmMessageEmail");
-              // setModalVisible(true);
-              // alert("email atualizado");
-            })
-            .catch((error) => {
-              // if (error.code === "auth/requires-recent-login") {
-              //   // setModalVisible(true);
-              //   console.log("auth/requires-recent-login");
-              // } else {
-              //   alert(error.message);
-              // }
-            });
+          } else if (modalAction === "AccountSettingsConfirmPassForPassword") {
+            updatePassword(user, newPassword)
+              .then(() => {
+                console.log("password atualizado");
+                setModalAction("AccountSettingsConfirmMessagePassword");
+              })
+              .catch((error) => {
+                alert(error.code);
+              });
+          }
         })
         .catch((error) => {});
     }
@@ -257,11 +268,33 @@ const CustomModal = ({
           {modalAction === "AccountSettingsVerifyEmail" && (
             <TitleMsg message="Antes de alterar é necessario verificar seu email" />
           )}
-          {/* {modalAction === "AccountSettingsTooManyRequests" && (
-            <TitleMsg message="Email já enviado para o destinatario" />
-          )} */}
+          {modalAction === "AccountSettingsTooManyRequests" && (
+            <TitleMsg message="Email já enviado para o destinatario, aguarde para solicitar outro" />
+          )}
+          {modalAction === "AccountSettingsConfirmMessagePassword" && (
+            <TitleMsg message="Password alterado!" />
+          )}
 
-          {modalAction === "AccountSettingsConfirmEmailPass" && (
+          {modalAction === "AccountSettingsConfirmPassForEmail" && (
+            <View>
+              <Text
+                style={{
+                  fontSize: fontSize.regular,
+                  fontFamily: fontFamily.PoppinsSemiBold600,
+                }}
+              >
+                Confirme sua senha antes das alterações
+              </Text>
+
+              <TextInputCustom
+                label="Password"
+                text={password}
+                setText={setPassword}
+                placeholder="enter"
+              />
+            </View>
+          )}
+          {modalAction === "AccountSettingsConfirmPassForPassword" && (
             <View>
               <Text
                 style={{
@@ -316,7 +349,8 @@ const CustomModal = ({
                   } else if (source === "SettingsTags") {
                     delTag();
                   } else if (
-                    modalAction === "AccountSettingsConfirmEmailPass"
+                    modalAction === "AccountSettingsConfirmPassForEmail" ||
+                    modalAction === "AccountSettingsConfirmPassForPassword"
                   ) {
                     handleLogin();
                   } else {

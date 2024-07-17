@@ -18,6 +18,7 @@ import {
   onAuthStateChanged,
   sendEmailVerification,
   updateEmail,
+  updatePassword,
   updateProfile,
 } from "firebase/auth";
 import { auth, db } from "../firebaseConnection";
@@ -48,6 +49,7 @@ const AccountSettings = () => {
   );
 
   const profileUpdate = () => {
+    // parte do nome
     if (name !== user.displayName) {
       // console.log("mudouuu");
       updateProfile(auth.currentUser, {
@@ -61,40 +63,66 @@ const AccountSettings = () => {
           // ...
         });
     }
-    if (user.emailVerified) {
-      if (
-        password !== "" &&
-        confirmPassword !== "" &&
-        password === confirmPassword
-      ) {
-        console.log("dsas");
-      } else if (email !== user.email) {
-        // ("mateus.justino.07@gmail.com");
-        // ("mateus_justino_07@hotmail.com");
-        updateEmail(auth.currentUser, email)
-          .then(async () => {
-            const userNow = auth.currentUser;
-            userNow.reload().then(() => {
-              setUser(userNow);
-            });
-            checkVerifiedEmail();
-            setModalAction("AccountSettingsConfirmMessageEmail");
-            setModalVisible(true);
 
-            const settingsRef = doc(db, "settings", user.uid);
-            await updateDoc(settingsRef, {
-              LastTimeSendVerifiedEmail: null,
-            });
-          })
-          .catch((error) => {
-            if (error.code === "auth/requires-recent-login") {
-              setModalAction("AccountSettingsConfirmEmailPass");
-              setModalVisible(true);
-            } else {
-              alert(error.code);
-            }
-          });
+    // parte do email e senha
+    if (user.emailVerified) {
+      // mateus.justino.07@gmail.com
+      // mateus_justino_07@hotmail.com
+      if (email !== user.email) {
+        setModalAction("AccountSettingsConfirmPassForEmail");
+        setModalVisible(true);
+      } else if (password === confirmPassword && password >= 6) {
+        setModalAction("AccountSettingsConfirmPassForPassword");
+        setModalVisible(true);
       }
+
+      // if (password.length < 6 && password !== "") {
+      //   console.log("passwrod curto");
+      // } else if (
+      //   password !== "" &&
+      //   confirmPassword !== "" &&
+      //   password === confirmPassword
+      // ) {
+      //   updatePassword(user, password)
+      //     .then(() => {
+      //       // console.log("password atualizado");
+      //       setModalAction("AccountSettingsConfirmMessagePassword");
+      //       setModalVisible(true);
+      //     })
+      //     .catch((error) => {
+      //       if (error.code === "auth/requires-recent-login") {
+      //         setModalAction("AccountSettingsConfirmPassForPassword");
+      //         setModalVisible(true);
+      //       } else {
+      //         alert(error.code);
+      //       }
+      //     });
+      // } else if (email !== user.email) {
+      //   // ("mateus.justino.07@gmail.com");
+      //   // ("mateus_justino_07@hotmail.com");
+      //   updateEmail(auth.currentUser, email)
+      //     .then(async () => {
+      //       const userNow = auth.currentUser;
+      //       userNow.reload().then(() => {
+      //         setUser(userNow);
+      //       });
+      //       checkVerifiedEmail();
+      //       setModalAction("AccountSettingsConfirmMessageEmail");
+      //       setModalVisible(true);
+      //       const settingsRef = doc(db, "settings", user.uid);
+      //       await updateDoc(settingsRef, {
+      //         LastTimeSendVerifiedEmail: null,
+      //       });
+      //     })
+      //     .catch((error) => {
+      //       if (error.code === "auth/requires-recent-login") {
+      //         setModalAction("AccountSettingsConfirmPassForEmail");
+      //         setModalVisible(true);
+      //       } else {
+      //         alert(error.code);
+      //       }
+      //     });
+      // }
     } else {
       setModalAction("AccountSettingsVerifyEmail");
       setModalVisible(true);
@@ -128,7 +156,8 @@ const AccountSettings = () => {
           alert(error.message);
         });
     } else {
-      console.log("Ainda não passaram 1 minuto desde a data salva.");
+      setModalAction("AccountSettingsTooManyRequests");
+      setModalVisible(true);
     }
   };
 
@@ -152,12 +181,6 @@ const AccountSettings = () => {
         contentContainerStyle={{ alignItems: "center" }}
       >
         <Text>Account Settings</Text>
-        {/* <Text>
-          estou com a ideia de ter salvo no banco "settings", um campo com a
-          data e hora da ultima vez que a pessoa tentou verificar seu email,
-          para que assim garanta que a pessoa nao fique tentando enviar email
-          toda hora
-        </Text> */}
 
         <TextInputCustom text={name} setText={setName} label="Name" />
 
@@ -204,13 +227,12 @@ const AccountSettings = () => {
         <CustomModal
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
-          // source="AccountSettingsConfirmEmailPass"
+          // source="AccountSettingsConfirmPassForEmail"
           // source={source}
           // setSource={setSource}
           // source={usar um objeto aqui dentro}
           newEmail={email}
           newPassword={password}
-          newConfirmPassword={confirmPassword}
           checkVerifiedEmail={checkVerifiedEmail}
         />
       </ScrollView>
