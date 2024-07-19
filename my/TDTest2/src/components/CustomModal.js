@@ -188,7 +188,10 @@ const CustomModal = ({
                 });
               })
               .catch((error) => {
-                alert(error.message);
+                // alert(error.description);
+                console.log(
+                  `Código do erro: ${error.code}, Descrição: ${error.message}`
+                );
               });
           } else if (modalAction === "AccountSettingsConfirmPassForPassword") {
             updatePassword(user, newPassword)
@@ -197,7 +200,7 @@ const CustomModal = ({
                 setModalAction("AccountSettingsConfirmMessagePassword");
               })
               .catch((error) => {
-                alert(error.code);
+                alert(error.message);
               });
           }
         })
@@ -273,6 +276,12 @@ const CustomModal = ({
           )}
           {modalAction === "AccountSettingsConfirmMessagePassword" && (
             <TitleMsg message="Password alterado!" />
+          )}
+          {modalAction === "AccountSettingsInvalidEmail" && (
+            <TitleMsg message="Email invalido" />
+          )}
+          {modalAction === "AccountSettingsInvalidPassword" && (
+            <TitleMsg message="Password invalido" />
           )}
 
           {modalAction === "AccountSettingsConfirmPassForEmail" && (

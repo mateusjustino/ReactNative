@@ -57,6 +57,7 @@ const AccountSettings = () => {
       })
         .then(() => {
           setUser(auth.currentUser);
+          alert("nome atualizado");
         })
         .catch((error) => {
           // An error occurred
@@ -68,61 +69,25 @@ const AccountSettings = () => {
     if (user.emailVerified) {
       // mateus.justino.07@gmail.com
       // mateus_justino_07@hotmail.com
-      if (email !== user.email) {
+
+      // email invalido
+      // invalid password
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const checkEmail = re.test(String(email).toLowerCase());
+
+      if (!checkEmail) {
+        setModalAction("AccountSettingsInvalidEmail");
+        setModalVisible(true);
+      } else if (password < 6) {
+        setModalAction("AccountSettingsInvalidPassword");
+        setModalVisible(true);
+      } else if (email !== user.email) {
         setModalAction("AccountSettingsConfirmPassForEmail");
         setModalVisible(true);
-      } else if (password === confirmPassword && password >= 6) {
+      } else if (password === confirmPassword) {
         setModalAction("AccountSettingsConfirmPassForPassword");
         setModalVisible(true);
       }
-
-      // if (password.length < 6 && password !== "") {
-      //   console.log("passwrod curto");
-      // } else if (
-      //   password !== "" &&
-      //   confirmPassword !== "" &&
-      //   password === confirmPassword
-      // ) {
-      //   updatePassword(user, password)
-      //     .then(() => {
-      //       // console.log("password atualizado");
-      //       setModalAction("AccountSettingsConfirmMessagePassword");
-      //       setModalVisible(true);
-      //     })
-      //     .catch((error) => {
-      //       if (error.code === "auth/requires-recent-login") {
-      //         setModalAction("AccountSettingsConfirmPassForPassword");
-      //         setModalVisible(true);
-      //       } else {
-      //         alert(error.code);
-      //       }
-      //     });
-      // } else if (email !== user.email) {
-      //   // ("mateus.justino.07@gmail.com");
-      //   // ("mateus_justino_07@hotmail.com");
-      //   updateEmail(auth.currentUser, email)
-      //     .then(async () => {
-      //       const userNow = auth.currentUser;
-      //       userNow.reload().then(() => {
-      //         setUser(userNow);
-      //       });
-      //       checkVerifiedEmail();
-      //       setModalAction("AccountSettingsConfirmMessageEmail");
-      //       setModalVisible(true);
-      //       const settingsRef = doc(db, "settings", user.uid);
-      //       await updateDoc(settingsRef, {
-      //         LastTimeSendVerifiedEmail: null,
-      //       });
-      //     })
-      //     .catch((error) => {
-      //       if (error.code === "auth/requires-recent-login") {
-      //         setModalAction("AccountSettingsConfirmPassForEmail");
-      //         setModalVisible(true);
-      //       } else {
-      //         alert(error.code);
-      //       }
-      //     });
-      // }
     } else {
       setModalAction("AccountSettingsVerifyEmail");
       setModalVisible(true);
