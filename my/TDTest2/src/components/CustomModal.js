@@ -17,6 +17,8 @@ import colors from "../theme/colors";
 import { configureNavigationBar } from "../scripts/NavigationBar";
 import TextInputCustom from "./TextInputCustom";
 import {
+  EmailAuthProvider,
+  reauthenticateWithCredential,
   signInWithEmailAndPassword,
   updateEmail,
   updatePassword,
@@ -171,6 +173,15 @@ const CustomModal = ({
   ("mateus_justino_07@hotmail.com");
   const handleLogin = () => {
     if (password) {
+      // Reautenticar o usuário antes de atualizar a senha
+      // const credential = EmailAuthProvider.credential(
+      //   auth.currentUser.email,
+      //   password
+      // );
+
+      // reauthenticateWithCredential(auth.currentUser, credential)
+      //   .then(() => {
+      // substituir o signin pelo reauthenticate??????????
       signInWithEmailAndPassword(auth, user.email, password)
         .then(() => {
           if (modalAction === "AccountSettingsConfirmPassForEmail") {
@@ -188,7 +199,6 @@ const CustomModal = ({
                 });
               })
               .catch((error) => {
-                // alert(error.description);
                 console.log(
                   `Código do erro: ${error.code}, Descrição: ${error.message}`
                 );
@@ -201,6 +211,56 @@ const CustomModal = ({
               })
               .catch((error) => {
                 alert(error.message);
+              });
+          } else if (
+            modalAction === "AccountSettingsConfirmPassForEmailAndPassword"
+          ) {
+            updateEmail(auth.currentUser, newEmail)
+              .then(async () => {
+                console.log("email atualizadooo");
+                const userNow = auth.currentUser;
+                userNow.reload().then(() => {
+                  setUser(userNow);
+                });
+                checkVerifiedEmail();
+                const settingsRef = doc(db, "settings", user.uid);
+                await updateDoc(settingsRef, {
+                  LastTimeSendVerifiedEmail: null,
+                })
+                  .then(() => console.log("updateDoc tudo certo"))
+                  .catch((error) => {
+                    console.log("updateDoc deu erro:");
+                    console.log(error.message);
+                  });
+              })
+              .catch((error) => {
+                console.log("updateEmail deu erro:");
+                console.log(error.message);
+              });
+
+            // Reautenticar o usuário antes de atualizar a senha
+            const credential = EmailAuthProvider.credential(
+              auth.currentUser.email,
+              password
+            );
+
+            reauthenticateWithCredential(auth.currentUser, credential)
+              .then(() => {
+                updatePassword(auth.currentUser, newPassword)
+                  .then(() => {
+                    console.log("passworddd atualizadooo");
+                    setModalAction(
+                      "AccountSettingsConfirmMessageEmailAndPassword"
+                    );
+                  })
+                  .catch((error) => {
+                    console.log("updatePassword deu erro:");
+                    console.log(error.message);
+                  });
+              })
+              .catch((error) => {
+                console.log("reauthenticateWithCredential deu erro:");
+                console.log(error.message);
               });
           }
         })
@@ -283,6 +343,9 @@ const CustomModal = ({
           {modalAction === "AccountSettingsInvalidPassword" && (
             <TitleMsg message="Password invalido" />
           )}
+          {modalAction === "AccountSettingsConfirmMessageEmailAndPassword" && (
+            <TitleMsg message="Email e Password alterado!" />
+          )}
 
           {modalAction === "AccountSettingsConfirmPassForEmail" && (
             <View>
@@ -304,6 +367,25 @@ const CustomModal = ({
             </View>
           )}
           {modalAction === "AccountSettingsConfirmPassForPassword" && (
+            <View>
+              <Text
+                style={{
+                  fontSize: fontSize.regular,
+                  fontFamily: fontFamily.PoppinsSemiBold600,
+                }}
+              >
+                Confirme sua senha antes das alterações
+              </Text>
+
+              <TextInputCustom
+                label="Password"
+                text={password}
+                setText={setPassword}
+                placeholder="enter"
+              />
+            </View>
+          )}
+          {modalAction === "AccountSettingsConfirmPassForEmailAndPassword" && (
             <View>
               <Text
                 style={{
@@ -359,7 +441,9 @@ const CustomModal = ({
                     delTag();
                   } else if (
                     modalAction === "AccountSettingsConfirmPassForEmail" ||
-                    modalAction === "AccountSettingsConfirmPassForPassword"
+                    modalAction === "AccountSettingsConfirmPassForPassword" ||
+                    modalAction ===
+                      "AccountSettingsConfirmPassForEmailAndPassword"
                   ) {
                     handleLogin();
                   } else {

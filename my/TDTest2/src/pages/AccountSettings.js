@@ -75,19 +75,29 @@ const AccountSettings = () => {
       const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const checkEmail = re.test(String(email).toLowerCase());
 
-      if (!checkEmail) {
-        setModalAction("AccountSettingsInvalidEmail");
-        setModalVisible(true);
-      } else if (password < 6) {
-        setModalAction("AccountSettingsInvalidPassword");
-        setModalVisible(true);
-      } else if (email !== user.email) {
-        setModalAction("AccountSettingsConfirmPassForEmail");
-        setModalVisible(true);
-      } else if (password === confirmPassword) {
-        setModalAction("AccountSettingsConfirmPassForPassword");
+      // primeiro email e password
+
+      // segundo apenas email
+
+      // terceiro apenas password
+
+      if (email !== user.email && password === confirmPassword) {
+        setModalAction("AccountSettingsConfirmPassForEmailAndPassword");
         setModalVisible(true);
       }
+      // if (!checkEmail) {
+      //   setModalAction("AccountSettingsInvalidEmail");
+      //   setModalVisible(true);
+      // } else if (password < 6) {
+      //   setModalAction("AccountSettingsInvalidPassword");
+      //   setModalVisible(true);
+      // } else if (email !== user.email) {
+      //   setModalAction("AccountSettingsConfirmPassForEmail");
+      //   setModalVisible(true);
+      // } else if (password === confirmPassword) {
+      //   setModalAction("AccountSettingsConfirmPassForPassword");
+      //   setModalVisible(true);
+      // }
     } else {
       setModalAction("AccountSettingsVerifyEmail");
       setModalVisible(true);
