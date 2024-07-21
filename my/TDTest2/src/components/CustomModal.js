@@ -238,30 +238,19 @@ const CustomModal = ({
                 console.log(error.message);
               });
 
-            // Reautenticar o usuário antes de atualizar a senha
-            const credential = EmailAuthProvider.credential(
-              auth.currentUser.email,
-              password
-            );
-
-            reauthenticateWithCredential(auth.currentUser, credential)
-              .then(() => {
-                updatePassword(auth.currentUser, newPassword)
-                  .then(() => {
-                    console.log("passworddd atualizadooo");
-                    setModalAction(
-                      "AccountSettingsConfirmMessageEmailAndPassword"
-                    );
-                  })
-                  .catch((error) => {
-                    console.log("updatePassword deu erro:");
-                    console.log(error.message);
-                  });
-              })
-              .catch((error) => {
-                console.log("reauthenticateWithCredential deu erro:");
-                console.log(error.message);
-              });
+            setTimeout(() => {
+              updatePassword(auth.currentUser, newPassword)
+                .then(() => {
+                  console.log("passworddd atualizadooo");
+                  setModalAction(
+                    "AccountSettingsConfirmMessageEmailAndPassword"
+                  );
+                })
+                .catch((error) => {
+                  console.log("updatePassword deu erro:");
+                  console.log(error.message);
+                });
+            }, 1000);
           }
         })
         .catch((error) => {});
@@ -278,6 +267,28 @@ const CustomModal = ({
       >
         {message}
       </Text>
+    );
+  };
+
+  const InputPassword = ({ message }) => {
+    return (
+      <View>
+        <Text
+          style={{
+            fontSize: fontSize.regular,
+            fontFamily: fontFamily.PoppinsSemiBold600,
+          }}
+        >
+          {message}
+        </Text>
+
+        <TextInputCustom
+          label="Password"
+          text={password}
+          setText={setPassword}
+          placeholder="enter"
+        />
+      </View>
     );
   };
 
@@ -340,70 +351,29 @@ const CustomModal = ({
           {modalAction === "AccountSettingsInvalidEmail" && (
             <TitleMsg message="Email invalido" />
           )}
-          {modalAction === "AccountSettingsInvalidPassword" && (
+          {/* {modalAction === "AccountSettingsInvalidPassword" && (
             <TitleMsg message="Password invalido" />
-          )}
+          )} */}
           {modalAction === "AccountSettingsConfirmMessageEmailAndPassword" && (
             <TitleMsg message="Email e Password alterado!" />
           )}
+          {modalAction === "AccountSettingsPasswordShort" && (
+            <TitleMsg message="Password muito curto" />
+          )}
+          {modalAction === "AccountSettingsPasswordConfirmDifferent" && (
+            <TitleMsg message="ConfirmPassword diferente" />
+          )}
 
           {modalAction === "AccountSettingsConfirmPassForEmail" && (
-            <View>
-              <Text
-                style={{
-                  fontSize: fontSize.regular,
-                  fontFamily: fontFamily.PoppinsSemiBold600,
-                }}
-              >
-                Confirme sua senha antes das alterações
-              </Text>
-
-              <TextInputCustom
-                label="Password"
-                text={password}
-                setText={setPassword}
-                placeholder="enter"
-              />
-            </View>
+            <InputPassword message="Confirme sua senha antes de alterar seu email" />
           )}
           {modalAction === "AccountSettingsConfirmPassForPassword" && (
-            <View>
-              <Text
-                style={{
-                  fontSize: fontSize.regular,
-                  fontFamily: fontFamily.PoppinsSemiBold600,
-                }}
-              >
-                Confirme sua senha antes das alterações
-              </Text>
-
-              <TextInputCustom
-                label="Password"
-                text={password}
-                setText={setPassword}
-                placeholder="enter"
-              />
-            </View>
+            <InputPassword message="Confirme sua senha antes de alterar seu password" />
           )}
           {modalAction === "AccountSettingsConfirmPassForEmailAndPassword" && (
-            <View>
-              <Text
-                style={{
-                  fontSize: fontSize.regular,
-                  fontFamily: fontFamily.PoppinsSemiBold600,
-                }}
-              >
-                Confirme sua senha antes das alterações
-              </Text>
-
-              <TextInputCustom
-                label="Password"
-                text={password}
-                setText={setPassword}
-                placeholder="enter"
-              />
-            </View>
+            <InputPassword message="Confirme sua senha antes de alterar seu email e password" />
           )}
+
           <View
             style={{
               flexDirection: "row",

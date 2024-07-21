@@ -76,15 +76,51 @@ const AccountSettings = () => {
       const checkEmail = re.test(String(email).toLowerCase());
 
       // primeiro email e password
-
-      // segundo apenas email
-
-      // terceiro apenas password
-
-      if (email !== user.email && password === confirmPassword) {
-        setModalAction("AccountSettingsConfirmPassForEmailAndPassword");
-        setModalVisible(true);
+      if (email !== user.email && password !== "") {
+        if (checkEmail) {
+          if (password.length > 5) {
+            if (password === confirmPassword) {
+              setModalAction("AccountSettingsConfirmPassForEmailAndPassword");
+              setModalVisible(true);
+            } else {
+              setModalAction("AccountSettingsPasswordConfirmDifferent");
+              setModalVisible(true);
+            }
+          } else {
+            setModalAction("AccountSettingsPasswordShort");
+            setModalVisible(true);
+          }
+        } else {
+          setModalAction("AccountSettingsInvalidEmail");
+          setModalVisible(true);
+        }
       }
+      // segundo apenas email
+      else if (email !== user.email) {
+        if (checkEmail) {
+          setModalAction("AccountSettingsConfirmPassForEmail");
+          setModalVisible(true);
+        } else {
+          setModalAction("AccountSettingsInvalidEmail");
+          setModalVisible(true);
+        }
+      }
+      // terceiro apenas password
+      else if (password !== "") {
+        if (password.length > 5) {
+          if (password === confirmPassword) {
+            setModalAction("AccountSettingsConfirmPassForPassword");
+            setModalVisible(true);
+          } else {
+            setModalAction("AccountSettingsPasswordConfirmDifferent");
+            setModalVisible(true);
+          }
+        } else {
+          setModalAction("AccountSettingsPasswordShort");
+          setModalVisible(true);
+        }
+      }
+
       // if (!checkEmail) {
       //   setModalAction("AccountSettingsInvalidEmail");
       //   setModalVisible(true);
