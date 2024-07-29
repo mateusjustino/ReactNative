@@ -49,6 +49,22 @@ const AccountSettings = () => {
   );
 
   const profileUpdate = () => {
+    // parte do nome
+    if (name !== user.displayName) {
+      // console.log("mudouuu");
+      updateProfile(auth.currentUser, {
+        displayName: name,
+      })
+        .then(() => {
+          setUser(auth.currentUser);
+          // setModalAction("AccountSettingsConfirmMessageName");
+          // setModalVisible(true);
+        })
+        .catch((error) => {
+          console.log("error updateProfile", error);
+        });
+    }
+
     // parte do email e senha
     if (user.emailVerified) {
       // mateus.justino.07@gmail.com
@@ -57,78 +73,8 @@ const AccountSettings = () => {
       const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const checkEmail = re.test(String(email).toLowerCase());
 
-      //  email e password e name
-      if (
-        name !== user.displayName &&
-        email !== user.email &&
-        password !== ""
-      ) {
-        if (name !== "") {
-          if (checkEmail) {
-            if (password.length > 5) {
-              if (password === confirmPassword) {
-                console.log("caiu aquiii");
-                setModalAction(
-                  "AccountSettingsConfirmPassForEmailPasswordAndName"
-                );
-                setModalVisible(true); // não preciso deixar um setModalVisible(true) em cada if ........
-              } else {
-                setModalAction("AccountSettingsPasswordConfirmDifferent");
-                setModalVisible(true);
-              }
-            } else {
-              setModalAction("AccountSettingsPasswordShort");
-              setModalVisible(true);
-            }
-          } else {
-            setModalAction("AccountSettingsInvalidEmail");
-            setModalVisible(true);
-          }
-        } else {
-          setModalAction("AccountSettingsEmptyName");
-          setModalVisible(true);
-        }
-      }
-      // name e email
-      else if (name !== user.displayName && email !== user.email) {
-        if (name !== "") {
-          if (checkEmail) {
-            setModalAction("AccountSettingsConfirmPassForEmailAndName");
-            setModalVisible(true);
-          } else {
-            setModalAction("AccountSettingsInvalidEmail");
-            setModalVisible(true);
-          }
-        } else {
-          setModalAction("AccountSettingsEmptyName");
-          setModalVisible(true);
-        }
-      }
-
-      // name e password
-      else if (name !== user.displayName && password !== "") {
-        if (name !== "") {
-          if (password.length > 5) {
-            if (password === confirmPassword) {
-              setModalAction("AccountSettingsConfirmPassForPasswordAndName");
-              setModalVisible(true);
-            } else {
-              setModalAction("AccountSettingsPasswordConfirmDifferent");
-              setModalVisible(true);
-            }
-          } else {
-            setModalAction("AccountSettingsPasswordShort");
-            setModalVisible(true);
-          }
-        } else {
-          setModalAction("AccountSettingsEmptyName");
-          setModalVisible(true);
-        }
-      }
-
-      // aqui para baixo ja testado
       // primeiro email e password
-      else if (email !== user.email && password !== "") {
+      if (email !== user.email && password !== "") {
         if (checkEmail) {
           if (password.length > 5) {
             if (password === confirmPassword) {
@@ -169,16 +115,6 @@ const AccountSettings = () => {
           }
         } else {
           setModalAction("AccountSettingsPasswordShort");
-          setModalVisible(true);
-        }
-      }
-      // quarto apenas name
-      else if (name !== user.displayName) {
-        if (name !== "") {
-          setModalAction("AccountSettingsConfirmPassForName");
-          setModalVisible(true);
-        } else {
-          setModalAction("AccountSettingsEmptyName");
           setModalVisible(true);
         }
       }
@@ -292,7 +228,6 @@ const AccountSettings = () => {
           // source={usar um objeto aqui dentro}
           newEmail={email}
           newPassword={password}
-          newName={name}
           checkVerifiedEmail={checkVerifiedEmail}
         />
       </ScrollView>

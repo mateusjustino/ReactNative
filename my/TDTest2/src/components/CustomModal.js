@@ -22,7 +22,9 @@ import {
   signInWithEmailAndPassword,
   updateEmail,
   updatePassword,
+  updateProfile,
 } from "firebase/auth";
+import Loading from "./Loading";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -33,10 +35,10 @@ const CustomModal = ({
   theTagIsEditing,
   setTheTagIsEditing,
   source,
+  newName,
   newEmail,
   newPassword,
   checkVerifiedEmail,
-  setSource,
 }) => {
   const navigation = useNavigation();
   const {
@@ -172,6 +174,7 @@ const CustomModal = ({
   ("mateus.justino.07@gmail.com");
   ("mateus_justino_07@hotmail.com");
   const handleLogin = () => {
+    console.log(modalAction);
     if (password) {
       // Reautenticar o usuário antes de atualizar a senha
       // const credential = EmailAuthProvider.credential(
@@ -181,9 +184,11 @@ const CustomModal = ({
 
       // reauthenticateWithCredential(auth.currentUser, credential)
       //   .then(() => {
-      // substituir o signin pelo reauthenticate??????????
+      setActiveLoading(true);
       signInWithEmailAndPassword(auth, user.email, password)
         .then(() => {
+          // substituir o signin pelo reauthenticate??????????
+          // para mudar email
           if (modalAction === "AccountSettingsConfirmPassForEmail") {
             updateEmail(auth.currentUser, newEmail)
               .then(async () => {
@@ -197,22 +202,42 @@ const CustomModal = ({
                 await updateDoc(settingsRef, {
                   LastTimeSendVerifiedEmail: null,
                 });
+                setActiveLoading(false);
               })
               .catch((error) => {
                 console.log(
                   `Código do erro: ${error.code}, Descrição: ${error.message}`
                 );
               });
-          } else if (modalAction === "AccountSettingsConfirmPassForPassword") {
+          }
+          // para mudar o password
+          else if (modalAction === "AccountSettingsConfirmPassForPassword") {
             updatePassword(user, newPassword)
               .then(() => {
                 console.log("password atualizado");
                 setModalAction("AccountSettingsConfirmMessagePassword");
+                setActiveLoading(false);
               })
               .catch((error) => {
                 alert(error.message);
               });
-          } else if (
+          }
+          // para mudar o name
+          else if (modalAction === "AccountSettingsConfirmPassForName") {
+            updateProfile(auth.currentUser, {
+              displayName: newName,
+            })
+              .then(() => {
+                setUser(auth.currentUser);
+                setModalAction("AccountSettingsConfirmMessageName");
+                setActiveLoading(false);
+              })
+              .catch((error) => {
+                console.log("error updateProfile", error);
+              });
+          }
+          // para mudar email e password
+          else if (
             modalAction === "AccountSettingsConfirmPassForEmailAndPassword"
           ) {
             updateEmail(auth.currentUser, newEmail)
@@ -245,6 +270,133 @@ const CustomModal = ({
                   setModalAction(
                     "AccountSettingsConfirmMessageEmailAndPassword"
                   );
+                  setActiveLoading(false);
+                })
+                .catch((error) => {
+                  console.log("updatePassword deu erro:");
+                  console.log(error.message);
+                });
+            }, 1000);
+          }
+          // para mudar email password e name
+          else if (
+            modalAction === "AccountSettingsConfirmPassForEmailPasswordAndName"
+          ) {
+            updateProfile(auth.currentUser, {
+              displayName: newName,
+            })
+              .then(() => {
+                setUser(auth.currentUser);
+              })
+              .catch((error) => {
+                console.log("error updateProfile", error);
+              });
+            setTimeout(() => {
+              updateEmail(auth.currentUser, newEmail)
+                .then(async () => {
+                  console.log("email atualizadooo");
+                  const userNow = auth.currentUser;
+                  userNow.reload().then(() => {
+                    setUser(userNow);
+                  });
+                  checkVerifiedEmail();
+                  const settingsRef = doc(db, "settings", user.uid);
+                  await updateDoc(settingsRef, {
+                    LastTimeSendVerifiedEmail: null,
+                  })
+                    .then(() => console.log("updateDoc tudo certo"))
+                    .catch((error) => {
+                      console.log("updateDoc deu erro:");
+                      console.log(error.message);
+                    });
+                })
+                .catch((error) => {
+                  console.log("updateEmail deu erro:");
+                  console.log(error.message);
+                });
+            }, 1000);
+
+            setTimeout(() => {
+              updatePassword(auth.currentUser, newPassword)
+                .then(() => {
+                  console.log("updatePassword deu certo");
+                  setModalAction(
+                    "AccountSettingsConfirmMessageEmailPasswordAndName"
+                  );
+                  setActiveLoading(false);
+                })
+                .catch((error) => {
+                  console.log("updatePassword deu erro:");
+                  console.log(error.message);
+                });
+            }, 2000);
+          }
+          // para mudar email e name
+          else if (
+            modalAction === "AccountSettingsConfirmPassForEmailAndName"
+          ) {
+            updateProfile(auth.currentUser, {
+              displayName: newName,
+            })
+              .then(() => {
+                setUser(auth.currentUser);
+              })
+              .catch((error) => {
+                console.log("error updateProfile", error);
+              });
+            setTimeout(() => {
+              updateEmail(auth.currentUser, newEmail)
+                .then(async () => {
+                  console.log("email atualizadooo");
+                  const userNow = auth.currentUser;
+                  userNow.reload().then(() => {
+                    setUser(userNow);
+                  });
+                  checkVerifiedEmail();
+                  const settingsRef = doc(db, "settings", user.uid);
+                  await updateDoc(settingsRef, {
+                    LastTimeSendVerifiedEmail: null,
+                  })
+                    .then(() => {
+                      setModalAction(
+                        "AccountSettingsConfirmMessageEmailAndName"
+                      );
+                      setActiveLoading(false);
+                      console.log("updateDoc tudo certo");
+                    })
+                    .catch((error) => {
+                      console.log("updateDoc deu erro:");
+                      console.log(error.message);
+                    });
+                })
+                .catch((error) => {
+                  console.log("updateEmail deu erro:");
+                  console.log(error.message);
+                });
+            }, 1000);
+          }
+          // para mudar  password e name
+          else if (
+            modalAction === "AccountSettingsConfirmPassForPasswordAndName"
+          ) {
+            updateProfile(auth.currentUser, {
+              displayName: newName,
+            })
+              .then(() => {
+                setUser(auth.currentUser);
+              })
+              .catch((error) => {
+                console.log("error updateProfile", error);
+              });
+
+            setTimeout(() => {
+              updatePassword(auth.currentUser, newPassword)
+                .then(() => {
+                  console.log("updatePassword deu certo");
+                  setModalAction(
+                    "AccountSettingsConfirmMessagePasswordAndName"
+                  );
+                  setActiveLoading(false);
                 })
                 .catch((error) => {
                   console.log("updatePassword deu erro:");
@@ -253,7 +405,9 @@ const CustomModal = ({
             }, 1000);
           }
         })
-        .catch((error) => {});
+        .catch((error) => {
+          console.log("signInWithEmailAndPassword erro:", error.message);
+        });
     }
   };
 
@@ -351,9 +505,6 @@ const CustomModal = ({
           {modalAction === "AccountSettingsInvalidEmail" && (
             <TitleMsg message="Email invalido" />
           )}
-          {/* {modalAction === "AccountSettingsInvalidPassword" && (
-            <TitleMsg message="Password invalido" />
-          )} */}
           {modalAction === "AccountSettingsConfirmMessageEmailAndPassword" && (
             <TitleMsg message="Email e Password alterado!" />
           )}
@@ -363,7 +514,27 @@ const CustomModal = ({
           {modalAction === "AccountSettingsPasswordConfirmDifferent" && (
             <TitleMsg message="ConfirmPassword diferente" />
           )}
+          {modalAction === "AccountSettingsConfirmMessageName" && (
+            <TitleMsg message="name alterado!" />
+          )}
+          {modalAction ===
+            "AccountSettingsConfirmMessageEmailPasswordAndName" && (
+            <TitleMsg message="name email e password alterado!" />
+          )}
+          {modalAction === "AccountSettingsEmptyName" && (
+            <TitleMsg message="name vazio!" />
+          )}
+          {modalAction === "AccountSettingsConfirmMessageEmailAndName" && (
+            <TitleMsg message="name e email alterado!" />
+          )}
+          {modalAction === "AccountSettingsConfirmMessagePasswordAndName" && (
+            <TitleMsg message="name e password alterado!" />
+          )}
 
+          {/* --------------parte dos input-------------  */}
+          {modalAction === "AccountSettingsConfirmPassForName" && (
+            <InputPassword message="Confirme sua senha antes de alterar seu name" />
+          )}
           {modalAction === "AccountSettingsConfirmPassForEmail" && (
             <InputPassword message="Confirme sua senha antes de alterar seu email" />
           )}
@@ -373,6 +544,18 @@ const CustomModal = ({
           {modalAction === "AccountSettingsConfirmPassForEmailAndPassword" && (
             <InputPassword message="Confirme sua senha antes de alterar seu email e password" />
           )}
+          {modalAction ===
+            "AccountSettingsConfirmPassForEmailPasswordAndName" && (
+            <InputPassword message="Confirme sua senha antes de alterar seu email e password e name" />
+          )}
+          {modalAction === "AccountSettingsConfirmPassForEmailAndName" && (
+            <InputPassword message="Confirme sua senha antes de alterar seu email e name" />
+          )}
+          {modalAction === "AccountSettingsConfirmPassForPasswordAndName" && (
+            <InputPassword message="Confirme sua senha antes de alterar seu password e name" />
+          )}
+
+          {/* <Text>modalAction: {modalAction}</Text> */}
 
           <View
             style={{
@@ -401,7 +584,16 @@ const CustomModal = ({
             )}
 
             {activeLoading ? (
-              <Text>...</Text>
+              <TouchableOpacity
+                onPress={() => {}}
+                style={{
+                  padding: 5,
+                  borderRadius: 10,
+                  backgroundColor: modalAction ? colors.primaryBlue : "#ff313b",
+                }}
+              >
+                <Loading />
+              </TouchableOpacity>
             ) : (
               <TouchableOpacity
                 onPress={() => {
@@ -413,18 +605,19 @@ const CustomModal = ({
                     modalAction === "AccountSettingsConfirmPassForEmail" ||
                     modalAction === "AccountSettingsConfirmPassForPassword" ||
                     modalAction ===
-                      "AccountSettingsConfirmPassForEmailAndPassword"
+                      "AccountSettingsConfirmPassForEmailAndPassword" ||
+                    modalAction ===
+                      "AccountSettingsConfirmPassForEmailPasswordAndName" ||
+                    modalAction ===
+                      "AccountSettingsConfirmPassForEmailAndName" ||
+                    modalAction ===
+                      "AccountSettingsConfirmPassForPasswordAndName" ||
+                    modalAction === "AccountSettingsConfirmPassForName"
                   ) {
                     handleLogin();
                   } else {
                     setModalVisible(false);
                   }
-                  // if (modalAction === "AccountSettingsConfirmMessageEmail") {
-                  //   setModalVisible(false);
-                  // }
-                  // if (modalAction === "AccountSettingsSendEmail") {
-                  //   setModalVisible(false);
-                  // }
                 }}
                 style={{
                   padding: 5,
