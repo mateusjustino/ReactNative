@@ -25,6 +25,7 @@ import { auth, db } from "../firebaseConnection";
 import CustomModal from "../components/CustomModal";
 import moment from "moment";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
+import ButtonCustom from "../components/ButtonCustom";
 
 const AccountSettings = () => {
   const { user, setUser, setModalAction } = useContext(UserContext);
@@ -269,7 +270,8 @@ const AccountSettings = () => {
           label="Confirmar Senha"
         />
 
-        <Button title="confirm" onPress={profileUpdate} />
+        {/* <Button title="confirm" onPress={profileUpdate} /> */}
+        <ButtonCustom title="Confirm" />
 
         <View></View>
         <Text>verificação de email</Text>

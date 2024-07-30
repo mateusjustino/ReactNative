@@ -20,13 +20,21 @@ const Settings = () => {
   const { setUser } = useContext(UserContext);
 
   const handleLogOut = () => {
+    // signOut(auth)
+    //   .then(() => {
+    //     setUser({});
+    //     navigation.navigate("SignIn");
+    //   })
+    //   .catch((error) => {
+    //     alert(error.message);
+    //   });
     signOut(auth)
       .then(() => {
+        console.log("deslogadoaaaa");
         navigation.navigate("SignIn");
-        setUser({});
       })
       .catch((error) => {
-        alert(error.message);
+        console.log(error.message);
       });
   };
 
@@ -35,37 +43,46 @@ const Settings = () => {
       <Header fromSettings />
       <ScrollView
         style={styles.container}
-        contentContainerStyle={{ alignItems: "center" }}
+        contentContainerStyle={{
+          alignItems: "center",
+          flex: 1,
+        }}
       >
-        <View style={{ height: 50 }} />
-        <TouchableOpacity onPress={() => navigation.navigate("SettingsTags")}>
-          <Text>tags</Text>
-        </TouchableOpacity>
-        <View style={{ height: 50 }} />
-
-        <Text>darkmode</Text>
-        <View style={{ height: 50 }} />
-
-        <TouchableOpacity
-          onPress={() => navigation.navigate("AccountSettings")}
+        <View
+          style={{
+            // height: "100%",
+            // backgroundColor: "red",
+            // alignItems: "center",
+            justifyContent: "space-between",
+            flex: 1,
+          }}
         >
-          <Text>Account Settings</Text>
-        </TouchableOpacity>
-        <View style={{ height: 50 }} />
+          <View>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("SettingsTags")}
+            >
+              <Text>tags</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleLogOut}>
-          <Text>logout</Text>
-        </TouchableOpacity>
-        <View style={{ height: 50 }} />
+            <TouchableOpacity
+              onPress={() => navigation.navigate("AccountSettings")}
+            >
+              <Text>Account Settings</Text>
+            </TouchableOpacity>
 
-        <Text>adicionar about</Text>
-        <View style={{ height: 50 }} />
-        <Text>send feedback?</Text>
-        <View style={{ height: 50 }} />
-        <Text>
-          colocar algo ou uma tela para quando o usuario esta sem internet?
-        </Text>
-        <View style={{ height: 50 }} />
+            <Text>adicionar about</Text>
+
+            <Text>send feedback?</Text>
+            <Text>
+              colocar algo ou uma tela para quando o usuario esta sem internet?
+            </Text>
+          </View>
+          <View>
+            <TouchableOpacity onPress={handleLogOut}>
+              <Text>logout</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </ScrollView>
     </>
   );
