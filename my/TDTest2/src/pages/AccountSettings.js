@@ -271,7 +271,11 @@ const AccountSettings = () => {
         />
 
         {/* <Button title="confirm" onPress={profileUpdate} /> */}
-        <ButtonCustom title="Confirm" />
+        <ButtonCustom
+          title="Confirm"
+          onPressFunc={profileUpdate}
+          background={colors.primaryBlue}
+        />
 
         <View></View>
         <Text>verificação de email</Text>

@@ -589,7 +589,9 @@ const CustomModal = ({
                 style={{
                   padding: 5,
                   borderRadius: 10,
-                  backgroundColor: modalAction ? colors.primaryBlue : "#ff313b",
+                  backgroundColor: modalAction
+                    ? colors.primaryBlue
+                    : colors.buttonRed,
                 }}
               >
                 <Loading />

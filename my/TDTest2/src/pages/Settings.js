@@ -14,28 +14,46 @@ import { signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import CustomModal from "../components/CustomModal";
 import colors from "../theme/colors";
+import {
+  Ionicons,
+  MaterialCommunityIcons,
+  Feather,
+  SimpleLineIcons,
+} from "@expo/vector-icons";
+import { iconSize } from "../theme/icon";
+import ButtonCustom from "../components/ButtonCustom";
 
 const Settings = () => {
   const navigation = useNavigation();
   const { setUser } = useContext(UserContext);
 
   const handleLogOut = () => {
-    // signOut(auth)
-    //   .then(() => {
-    //     setUser({});
-    //     navigation.navigate("SignIn");
-    //   })
-    //   .catch((error) => {
-    //     alert(error.message);
-    //   });
     signOut(auth)
       .then(() => {
-        console.log("deslogadoaaaa");
+        // console.log("deslogadoaaaa");
         navigation.navigate("SignIn");
       })
       .catch((error) => {
         console.log(error.message);
       });
+  };
+
+  const OptionSetting = ({ title, icon, navigate }) => {
+    return (
+      <TouchableOpacity onPress={() => navigation.navigate(navigate)}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginVertical: 10,
+            gap: 10,
+          }}
+        >
+          {icon}
+          <Text>{title}</Text>
+        </View>
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -50,37 +68,52 @@ const Settings = () => {
       >
         <View
           style={{
-            // height: "100%",
-            // backgroundColor: "red",
-            // alignItems: "center",
             justifyContent: "space-between",
             flex: 1,
           }}
         >
           <View>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("SettingsTags")}
-            >
-              <Text>tags</Text>
-            </TouchableOpacity>
+            <OptionSetting
+              title="Tags"
+              icon={
+                <Ionicons
+                  name="pricetags-outline"
+                  size={iconSize.regular}
+                  color="black"
+                />
+              }
+              navigate="SettingsTags"
+            />
+            <OptionSetting
+              title="Account Settings"
+              icon={
+                <Feather name="user" size={iconSize.regular} color="black" />
+              }
+              navigate="AccountSettings"
+            />
 
-            <TouchableOpacity
-              onPress={() => navigation.navigate("AccountSettings")}
-            >
-              <Text>Account Settings</Text>
-            </TouchableOpacity>
+            <Text>logo</Text>
 
-            <Text>adicionar about</Text>
+            <Text selectable>link do código</Text>
 
-            <Text>send feedback?</Text>
+            <Text>duvida, errro, sugestao pelo email</Text>
             <Text>
               colocar algo ou uma tela para quando o usuario esta sem internet?
             </Text>
           </View>
           <View>
-            <TouchableOpacity onPress={handleLogOut}>
-              <Text>logout</Text>
-            </TouchableOpacity>
+            <ButtonCustom
+              title="Logout"
+              onPressFunc={handleLogOut}
+              background={colors.buttonRed}
+              icon={
+                <SimpleLineIcons
+                  name="logout"
+                  size={iconSize.regular}
+                  color="white"
+                />
+              }
+            />
           </View>
         </View>
       </ScrollView>

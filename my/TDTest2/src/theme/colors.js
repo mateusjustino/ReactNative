@@ -16,6 +16,8 @@ const colors = {
   customStatusBarModalNoteGreen: "#647d64",
   customBackgroundNoteBlue: "rgb(200,200,250)",
   customStatusBarModalNoteBlue: "#64647d",
+
+  buttonRed: "#ff313b",
 };
 
 export default colors;
