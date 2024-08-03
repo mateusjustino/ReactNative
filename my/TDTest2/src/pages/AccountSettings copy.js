@@ -192,7 +192,7 @@ const AccountSettings = () => {
               <Ionicons
                 name="refresh"
                 size={iconSize.regular}
-                color={colors.primaryBlue}
+                color={colors.primaryPurple}
               />
             </TouchableOpacity>
           </View>

@@ -237,8 +237,8 @@ export default function AddEditNote() {
           placeholder="Title"
           value={title}
           onChangeText={(text) => setTitle(text)}
-          cursorColor={colors.primaryBlue}
-          selectionColor={colors.primaryBlue}
+          cursorColor={colors.primaryPurple}
+          selectionColor={colors.primaryPurple}
         />
         <TextInput
           style={[
@@ -254,8 +254,8 @@ export default function AddEditNote() {
           onChangeText={(text) => setContent(text)}
           textAlignVertical="top"
           multiline
-          cursorColor={colors.primaryBlue}
-          selectionColor={colors.primaryBlue}
+          cursorColor={colors.primaryPurple}
+          selectionColor={colors.primaryPurple}
         />
 
         <View
@@ -416,7 +416,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   button: {
-    backgroundColor: colors.primaryBlue,
+    backgroundColor: colors.primaryPurple,
     alignItems: "center",
     padding: 10,
     borderRadius: 10,

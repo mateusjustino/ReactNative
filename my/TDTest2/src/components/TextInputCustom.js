@@ -15,13 +15,13 @@ const TextInputCustom = ({ text, setText, placeholder, label }) => {
           styles.input,
           {
             borderColor: isFocused
-              ? colors.primaryBlue
+              ? colors.primaryPurple
               : colors.borderColorLight,
           },
         ]}
         placeholder={placeholder}
-        cursorColor={colors.primaryBlue}
-        selectionColor={colors.primaryBlue}
+        cursorColor={colors.primaryPurple}
+        selectionColor={colors.primaryPurple}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
       />

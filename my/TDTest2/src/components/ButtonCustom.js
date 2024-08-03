@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 5,
     paddingVertical: 4,
-    // backgroundColor: colors.primaryBlue,
+    // backgroundColor: colors.primaryPurple,
     borderRadius: 10,
     width: "100%",
     marginVertical: 10,

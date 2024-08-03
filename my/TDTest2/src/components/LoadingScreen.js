@@ -12,7 +12,7 @@ const LoadingScreen = () => {
         backgroundColor: colors.backgroundLight,
       }}
     >
-      <ActivityIndicator size="large" color={colors.primaryBlue} />
+      <ActivityIndicator size="large" color={colors.primaryPurple} />
     </View>
   );
 };

@@ -257,7 +257,7 @@ const AccountSettings = () => {
               <Ionicons
                 name="refresh"
                 size={iconSize.regular}
-                color={colors.primaryBlue}
+                color={colors.primaryPurple}
               />
             </TouchableOpacity>
           </View>
@@ -274,7 +274,7 @@ const AccountSettings = () => {
         <ButtonCustom
           title="Confirm"
           onPressFunc={profileUpdate}
-          background={colors.primaryBlue}
+          background={colors.primaryPurple}
         />
 
         <View></View>

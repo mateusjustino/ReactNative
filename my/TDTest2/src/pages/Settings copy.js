@@ -92,8 +92,8 @@ const Settings = () => {
             value={tagName}
             onChangeText={(text) => setTagName(text)}
             placeholder="Create a tag..."
-            cursorColor={colors.primaryBlue}
-            selectionColor={colors.primaryBlue}
+            cursorColor={colors.primaryPurple}
+            selectionColor={colors.primaryPurple}
           />
           {tagName ? (
             <>
@@ -110,7 +110,7 @@ const Settings = () => {
                   <FontAwesome6
                     name="plus"
                     size={iconSize.regular}
-                    color={colors.primaryBlue}
+                    color={colors.primaryPurple}
                   />
                 )}
               </TouchableOpacity>

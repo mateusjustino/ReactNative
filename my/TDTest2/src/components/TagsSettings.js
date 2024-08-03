@@ -157,8 +157,8 @@ const TagsSettings = ({
               fontSize: fontSize.regular,
               fontFamily: fontFamily.PoppinsRegular400,
             }}
-            cursorColor={colors.primaryBlue}
-            selectionColor={colors.primaryBlue}
+            cursorColor={colors.primaryPurple}
+            selectionColor={colors.primaryPurple}
           />
           <View style={{ flexDirection: "row", gap: 20 }}>
             <TouchableOpacity onPress={() => delTag(item)}>
@@ -181,7 +181,7 @@ const TagsSettings = ({
                 <Ionicons
                   name="checkmark"
                   size={iconSize.regular}
-                  color={colors.primaryBlue}
+                  color={colors.primaryPurple}
                 />
               )}
             </TouchableOpacity>
@@ -221,7 +221,7 @@ const TagsSettings = ({
             <Feather
               name="edit"
               size={iconSize.regular}
-              color={colors.primaryBlue}
+              color={colors.primaryPurple}
             />
           </TouchableOpacity>
         </TouchableOpacity>

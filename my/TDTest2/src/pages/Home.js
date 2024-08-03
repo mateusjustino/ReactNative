@@ -308,8 +308,8 @@ const Home = () => {
                 value={searchText}
                 onChangeText={(text) => searchNotes("input", text)}
                 placeholder="Search..."
-                cursorColor={colors.primaryBlue}
-                selectionColor={colors.primaryBlue}
+                cursorColor={colors.primaryPurple}
+                selectionColor={colors.primaryPurple}
               />
               {tags.length !== 0 && (
                 <View
