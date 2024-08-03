@@ -4,6 +4,8 @@ import {
   TouchableOpacity,
   ScrollView,
   View,
+  Image,
+  Linking,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import Header from "../components/Header";
@@ -19,9 +21,11 @@ import {
   MaterialCommunityIcons,
   Feather,
   SimpleLineIcons,
+  AntDesign,
 } from "@expo/vector-icons";
-import { iconSize } from "../theme/icon";
+import { iconSize, iconSource } from "../theme/icon";
 import ButtonCustom from "../components/ButtonCustom";
+import { fontFamily, fontSize } from "../theme/font";
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -40,19 +44,54 @@ const Settings = () => {
 
   const OptionSetting = ({ title, icon, navigate }) => {
     return (
-      <TouchableOpacity onPress={() => navigation.navigate(navigate)}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginVertical: 10,
-            gap: 10,
-          }}
+      <View
+        style={{
+          borderBottomWidth: 1,
+          borderColor: colors.borderColorLight,
+          // paddingBottom: 10,
+          marginVertical: 10,
+          paddingStart: 5,
+        }}
+      >
+        <TouchableOpacity
+          onPress={() =>
+            navigate === "logout"
+              ? handleLogOut()
+              : navigation.navigate(navigate)
+          }
         >
-          {icon}
-          <Text>{title}</Text>
-        </View>
-      </TouchableOpacity>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              // marginVertical: 10,
+              gap: 15,
+              // borderBottomWidth: 1,
+              // borderColor: colors.borderColorLight,
+              paddingBottom: 10,
+            }}
+          >
+            {icon}
+            <Text
+              style={{
+                fontFamily: fontFamily.PoppinsRegular400,
+                fontSize: fontSize.regular,
+                // backgroundColor: "red",
+                paddingTop: 4,
+              }}
+            >
+              {title}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const handlePress = () => {
+    const url = "https://github.com/justmatedev";
+    Linking.openURL(url).catch((err) =>
+      console.error("Erro ao tentar abrir o link:", err)
     );
   };
 
@@ -68,53 +107,72 @@ const Settings = () => {
       >
         <View
           style={{
-            justifyContent: "space-between",
+            // justifyContent: "space-between",
             flex: 1,
+            width: "100%",
           }}
         >
-          <View>
-            <OptionSetting
-              title="Tags"
-              icon={
-                <Ionicons
-                  name="pricetags-outline"
+          {/* about container */}
+          <View style={{ alignItems: "center", marginVertical: 40 }}>
+            <Image
+              style={{ height: 35 * 2.5, width: 64 * 2.5 }}
+              source={iconSource.logoRoxo}
+            />
+
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginVertical: 20,
+                gap: 15,
+              }}
+            >
+              <Text style={[styles.text, { paddingTop: 4 }]}>Source Code:</Text>
+              <TouchableOpacity onPress={handlePress}>
+                <AntDesign
+                  name="github"
                   size={iconSize.regular}
                   color="black"
                 />
-              }
-              navigate="SettingsTags"
-            />
-            <OptionSetting
-              title="Account Settings"
-              icon={
-                <Feather name="user" size={iconSize.regular} color="black" />
-              }
-              navigate="AccountSettings"
-            />
+              </TouchableOpacity>
+            </View>
 
-            <Text>logo</Text>
-
-            <Text selectable>link do código</Text>
-
-            <Text>duvida, errro, sugestao pelo email</Text>
-            <Text>
-              colocar algo ou uma tela para quando o usuario esta sem internet?
+            <Text style={styles.text}>duvida, errro, sugestao pelo email:</Text>
+            <Text style={styles.text} selectable>
+              justmatedev@gmail.com
             </Text>
           </View>
-          <View>
-            <ButtonCustom
-              title="Logout"
-              onPressFunc={handleLogOut}
-              background={colors.buttonRed}
-              icon={
-                <SimpleLineIcons
-                  name="logout"
-                  size={iconSize.regular}
-                  color="white"
-                />
-              }
-            />
-          </View>
+          <OptionSetting
+            title="Tags"
+            icon={
+              <Ionicons
+                name="pricetags-outline"
+                size={iconSize.regular}
+                color="black"
+              />
+            }
+            navigate="SettingsTags"
+          />
+          <OptionSetting
+            title="Account Settings"
+            icon={<Feather name="user" size={iconSize.regular} color="black" />}
+            navigate="AccountSettings"
+          />
+          <OptionSetting
+            title="Logout"
+            icon={
+              <SimpleLineIcons
+                name="logout"
+                size={iconSize.regular}
+                color="black"
+              />
+            }
+            navigate="logout"
+          />
+
+          {/* <Text>
+              colocar algo ou uma tela para quando o usuario esta sem internet?
+            </Text> */}
         </View>
       </ScrollView>
     </>
@@ -136,5 +194,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: colors.borderColorLight,
+  },
+  text: {
+    fontFamily: fontFamily.PoppinsRegular400,
+    fontSize: fontSize.regular,
   },
 });
