@@ -28,7 +28,7 @@ import CustomModal from "../components/CustomModal";
 import Tags from "../components/Tags";
 import colors from "../theme/colors";
 import { iconSize } from "../theme/icon";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { fontFamily, fontSize } from "../theme/font";
 import { configureNavigationBar } from "../scripts/NavigationBar";
 
@@ -235,8 +235,10 @@ const Home = () => {
             width: "100%",
             // height: 100,
             alignItems: "center",
-            marginVertical: 10,
+            marginTop: 10,
             gap: 10,
+            // backgroundColor: "red",
+            marginBottom: 20,
           }}
         >
           {selectedNotes.length !== 0 ? (
@@ -287,14 +289,14 @@ const Home = () => {
                       <Ionicons
                         name="close"
                         size={iconSize.regular}
-                        color="black"
+                        color={colors.buttonRed}
                       />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setModalVisible(true)}>
                       <Ionicons
                         name="trash-outline"
                         size={iconSize.regular}
-                        color="red"
+                        color={colors.buttonRed}
                       />
                     </TouchableOpacity>
                   </View>
@@ -337,7 +339,7 @@ const Home = () => {
                         onPress={() => navigation.navigate("SettingsTags")}
                         style={{
                           backgroundColor: colors.primaryGreenAlfa,
-                          padding: 5,
+                          padding: 3,
                           paddingHorizontal: 10,
                           marginRight: 10,
                           borderRadius: 10,
@@ -345,7 +347,16 @@ const Home = () => {
                           borderColor: colors.borderColorLight,
                         }}
                       >
-                        <Text>+</Text>
+                        <Text
+                          style={{
+                            fontSize: fontSize.small,
+                            fontFamily: fontFamily.PoppinsRegular400,
+                            paddingTop: 3,
+                            color: colors.primaryPurple,
+                          }}
+                        >
+                          +
+                        </Text>
                       </TouchableOpacity>
                     }
                   />

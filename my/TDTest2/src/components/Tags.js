@@ -9,9 +9,8 @@ const Tags = ({ item, activeTags, onPressFunc }) => {
       style={[
         styles.tag,
         Array.isArray(activeTags) && activeTags.includes(item)
-          ? // ? { borderColor: "rgba(0,0,0,0.3)" }
-            { borderColor: colors.primaryPurple }
-          : { borderColor: colors.borderColorLight },
+          ? { backgroundColor: colors.primaryGreen }
+          : { backgroundColor: colors.primaryGreenAlfa },
       ]}
       onPress={onPressFunc ? onPressFunc : null}
       activeOpacity={onPressFunc ? 0.5 : 1}
@@ -20,6 +19,7 @@ const Tags = ({ item, activeTags, onPressFunc }) => {
         style={{
           fontSize: fontSize.small,
           fontFamily: fontFamily.PoppinsRegular400,
+          paddingTop: 3,
         }}
       >
         #{item}
@@ -32,11 +32,12 @@ export default Tags;
 
 const styles = StyleSheet.create({
   tag: {
-    backgroundColor: colors.primaryGreenAlfa,
+    // backgroundColor: colors.primaryGreenAlfa,
     padding: 3,
     paddingHorizontal: 10,
     marginRight: 10,
     borderRadius: 10,
     borderWidth: 1,
+    borderColor: colors.borderColorLight,
   },
 });

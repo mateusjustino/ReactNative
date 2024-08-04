@@ -65,7 +65,8 @@ export default function Header({
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          paddingTop: 15,
+          paddingVertical: 15,
+          // backgroundColor: "red",
         }}
       >
         {fromHome && (
@@ -92,7 +93,7 @@ export default function Header({
               <Ionicons
                 name="menu-outline"
                 size={iconSize.regular}
-                color="black"
+                color={colors.primaryPurple}
               />
             </TouchableOpacity>
           </>
@@ -103,7 +104,7 @@ export default function Header({
               <Ionicons
                 name="chevron-back"
                 size={iconSize.regular}
-                color="black"
+                color={colors.primaryPurple}
               />
             </TouchableOpacity>
             {canDelete ? (
@@ -132,7 +133,7 @@ export default function Header({
               <Ionicons
                 name="chevron-back"
                 size={iconSize.regular}
-                color="black"
+                color={colors.primaryPurple}
               />
             </TouchableOpacity>
             <Text

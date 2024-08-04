@@ -91,7 +91,7 @@ const NoteList = ({ data, drag }) => {
             <View style={{ margin: 10 }}>
               <Text
                 style={{
-                  fontSize: fontSize.large,
+                  fontSize: fontSize.regular,
                   fontFamily: fontFamily.PoppinsSemiBold600,
                 }}
               >

@@ -1,10 +1,11 @@
 const iconSize = {
-  small: 18,
-  regular: 20,
-  large: 22,
+  small: 20,
+  regular: 22,
+  large: 24,
 };
 
 const iconSource = {
+  // logoRoxo: require("../images/testes alternativos (2).png"),
   logoRoxo: require("../images/logotipo principal_2.png"),
 };
 

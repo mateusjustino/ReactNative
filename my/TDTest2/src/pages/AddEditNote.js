@@ -230,7 +230,7 @@ export default function AddEditNote() {
           style={[
             styles.input,
             {
-              fontSize: fontSize.regular,
+              fontSize: fontSize.large,
               fontFamily: fontFamily.PoppinsSemiBold600,
             },
           ]}
@@ -264,7 +264,7 @@ export default function AddEditNote() {
             width: "100%",
             marginBottom: 10,
             justifyContent: "space-between",
-            height: 30,
+            // height: 30,
             alignItems: "center",
           }}
         >
@@ -274,14 +274,14 @@ export default function AddEditNote() {
                 <Ionicons
                   name="pricetags-outline"
                   size={iconSize.regular}
-                  color="black"
+                  color={colors.primaryPurple}
                 />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => setShowOptions("colors")}>
                 <Ionicons
                   name="color-palette-outline"
                   size={iconSize.regular}
-                  color="black"
+                  color={colors.primaryPurple}
                 />
               </TouchableOpacity>
             </>
@@ -298,7 +298,11 @@ export default function AddEditNote() {
               }}
             >
               <TouchableOpacity onPress={() => setShowOptions(null)}>
-                <Ionicons name="close" size={iconSize.regular} color="black" />
+                <Ionicons
+                  name="close"
+                  size={iconSize.regular}
+                  color={colors.buttonRed}
+                />
               </TouchableOpacity>
               <FlatList
                 data={tags}
@@ -328,7 +332,16 @@ export default function AddEditNote() {
                       borderColor: colors.borderColorLight,
                     }}
                   >
-                    <Text>+</Text>
+                    <Text
+                      style={{
+                        fontSize: fontSize.small,
+                        fontFamily: fontFamily.PoppinsRegular400,
+                        paddingTop: 3,
+                        color: colors.primaryPurple,
+                      }}
+                    >
+                      +
+                    </Text>
                   </TouchableOpacity>
                 }
               />
@@ -351,7 +364,11 @@ export default function AddEditNote() {
                 <ColorComponent colorValue={colors.customBackgroundNoteBlue} />
               </View>
               <TouchableOpacity onPress={() => setShowOptions(null)}>
-                <Ionicons name="close" size={iconSize.regular} color="black" />
+                <Ionicons
+                  name="close"
+                  size={iconSize.regular}
+                  color={colors.buttonRed}
+                />
               </TouchableOpacity>
             </View>
           )}

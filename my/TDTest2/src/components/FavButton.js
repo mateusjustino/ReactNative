@@ -15,7 +15,7 @@ const FavButton = () => {
       <MaterialCommunityIcons
         name="pencil-plus"
         size={iconSize.large}
-        color="black"
+        color={colors.primaryPurple}
       />
     </TouchableOpacity>
   );

@@ -132,7 +132,7 @@ const Settings = () => {
                 <AntDesign
                   name="github"
                   size={iconSize.regular}
-                  color="black"
+                  color={colors.primaryPurple}
                 />
               </TouchableOpacity>
             </View>
@@ -148,14 +148,20 @@ const Settings = () => {
               <Ionicons
                 name="pricetags-outline"
                 size={iconSize.regular}
-                color="black"
+                color={colors.primaryPurple}
               />
             }
             navigate="SettingsTags"
           />
           <OptionSetting
             title="Account Settings"
-            icon={<Feather name="user" size={iconSize.regular} color="black" />}
+            icon={
+              <Feather
+                name="user"
+                size={iconSize.regular}
+                color={colors.primaryPurple}
+              />
+            }
             navigate="AccountSettings"
           />
           <OptionSetting
@@ -164,7 +170,7 @@ const Settings = () => {
               <SimpleLineIcons
                 name="logout"
                 size={iconSize.regular}
-                color="black"
+                color={colors.buttonRed}
               />
             }
             navigate="logout"
