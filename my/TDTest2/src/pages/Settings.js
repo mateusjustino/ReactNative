@@ -96,52 +96,31 @@ const Settings = () => {
   };
 
   return (
+    // <Text>colocar algo ou uma tela para quando o usuario esta sem internet?</Text>
+
     <>
-      <Header fromSettings />
+      <Header fromSettings settingsTitle="Settings" />
       <ScrollView
         style={styles.container}
         contentContainerStyle={{
           alignItems: "center",
-          flex: 1,
+          // flex: 1,
         }}
       >
         <View
           style={{
             // justifyContent: "space-between",
-            flex: 1,
+            // flex: 1,
             width: "100%",
           }}
         >
-          {/* about container */}
           <View style={{ alignItems: "center", marginVertical: 40 }}>
             <Image
               style={{ height: 35 * 2.5, width: 64 * 2.5 }}
               source={iconSource.logoRoxo}
             />
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginVertical: 20,
-                gap: 15,
-              }}
-            >
-              <Text style={[styles.text, { paddingTop: 4 }]}>Source Code:</Text>
-              <TouchableOpacity onPress={handlePress}>
-                <AntDesign
-                  name="github"
-                  size={iconSize.regular}
-                  color={colors.primaryPurple}
-                />
-              </TouchableOpacity>
-            </View>
-
-            <Text style={styles.text}>duvida, errro, sugestao pelo email:</Text>
-            <Text style={styles.text} selectable>
-              justmatedev@gmail.com
-            </Text>
           </View>
+
           <OptionSetting
             title="Tags"
             icon={
@@ -176,9 +155,30 @@ const Settings = () => {
             navigate="logout"
           />
 
-          {/* <Text>
-              colocar algo ou uma tela para quando o usuario esta sem internet?
-            </Text> */}
+          <View style={{ alignItems: "center", marginTop: 40 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginVertical: 20,
+                gap: 15,
+              }}
+            >
+              <Text style={[styles.text, { paddingTop: 4 }]}>Source Code:</Text>
+              <TouchableOpacity onPress={handlePress}>
+                <AntDesign
+                  name="github"
+                  size={iconSize.regular}
+                  color={colors.primaryPurple}
+                />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.text}>duvida, errro, sugestao pelo email:</Text>
+            <Text style={styles.text} selectable>
+              justmatedev@gmail.com
+            </Text>
+          </View>
         </View>
       </ScrollView>
     </>

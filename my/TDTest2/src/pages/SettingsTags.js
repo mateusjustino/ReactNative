@@ -51,19 +51,11 @@ const SettingsTags = () => {
 
   return (
     <>
-      <Header fromSettings />
+      <Header fromSettings settingsTitle="Tags" />
       <ScrollView
         style={styles.container}
         contentContainerStyle={{ alignItems: "center" }}
       >
-        <Text
-          style={{
-            fontSize: fontSize.regular,
-            fontFamily: fontFamily.PoppinsRegular400,
-          }}
-        >
-          Tags:
-        </Text>
         <View
           style={[
             {

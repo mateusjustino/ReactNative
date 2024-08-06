@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: fontFamily.PoppinsRegular400,
-    fontSize: fontSize.small,
+    fontSize: fontSize.regular,
     paddingStart: 5,
   },
 });

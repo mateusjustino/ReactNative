@@ -235,13 +235,11 @@ const AccountSettings = () => {
 
   return (
     <>
-      <Header fromSettings />
+      <Header fromSettings settingsTitle="Account" />
       <ScrollView
         style={styles.container}
         contentContainerStyle={{ alignItems: "center" }}
       >
-        <Text>Account Settings</Text>
-
         <TextInputCustom text={name} setText={setName} label="Name" />
 
         <TextInputCustom text={email} setText={setEmail} label="Email" />
@@ -278,14 +276,14 @@ const AccountSettings = () => {
         />
 
         <View></View>
-        <Text>verificação de email</Text>
+        {/* <Text>verificação de email</Text>
         <Text>atualizar o nome</Text>
         <Text>atualizar o email</Text>
         <Text>atualizar a senha</Text>
         <Text>
           enviar email para atualizar senha (isso posso colocar no login, em
           esqueceu a senha)
-        </Text>
+        </Text> */}
 
         {/* <Button title="confirm" onPress={() => setModalVisible(true)} /> */}
 

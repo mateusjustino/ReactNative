@@ -23,6 +23,7 @@ export default function Header({
   fromSettings,
   setModalVisible,
   canDelete,
+  settingsTitle,
 }) {
   const navigation = useNavigation();
   const { user, statusBarColor } = useContext(UserContext);
@@ -142,7 +143,7 @@ export default function Header({
                 fontFamily: fontFamily.PoppinsRegular400,
               }}
             >
-              Settings
+              {settingsTitle}
             </Text>
           </>
         )}

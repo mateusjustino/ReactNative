@@ -1,17 +1,26 @@
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { fontFamily, fontSize } from "../theme/font";
 import colors from "../theme/colors";
+import Loading from "./Loading";
 
-const ButtonCustom = ({ title, background, onPressFunc, icon }) => {
+const ButtonCustom = ({ title, background, onPressFunc, icon, active }) => {
   return (
     <TouchableOpacity
       style={[styles.container, { backgroundColor: background }]}
       activeOpacity={0.8}
       onPress={onPressFunc}
     >
-      {icon && icon}
-      <Text style={styles.txt}>{title}</Text>
+      {active ? (
+        <View style={{ justifyContent: "center" }}>
+          <Loading />
+        </View>
+      ) : (
+        <>
+          {icon && icon}
+          <Text style={styles.txt}>{title}</Text>
+        </>
+      )}
     </TouchableOpacity>
   );
 };
@@ -30,6 +39,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
+    height: 40,
   },
   txt: {
     textAlign: "center",

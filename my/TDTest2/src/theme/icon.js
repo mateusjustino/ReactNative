@@ -1,7 +1,7 @@
 const iconSize = {
-  small: 20,
-  regular: 22,
-  large: 24,
+  small: 22,
+  regular: 24,
+  large: 26,
 };
 
 const iconSource = {

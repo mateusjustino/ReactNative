@@ -34,6 +34,7 @@ import { fontFamily, fontSize } from "../theme/font";
 import { iconSize } from "../theme/icon";
 import Loading from "../components/Loading";
 import { configureNavigationBar } from "../scripts/NavigationBar";
+import ButtonCustom from "../components/ButtonCustom";
 
 export default function AddEditNote() {
   const navigation = useNavigation();
@@ -264,8 +265,9 @@ export default function AddEditNote() {
             width: "100%",
             marginBottom: 10,
             justifyContent: "space-between",
-            // height: 30,
+            height: 40,
             alignItems: "center",
+            // backgroundColor: "red",
           }}
         >
           {!showOptions && (
@@ -374,7 +376,7 @@ export default function AddEditNote() {
           )}
         </View>
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => {
             if (!activeLoading) {
               if (data) {
@@ -398,7 +400,21 @@ export default function AddEditNote() {
               {data ? "Update" : "Add"}
             </Text>
           )}
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <ButtonCustom
+          title={data ? "Update" : "Add"}
+          background={colors.primaryPurple}
+          onPressFunc={() => {
+            if (!activeLoading) {
+              if (data) {
+                handleUpdate();
+              } else {
+                handleAdd();
+              }
+            }
+          }}
+          active={activeLoading}
+        />
 
         <CustomModal
           modalVisible={modalVisible}
@@ -415,6 +431,7 @@ const styles = StyleSheet.create({
   fullScreen: {
     flex: 1,
     padding: 10,
+    // paddingBottom: 0,
   },
   input: {
     marginVertical: 5,
