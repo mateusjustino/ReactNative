@@ -301,7 +301,7 @@ export default function AddEditNote() {
             >
               <TouchableOpacity onPress={() => setShowOptions(null)}>
                 <Ionicons
-                  name="close"
+                  name="close-outline"
                   size={iconSize.regular}
                   color={colors.buttonRed}
                 />
@@ -334,16 +334,12 @@ export default function AddEditNote() {
                       borderColor: colors.borderColorLight,
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: fontSize.small,
-                        fontFamily: fontFamily.PoppinsRegular400,
-                        paddingTop: 3,
-                        color: colors.primaryPurple,
-                      }}
-                    >
-                      +
-                    </Text>
+                    <Ionicons
+                      // name="menu-outline"
+                      name="add-outline"
+                      size={iconSize.small}
+                      color={colors.primaryPurple}
+                    />
                   </TouchableOpacity>
                 }
               />
@@ -367,7 +363,7 @@ export default function AddEditNote() {
               </View>
               <TouchableOpacity onPress={() => setShowOptions(null)}>
                 <Ionicons
-                  name="close"
+                  name="close-outline"
                   size={iconSize.regular}
                   color={colors.buttonRed}
                 />
@@ -431,7 +427,7 @@ const styles = StyleSheet.create({
   fullScreen: {
     flex: 1,
     padding: 10,
-    // paddingBottom: 0,
+    paddingBottom: 0,
   },
   input: {
     marginVertical: 5,

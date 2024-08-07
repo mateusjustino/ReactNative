@@ -28,9 +28,10 @@ import CustomModal from "../components/CustomModal";
 import Tags from "../components/Tags";
 import colors from "../theme/colors";
 import { iconSize } from "../theme/icon";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { fontFamily, fontSize } from "../theme/font";
 import { configureNavigationBar } from "../scripts/NavigationBar";
+import ButtonCustom from "../components/ButtonCustom";
 
 const Home = () => {
   const navigation = useNavigation();
@@ -347,16 +348,12 @@ const Home = () => {
                           borderColor: colors.borderColorLight,
                         }}
                       >
-                        <Text
-                          style={{
-                            fontSize: fontSize.small,
-                            fontFamily: fontFamily.PoppinsRegular400,
-                            paddingTop: 3,
-                            color: colors.primaryPurple,
-                          }}
-                        >
-                          +
-                        </Text>
+                        <Ionicons
+                          // name="menu-outline"
+                          name="add-outline"
+                          size={iconSize.small}
+                          color={colors.primaryPurple}
+                        />
                       </TouchableOpacity>
                     }
                   />
@@ -388,7 +385,19 @@ const Home = () => {
         />
 
         <View style={styles.favContainer}>
-          <FavButton style={styles.favButton} />
+          {/* <FavButton style={styles.favButton} /> */}
+          <ButtonCustom
+            icon={
+              <Ionicons
+                name="pencil-outline"
+                size={iconSize.regular}
+                color={colors.backgroundLight}
+              />
+            }
+            background={colors.primaryPurple}
+            heightBtn={50}
+            onPressFunc={() => navigation.navigate("AddEditNote")}
+          />
         </View>
 
         <CustomModal
@@ -405,7 +414,8 @@ const Home = () => {
 const styles = StyleSheet.create({
   favContainer: {
     position: "absolute",
-    bottom: 30,
+    bottom: 20,
+    width: 60,
   },
   favButton: {},
   input: {

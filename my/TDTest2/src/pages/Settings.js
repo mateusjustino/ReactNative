@@ -51,6 +51,7 @@ const Settings = () => {
           // paddingBottom: 10,
           marginVertical: 10,
           paddingStart: 5,
+          // borderLeftWidth: 1,
         }}
       >
         <TouchableOpacity
@@ -135,8 +136,8 @@ const Settings = () => {
           <OptionSetting
             title="Account Settings"
             icon={
-              <Feather
-                name="user"
+              <Ionicons
+                name="person-outline"
                 size={iconSize.regular}
                 color={colors.primaryPurple}
               />
@@ -146,8 +147,8 @@ const Settings = () => {
           <OptionSetting
             title="Logout"
             icon={
-              <SimpleLineIcons
-                name="logout"
+              <Ionicons
+                name="log-out-outline"
                 size={iconSize.regular}
                 color={colors.buttonRed}
               />
@@ -166,8 +167,8 @@ const Settings = () => {
             >
               <Text style={[styles.text, { paddingTop: 4 }]}>Source Code:</Text>
               <TouchableOpacity onPress={handlePress}>
-                <AntDesign
-                  name="github"
+                <Ionicons
+                  name="logo-github"
                   size={iconSize.regular}
                   color={colors.primaryPurple}
                 />

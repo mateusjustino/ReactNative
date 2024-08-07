@@ -92,7 +92,8 @@ export default function Header({
             </View>
             <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
               <Ionicons
-                name="menu-outline"
+                // name="menu-outline"
+                name="settings-outline"
                 size={iconSize.regular}
                 color={colors.primaryPurple}
               />
@@ -103,7 +104,7 @@ export default function Header({
           <>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Ionicons
-                name="chevron-back"
+                name="chevron-back-outline"
                 size={iconSize.regular}
                 color={colors.primaryPurple}
               />

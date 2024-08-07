@@ -4,10 +4,20 @@ import { fontFamily, fontSize } from "../theme/font";
 import colors from "../theme/colors";
 import Loading from "./Loading";
 
-const ButtonCustom = ({ title, background, onPressFunc, icon, active }) => {
+const ButtonCustom = ({
+  title,
+  background,
+  onPressFunc,
+  icon,
+  active,
+  heightBtn,
+}) => {
   return (
     <TouchableOpacity
-      style={[styles.container, { backgroundColor: background }]}
+      style={[
+        styles.container,
+        { backgroundColor: background, height: heightBtn ? heightBtn : 40 },
+      ]}
       activeOpacity={0.8}
       onPress={onPressFunc}
     >
@@ -18,7 +28,7 @@ const ButtonCustom = ({ title, background, onPressFunc, icon, active }) => {
       ) : (
         <>
           {icon && icon}
-          <Text style={styles.txt}>{title}</Text>
+          {title && <Text style={styles.txt}>{title}</Text>}
         </>
       )}
     </TouchableOpacity>
@@ -39,7 +49,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
-    height: 40,
+    // height: 40,
   },
   txt: {
     textAlign: "center",

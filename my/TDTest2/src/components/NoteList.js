@@ -14,7 +14,7 @@ import {
   OpacityDecorator,
 } from "react-native-draggable-flatlist";
 import { UserContext } from "../context/userContext";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import Tags from "./Tags";
 import { fontFamily, fontSize } from "../theme/font";
 import { iconSize } from "../theme/icon";
@@ -135,8 +135,8 @@ const NoteList = ({ data, drag }) => {
                       alignItems: "center",
                     }}
                   >
-                    <MaterialCommunityIcons
-                      name="clock-edit-outline"
+                    <Ionicons
+                      name="time-outline"
                       size={iconSize.small}
                       color="black"
                     />
@@ -153,8 +153,8 @@ const NoteList = ({ data, drag }) => {
                   </View>
                 ) : (
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <MaterialCommunityIcons
-                      name="clock-edit-outline"
+                    <Ionicons
+                      name="time-outline"
                       size={iconSize.small}
                       color="black"
                     />
