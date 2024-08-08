@@ -14,7 +14,7 @@ import colors from "../theme/colors";
 import { UserContext } from "../context/userContext";
 import TagsSettings from "../components/TagsSettings";
 import CustomModal from "../components/CustomModal";
-import { FontAwesome6 } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { iconSize } from "../theme/icon";
 import Loading from "../components/Loading";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
@@ -22,7 +22,7 @@ import { db } from "../firebaseConnection";
 
 const SettingsTags = () => {
   const { tags, user, setTags } = useContext(UserContext);
-  const [tagName, setTagName] = useState("");
+  const [tagName, setTagName] = useState("a");
   const [theTagIsEditing, setTheTagIsEditing] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [activeLoading, setActiveLoading] = useState(false);
@@ -71,6 +71,9 @@ const SettingsTags = () => {
               flex: 1,
               fontSize: fontSize.regular,
               fontFamily: fontFamily.PoppinsRegular400,
+              // backgroundColor: "red",
+              height: 35,
+              paddingStart: 5,
             }}
             value={tagName}
             onChangeText={(text) => setTagName(text)}
@@ -88,12 +91,15 @@ const SettingsTags = () => {
                 }}
               >
                 {activeLoading ? (
-                  <Loading />
+                  <View style={{ padding: 5 }}>
+                    <Loading color={colors.primaryPurple} />
+                  </View>
                 ) : (
-                  <FontAwesome6
-                    name="plus"
+                  <Ionicons
+                    name="add-outline"
                     size={iconSize.regular}
                     color={colors.primaryPurple}
+                    style={{ padding: 5 }}
                   />
                 )}
               </TouchableOpacity>

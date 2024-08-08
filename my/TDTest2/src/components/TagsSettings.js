@@ -121,11 +121,11 @@ const TagsSettings = ({
         justifyContent: "space-between",
         alignItems: "center",
         paddingVertical: 5,
-        height: 60,
+        height: 70,
         borderBottomWidth: theTagIsEditing ? 0 : 1,
         borderRadius: 10,
         borderColor: colors.borderColorLight,
-        marginVertical: 3,
+        marginVertical: 10,
         // backgroundColor: "lightgreen",
         // paddingHorizontal: 10,
       }}
@@ -153,7 +153,7 @@ const TagsSettings = ({
             value={tagNameItem}
             onChangeText={(text) => setTagNameItem(text)}
             style={{
-              width: "80%",
+              width: "70%",
               fontSize: fontSize.regular,
               fontFamily: fontFamily.PoppinsRegular400,
             }}
@@ -166,6 +166,7 @@ const TagsSettings = ({
                 name="trash-outline"
                 size={iconSize.regular}
                 color="red"
+                style={{ padding: 5 }}
               />
             </TouchableOpacity>
             <TouchableOpacity
@@ -182,6 +183,7 @@ const TagsSettings = ({
                   name="checkmark"
                   size={iconSize.regular}
                   color={colors.primaryPurple}
+                  style={{ padding: 5 }}
                 />
               )}
             </TouchableOpacity>
@@ -198,6 +200,7 @@ const TagsSettings = ({
             paddingStart: 5,
             // paddingVertical: 7,
             // height: 29,
+            // backgroundColor: "red",
           }}
           onPress={() => {
             setTheTagIsEditing(item);
@@ -218,10 +221,11 @@ const TagsSettings = ({
               setTheTagIsEditing(item);
             }}
           >
-            <Feather
-              name="edit"
+            <Ionicons
+              name="create-outline"
               size={iconSize.regular}
               color={colors.primaryPurple}
+              style={{ padding: 5 }}
             />
           </TouchableOpacity>
         </TouchableOpacity>

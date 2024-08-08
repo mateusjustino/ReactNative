@@ -66,14 +66,21 @@ export default function Header({
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          paddingVertical: 15,
+          // padding: 10,
+          paddingTop: 20,
           // backgroundColor: "red",
         }}
       >
         {fromHome && (
           <>
             <View
-              style={{ flexDirection: "row", gap: 5, alignItems: "center" }}
+              style={{
+                flexDirection: "row",
+                gap: 5,
+                alignItems: "center",
+                // backgroundColor: "red",
+                padding: 5,
+              }}
             >
               <Image
                 style={{ height: 35, width: 64, marginRight: 10 }}
@@ -82,7 +89,7 @@ export default function Header({
               <Text
                 style={{
                   fontSize: fontSize.regular,
-                  width: "70%",
+                  width: "65%",
                   fontFamily: fontFamily.PoppinsRegular400,
                 }}
                 numberOfLines={1}
@@ -92,10 +99,13 @@ export default function Header({
             </View>
             <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
               <Ionicons
-                // name="menu-outline"
-                name="settings-outline"
+                name="menu-outline"
+                // name="settings-outline"
                 size={iconSize.regular}
                 color={colors.primaryPurple}
+                style={{
+                  padding: 5,
+                }}
               />
             </TouchableOpacity>
           </>
@@ -107,6 +117,9 @@ export default function Header({
                 name="chevron-back-outline"
                 size={iconSize.regular}
                 color={colors.primaryPurple}
+                style={{
+                  padding: 5,
+                }}
               />
             </TouchableOpacity>
             {canDelete ? (
@@ -115,6 +128,9 @@ export default function Header({
                   name="trash-outline"
                   size={iconSize.regular}
                   color="red"
+                  style={{
+                    padding: 5,
+                  }}
                 />
               </TouchableOpacity>
             ) : (
@@ -122,6 +138,7 @@ export default function Header({
                 style={{
                   fontSize: fontSize.regular,
                   fontFamily: fontFamily.PoppinsRegular400,
+                  padding: 5,
                 }}
               >
                 New Note
@@ -136,12 +153,16 @@ export default function Header({
                 name="chevron-back"
                 size={iconSize.regular}
                 color={colors.primaryPurple}
+                style={{
+                  padding: 5,
+                }}
               />
             </TouchableOpacity>
             <Text
               style={{
                 fontSize: fontSize.regular,
                 fontFamily: fontFamily.PoppinsRegular400,
+                padding: 5,
               }}
             >
               {settingsTitle}

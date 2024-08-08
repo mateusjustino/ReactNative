@@ -226,9 +226,10 @@ const Home = () => {
         style={{
           flex: 1,
           alignItems: "center",
-          paddingHorizontal: 15,
+          paddingHorizontal: 10,
           paddingTop: 10,
           backgroundColor: colors.backgroundLight,
+          // backgroundColor: "red",
         }}
       >
         <View
@@ -239,7 +240,7 @@ const Home = () => {
             marginTop: 10,
             gap: 10,
             // backgroundColor: "red",
-            marginBottom: 20,
+            marginBottom: 25,
           }}
         >
           {selectedNotes.length !== 0 ? (
@@ -249,7 +250,7 @@ const Home = () => {
                   width: "100%",
                   alignItems: "center",
                   justifyContent: "center",
-                  paddingBottom: 8,
+                  // paddingBottom: 10,
                 }}
               >
                 <View
@@ -258,14 +259,18 @@ const Home = () => {
                     borderColor: colors.borderColorLight,
                     borderRadius: 10,
                     width: "100%",
-                    padding: 10,
-                    gap: 10,
+                    // padding: 10,
+                    // gap: 10,
+                    // backgroundColor: "red",
                   }}
                 >
                   <Text
                     style={{
                       fontSize: fontSize.regular,
                       fontFamily: fontFamily.PoppinsRegular400,
+                      padding: 10,
+                      paddingBottom: 7,
+                      // backgroundColor: "pink",
                     }}
                   >
                     <Text
@@ -284,6 +289,7 @@ const Home = () => {
                     style={{
                       flexDirection: "row",
                       justifyContent: "space-between",
+                      // backgroundColor: "yellow",
                     }}
                   >
                     <TouchableOpacity onPress={() => setSelectedNotes([])}>
@@ -291,6 +297,7 @@ const Home = () => {
                         name="close"
                         size={iconSize.regular}
                         color={colors.buttonRed}
+                        style={{ padding: 10 }}
                       />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setModalVisible(true)}>
@@ -298,6 +305,7 @@ const Home = () => {
                         name="trash-outline"
                         size={iconSize.regular}
                         color={colors.buttonRed}
+                        style={{ padding: 10 }}
                       />
                     </TouchableOpacity>
                   </View>

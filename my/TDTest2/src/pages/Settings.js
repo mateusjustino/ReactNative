@@ -49,7 +49,8 @@ const Settings = () => {
           borderBottomWidth: 1,
           borderColor: colors.borderColorLight,
           // paddingBottom: 10,
-          marginVertical: 10,
+          marginVertical: 13,
+          paddingVertical: 5,
           paddingStart: 5,
           // borderLeftWidth: 1,
         }}
@@ -106,6 +107,8 @@ const Settings = () => {
         contentContainerStyle={{
           alignItems: "center",
           // flex: 1,
+          // padding: 10,
+          // backgroundColor: "red",
         }}
       >
         <View

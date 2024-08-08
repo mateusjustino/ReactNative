@@ -277,6 +277,9 @@ export default function AddEditNote() {
                   name="pricetags-outline"
                   size={iconSize.regular}
                   color={colors.primaryPurple}
+                  style={{
+                    padding: 5,
+                  }}
                 />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => setShowOptions("colors")}>
@@ -284,6 +287,9 @@ export default function AddEditNote() {
                   name="color-palette-outline"
                   size={iconSize.regular}
                   color={colors.primaryPurple}
+                  style={{
+                    padding: 5,
+                  }}
                 />
               </TouchableOpacity>
             </>
@@ -304,6 +310,9 @@ export default function AddEditNote() {
                   name="close-outline"
                   size={iconSize.regular}
                   color={colors.buttonRed}
+                  style={{
+                    padding: 5,
+                  }}
                 />
               </TouchableOpacity>
               <FlatList
@@ -366,37 +375,15 @@ export default function AddEditNote() {
                   name="close-outline"
                   size={iconSize.regular}
                   color={colors.buttonRed}
+                  style={{
+                    padding: 5,
+                  }}
                 />
               </TouchableOpacity>
             </View>
           )}
         </View>
 
-        {/* <TouchableOpacity
-          onPress={() => {
-            if (!activeLoading) {
-              if (data) {
-                handleUpdate();
-              } else {
-                handleAdd();
-              }
-            }
-          }}
-          style={styles.button}
-        >
-          {activeLoading ? (
-            <Loading />
-          ) : (
-            <Text
-              style={{
-                fontFamily: fontFamily.PoppinsSemiBold600,
-                color: "white",
-              }}
-            >
-              {data ? "Update" : "Add"}
-            </Text>
-          )}
-        </TouchableOpacity> */}
         <ButtonCustom
           title={data ? "Update" : "Add"}
           background={colors.primaryPurple}
