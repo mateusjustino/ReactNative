@@ -35,10 +35,10 @@ const SignIn = () => {
   const [loadingLogin, setLoadingLogin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // useEffect(() => {
-  //   configureNavigationBar
-  //   return () => {};
-  // }, []);
+  useEffect(() => {
+    configureNavigationBar(colors.primaryPurple);
+    return () => {};
+  }, []);
 
   const handleLogin = () => {
     if (email && password) {
@@ -70,20 +70,18 @@ const SignIn = () => {
       <StatusBar style="light" />
       <View style={{ flex: 1, backgroundColor: colors.backgroundLight }}>
         {/* Primeira View - Topo */}
-        <View
-          style={{
-            width: "100%",
-            height: "5%",
-            backgroundColor: colors.primaryPurple,
-          }}
-        />
+
         <Clouds />
         {/* <Text style={{ textAlign: "center" }}>|</Text> */}
         {/* <Button title="a" /> */}
 
         {/* Segunda View - Área central com Scroll */}
         <ScrollView
-          contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: "center",
+            paddingVertical: 10,
+          }}
         >
           <View style={styles.container}>
             <View style={{ marginBottom: 50 }}>
@@ -173,14 +171,7 @@ const SignIn = () => {
         </ScrollView>
 
         {/* Terceira View - Final */}
-        <Clouds />
-        <View
-          style={{
-            width: "100%",
-            height: "5%",
-            backgroundColor: colors.primaryPurple,
-          }}
-        />
+        <Clouds bottom />
       </View>
     </>
   );
@@ -195,19 +186,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     // backgroundColor: colors.backgroundLight,
     // padding: 10,
+    zIndex: 98,
   },
   form: {
     width: "95%",
     maxWidth: 500,
     paddingBottom: 10,
+    zIndex: 99,
   },
   text: {
     fontSize: fontSize.regular,
     fontFamily: fontFamily.PoppinsRegular400,
-  },
-  clouds: {
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: colors.primaryPurple,
   },
 });
