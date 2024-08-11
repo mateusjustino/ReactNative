@@ -12,7 +12,6 @@ import { db } from "../firebaseConnection";
 import {
   collection,
   doc,
-  getDocs,
   onSnapshot,
   orderBy,
   query,
@@ -24,11 +23,7 @@ import Header from "../components/Header";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { UserContext } from "../context/userContext";
 import LoadingScreen from "../components/LoadingScreen";
-import {
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import CustomModal from "../components/CustomModal";
 import Tags from "../components/Tags";
 import colors from "../theme/colors";
@@ -40,7 +35,6 @@ import ButtonCustom from "../components/ButtonCustom";
 
 const Home = () => {
   const navigation = useNavigation();
-  const route = useRoute();
   const [notes, setNotes] = useState([]);
   const [notesSearch, setNotesSearch] = useState([]);
   const [searchFilter, setSearchFilter] = useState(false);
@@ -51,113 +45,49 @@ const Home = () => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const [forceUpdate, setForceUpdate] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
 
   const { selectedNotes, setSelectedNotes, user, tags } =
     useContext(UserContext);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      setIsLoading(true);
-      setForceUpdate((prev) => !prev);
-      configureNavigationBar(colors.backgroundLight);
-
-      updateDocs();
-
-      if (activeTags.length !== 0 || searchText !== "") {
-        updateDocsFiltered();
+  useEffect(() => {
+    setIsLoading(true);
+    const unsubscribeNotes = onSnapshot(
+      query(
+        collection(db, "notes"),
+        orderBy("order"),
+        where("uid", "==", user.uid)
+      ),
+      (snapshot) => {
+        const list = [];
+        snapshot.forEach((doc) => {
+          list.push({
+            id: doc.id,
+            uid: doc.data().uid,
+            title: doc.data().title,
+            contentText: doc.data().contentText,
+            contentTextLower: doc.data().contentTextLower,
+            createdAt: doc.data().createdAt,
+            lastEditTime: doc.data().lastEditTime,
+            order: doc.data().order,
+            tags: doc.data().tags,
+            backgroundColor: doc.data().backgroundColor,
+          });
+        });
+        setNotes(list);
+        setIsLoading(false);
       }
-
-      setIsLoading(false);
-    }, [activeTags, searchText, selectedNotes])
-  );
-
-  const updateDocs = async () => {
-    const q = query(
-      collection(db, "notes"),
-      orderBy("order"),
-      where("uid", "==", user.uid)
     );
 
-    const querySnapshot = await getDocs(q);
-    const list = [];
-    querySnapshot.forEach((doc) => {
-      list.push({
-        id: doc.id,
-        uid: doc.data().uid,
-        title: doc.data().title,
-        contentText: doc.data().contentText,
-        contentTextLower: doc.data().contentTextLower,
-        createdAt: doc.data().createdAt,
-        lastEditTime: doc.data().lastEditTime,
-        order: doc.data().order,
-        tags: doc.data().tags,
-        backgroundColor: doc.data().backgroundColor,
-      });
-    });
-    setNotes(list);
-  };
+    return () => unsubscribeNotes();
+  }, [user]);
 
-  const updateDocsFiltered = async () => {
-    if (activeTags.length !== 0) {
-      // console.log("tem tag ativa");
-      const q = query(
-        collection(db, "notes"),
-        orderBy("order"),
-        where("uid", "==", user.uid)
-      );
-      const querySnapshot = await getDocs(q);
-      const list = [];
-      querySnapshot.forEach((doc) => {
-        const tagsFromNote = doc.data().tags;
-        if (containsAllElements(tagsFromNote, activeTags)) {
-          // Faça algo se tagsFromNote contém todos os elementos de activeTagsList
-          list.push({
-            id: doc.id,
-            uid: doc.data().uid,
-            title: doc.data().title,
-            contentText: doc.data().contentText,
-            contentTextLower: doc.data().contentTextLower,
-            createdAt: doc.data().createdAt,
-            lastEditTime: doc.data().lastEditTime,
-            order: doc.data().order,
-            tags: doc.data().tags,
-            backgroundColor: doc.data().backgroundColor,
-          });
-        }
-      });
-      setNotesSearch(list);
-    }
-    if (searchText !== "") {
-      // console.log("tem texto ativa");
-      const searchTextLower = searchText.toLowerCase();
-      const q = query(
-        collection(db, "notes"),
-        orderBy("order"),
-        where("uid", "==", user.uid)
-      );
-      const querySnapshot = await getDocs(q);
-      const list = [];
-      querySnapshot.forEach((doc) => {
-        const contentTextLower = doc.data().contentTextLower;
-        if (contentTextLower.includes(searchTextLower)) {
-          list.push({
-            id: doc.id,
-            uid: doc.data().uid,
-            title: doc.data().title,
-            contentText: doc.data().contentText,
-            contentTextLower: doc.data().contentTextLower,
-            createdAt: doc.data().createdAt,
-            lastEditTime: doc.data().lastEditTime,
-            order: doc.data().order,
-            tags: doc.data().tags,
-            backgroundColor: doc.data().backgroundColor,
-          });
-        }
-      });
-      setNotesSearch(list);
-    }
-  };
+  useFocusEffect(
+    React.useCallback(() => {
+      setForceUpdate((prev) => !prev);
+
+      configureNavigationBar(colors.backgroundLight);
+    }, [])
+  );
 
   const handleAdjustOrder = async ({ data, from, to }) => {
     let needUpdate = false;
@@ -168,7 +98,7 @@ const Home = () => {
       }
     }
     if (needUpdate) {
-      setNotes(data);
+      // setNotes(data);
       // Itera sobre os itens reordenados e atualiza a ordem dos documentos no Firestore
       await Promise.all(
         data.map(async (item, index) => {
@@ -201,39 +131,41 @@ const Home = () => {
         activeTagsList = [...activeTagsList, item].sort();
       }
       setActiveTags(activeTagsList);
-
-      const q = query(
-        collection(db, "notes"),
-        orderBy("order"),
-        where("uid", "==", user.uid)
-      );
-      const querySnapshot = await getDocs(q);
-      const list = [];
-      querySnapshot.forEach((doc) => {
-        const tagsFromNote = doc.data().tags;
-        if (containsAllElements(tagsFromNote, activeTagsList)) {
-          // Faça algo se tagsFromNote contém todos os elementos de activeTagsList
-          list.push({
-            id: doc.id,
-            uid: doc.data().uid,
-            title: doc.data().title,
-            contentText: doc.data().contentText,
-            contentTextLower: doc.data().contentTextLower,
-            createdAt: doc.data().createdAt,
-            lastEditTime: doc.data().lastEditTime,
-            order: doc.data().order,
-            tags: doc.data().tags,
-            backgroundColor: doc.data().backgroundColor,
+      const unsubscribe = onSnapshot(
+        query(
+          collection(db, "notes"),
+          orderBy("order"),
+          where("uid", "==", user.uid)
+        ),
+        (snapshot) => {
+          const list = [];
+          snapshot.forEach((doc) => {
+            const tagsFromNote = doc.data().tags;
+            if (containsAllElements(tagsFromNote, activeTagsList)) {
+              // Faça algo se tagsFromNote contém todos os elementos de activeTagsList
+              list.push({
+                id: doc.id,
+                uid: doc.data().uid,
+                title: doc.data().title,
+                contentText: doc.data().contentText,
+                contentTextLower: doc.data().contentTextLower,
+                createdAt: doc.data().createdAt,
+                lastEditTime: doc.data().lastEditTime,
+                order: doc.data().order,
+                tags: doc.data().tags,
+                backgroundColor: doc.data().backgroundColor,
+              });
+            }
           });
+          if (activeTagsList.length !== 0) {
+            setSearchText("");
+            setSearchFilter(true);
+            setNotesSearch(list);
+          } else {
+            setSearchFilter(false);
+          }
         }
-      });
-      if (activeTagsList.length !== 0) {
-        setSearchText("");
-        setSearchFilter(true);
-        setNotesSearch(list);
-      } else {
-        setSearchFilter(false);
-      }
+      );
     }
     if (fromWhere === "input") {
       setSearchText(item);
@@ -242,33 +174,35 @@ const Home = () => {
       }
       setActiveTags([]);
       setSearchFilter(true);
-
       const searchTextLower = item.toLowerCase();
-      const q = query(
-        collection(db, "notes"),
-        orderBy("order"),
-        where("uid", "==", user.uid)
-      );
-      const querySnapshot = await getDocs(q);
-      const list = [];
-      querySnapshot.forEach((doc) => {
-        const contentTextLower = doc.data().contentTextLower;
-        if (contentTextLower.includes(searchTextLower)) {
-          list.push({
-            id: doc.id,
-            uid: doc.data().uid,
-            title: doc.data().title,
-            contentText: doc.data().contentText,
-            contentTextLower: doc.data().contentTextLower,
-            createdAt: doc.data().createdAt,
-            lastEditTime: doc.data().lastEditTime,
-            order: doc.data().order,
-            tags: doc.data().tags,
-            backgroundColor: doc.data().backgroundColor,
+      const unsubscribe = onSnapshot(
+        query(
+          collection(db, "notes"),
+          orderBy("order"),
+          where("uid", "==", user.uid)
+        ),
+        (snapshot) => {
+          const list = [];
+          snapshot.forEach((doc) => {
+            const contentTextLower = doc.data().contentTextLower;
+            if (contentTextLower.includes(searchTextLower)) {
+              list.push({
+                id: doc.id,
+                uid: doc.data().uid,
+                title: doc.data().title,
+                contentText: doc.data().contentText,
+                contentTextLower: doc.data().contentTextLower,
+                createdAt: doc.data().createdAt,
+                lastEditTime: doc.data().lastEditTime,
+                order: doc.data().order,
+                tags: doc.data().tags,
+                backgroundColor: doc.data().backgroundColor,
+              });
+            }
           });
+          setNotesSearch(list);
         }
-      });
-      setNotesSearch(list);
+      );
     }
   };
 
@@ -381,21 +315,12 @@ const Home = () => {
           ) : (
             <>
               <TextInput
-                style={[
-                  styles.input,
-                  {
-                    borderColor: isFocused
-                      ? colors.primaryPurpleAlfa
-                      : colors.borderColorLight,
-                  },
-                ]}
+                style={[styles.input]}
                 value={searchText}
                 onChangeText={(text) => searchNotes("input", text)}
                 placeholder="Search..."
-                cursorColor={colors.primaryPurpleAlfa}
-                selectionColor={colors.primaryPurpleAlfa}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
+                cursorColor={colors.primaryPurple}
+                selectionColor={colors.primaryPurple}
               />
               {tags.length !== 0 && (
                 <View
@@ -482,18 +407,6 @@ const Home = () => {
             onPressFunc={() => navigation.navigate("AddEditNote")}
           />
         </View>
-
-        {/* <FlatList
-          data={notesSearch}
-          renderItem={({ item }) => <Text>{item.title}</Text>}
-        /> */}
-
-        {/* {activeTags.length !== 0 ? (
-          <Text>tem tags</Text>
-        ) : (
-          <Text>nao tem </Text>
-        )}
-        {searchText !== "" ? <Text>tem text</Text> : <Text>nao tem </Text>} */}
 
         <CustomModal
           modalVisible={modalVisible}

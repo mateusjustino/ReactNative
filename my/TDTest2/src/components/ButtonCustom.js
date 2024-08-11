@@ -11,15 +11,22 @@ const ButtonCustom = ({
   icon,
   active,
   heightBtn,
+  txtColor,
+  border,
 }) => {
   return (
     <TouchableOpacity
       style={[
         styles.container,
-        { backgroundColor: background, height: heightBtn ? heightBtn : 40 },
+        {
+          backgroundColor: background,
+          height: heightBtn ? heightBtn : 40,
+          borderWidth: border ? 1 : 0,
+          borderColor: border ? colors.primaryPurple : "#fff",
+        },
       ]}
-      activeOpacity={0.8}
-      onPress={onPressFunc}
+      activeOpacity={active ? 1 : 0.8}
+      onPress={active ? null : onPressFunc}
     >
       {active ? (
         <View style={{ justifyContent: "center" }}>
@@ -28,7 +35,11 @@ const ButtonCustom = ({
       ) : (
         <>
           {icon && icon}
-          {title && <Text style={styles.txt}>{title}</Text>}
+          {title && (
+            <Text style={[styles.txt, { color: txtColor ? txtColor : "#fff" }]}>
+              {title}
+            </Text>
+          )}
         </>
       )}
     </TouchableOpacity>
@@ -41,7 +52,6 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 5,
     paddingVertical: 4,
-    // backgroundColor: colors.primaryPurple,
     borderRadius: 10,
     width: "100%",
     marginVertical: 10,
@@ -49,11 +59,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
-    // height: 40,
   },
   txt: {
     textAlign: "center",
-    color: "white",
     fontSize: fontSize.regular,
     fontFamily: fontFamily.PoppinsMedium500,
     marginTop: 3,

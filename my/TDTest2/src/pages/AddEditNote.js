@@ -233,6 +233,8 @@ export default function AddEditNote() {
             {
               fontSize: fontSize.large,
               fontFamily: fontFamily.PoppinsSemiBold600,
+              // backgroundColor: "red",
+              height: 50,
             },
           ]}
           placeholder="Title"

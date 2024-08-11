@@ -3,6 +3,7 @@ const colors = {
   primaryGreenAlfa: "#f0facc99",
 
   primaryPurple: "#674CE8",
+  primaryPurpleAlfa: "#674CE899",
 
   borderColorLight: "rgba(0,0,0,.1)",
   backgroundColorBackModal: "rgba(0,0,0,0.5)",

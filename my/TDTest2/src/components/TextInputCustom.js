@@ -3,28 +3,32 @@ import { fontFamily, fontSize } from "../theme/font";
 import colors from "../theme/colors";
 import { useState } from "react";
 
-const TextInputCustom = ({ text, setText, placeholder, label }) => {
+const TextInputCustom = ({ text, setText, placeholder, label, secure }) => {
   const [isFocused, setIsFocused] = useState(false);
+
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
-      <TextInput
-        value={text}
-        onChangeText={(text) => setText(text)}
-        style={[
-          styles.input,
-          {
-            borderColor: isFocused
-              ? colors.primaryPurple
-              : colors.borderColorLight,
-          },
-        ]}
-        placeholder={placeholder}
-        cursorColor={colors.primaryPurple}
-        selectionColor={colors.primaryPurple}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-      />
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <TextInput
+          value={text}
+          onChangeText={(text) => setText(text)}
+          style={[
+            styles.input,
+            {
+              borderColor: isFocused
+                ? colors.primaryPurpleAlfa
+                : colors.borderColorLight,
+            },
+          ]}
+          placeholder={placeholder}
+          cursorColor={colors.primaryPurpleAlfa}
+          selectionColor={colors.primaryPurpleAlfa}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          secureTextEntry={secure}
+        />
+      </View>
       {/* <Text>
         {isFocused ? "TextInput está ativo" : "TextInput está inativo"}
       </Text> */}

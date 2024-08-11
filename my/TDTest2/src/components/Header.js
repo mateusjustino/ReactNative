@@ -60,7 +60,7 @@ export default function Header({
     <SafeAreaView
       style={[styles.container, { backgroundColor: colorBackground() }]}
     >
-      <StatusBarExpo backgroundColor={statusBarColor} style="dark-content" />
+      <StatusBarExpo backgroundColor={statusBarColor} style="auto" />
       <View
         style={{
           flexDirection: "row",

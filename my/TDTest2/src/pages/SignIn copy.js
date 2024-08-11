@@ -6,11 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  KeyboardAvoidingView,
-  Platform,
-  Button,
 } from "react-native";
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebaseConnection";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -24,8 +21,6 @@ import CheckBox from "../components/CheckBox";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Header from "../components/Header";
 import { StatusBar } from "expo-status-bar";
-import Clouds from "../components/Clouds";
-import { configureNavigationBar } from "../scripts/NavigationBar";
 
 const SignIn = () => {
   const navigation = useNavigation();
@@ -34,11 +29,6 @@ const SignIn = () => {
   const { user, setUser, EnterUser } = useContext(UserContext);
   const [loadingLogin, setLoadingLogin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  // useEffect(() => {
-  //   configureNavigationBar
-  //   return () => {};
-  // }, []);
 
   const handleLogin = () => {
     if (email && password) {
@@ -65,27 +55,42 @@ const SignIn = () => {
     }
   };
 
+  const Clouds = () => {
+    return (
+      <View style={{ position: "absolute", top: -100, flexDirection: "row" }}>
+        <View style={[styles.clouds, { width: "25%", top: -25 }]} />
+        <View style={[styles.clouds, { width: "50%", top: -50 }]} />
+        <View style={[styles.clouds, { width: "25%", top: -25 }]} />
+      </View>
+    );
+  };
   return (
     <>
       <StatusBar style="light" />
-      <View style={{ flex: 1, backgroundColor: colors.backgroundLight }}>
-        {/* Primeira View - Topo */}
+      <ScrollView>
         <View
           style={{
-            width: "100%",
-            height: "5%",
+            flex: 1,
             backgroundColor: colors.primaryPurple,
+            justifyContent: "center",
           }}
-        />
-        <Clouds />
-        {/* <Text style={{ textAlign: "center" }}>|</Text> */}
-        {/* <Button title="a" /> */}
-
-        {/* Segunda View - Área central com Scroll */}
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
         >
           <View style={styles.container}>
+            {/* <Clouds /> */}
+
+            <Text>FAZER PARECER QUE TUDOS ISSO AQUI ESTA DENTRO DA NUVEM</Text>
+            <Text>FAZER PARECER QUE TUDOS ISSO AQUI ESTA DENTRO DA NUVEM</Text>
+            <Text>FAZER PARECER QUE TUDOS ISSO AQUI ESTA DENTRO DA NUVEM</Text>
+            <Text>FAZER PARECER QUE TUDOS ISSO AQUI ESTA DENTRO DA NUVEM</Text>
+            <Text>FAZER PARECER QUE TUDOS ISSO AQUI ESTA DENTRO DA NUVEM</Text>
+            <Text>FAZER PARECER QUE TUDOS ISSO AQUI ESTA DENTRO DA NUVEM</Text>
+            <Text>FAZER PARECER QUE TUDOS ISSO AQUI ESTA DENTRO DA NUVEM</Text>
+            <Text>FAZER PARECER QUE TUDOS ISSO AQUI ESTA DENTRO DA NUVEM</Text>
+            <Text>FAZER PARECER QUE TUDOS ISSO AQUI ESTA DENTRO DA NUVEM</Text>
+            <Text>FAZER PARECER QUE TUDOS ISSO AQUI ESTA DENTRO DA NUVEM</Text>
+            <Text>FAZER PARECER QUE TUDOS ISSO AQUI ESTA DENTRO DA NUVEM</Text>
+            <Text>FAZER PARECER QUE TUDOS ISSO AQUI ESTA DENTRO DA NUVEM</Text>
+            <Text>FAZER PARECER QUE TUDOS ISSO AQUI ESTA DENTRO DA NUVEM</Text>
             <View style={{ marginBottom: 50 }}>
               <Image
                 style={{ height: 35 * 2.2, width: 64 * 2.2 }}
@@ -144,6 +149,21 @@ const SignIn = () => {
                   </TouchableOpacity>
                 )}
               </View>
+              {/* <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            paddingHorizontal: 5,
+            height: 50,
+            alignItems: "center",
+            }}
+            >
+            <Text style={styles.text}>Forgot Password?</Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={[styles.text, { marginEnd: 5 }]}>Show Password</Text>
+            <CheckBox />
+            </View>
+            </View> */}
 
               <ButtonCustom
                 title="SignIn"
@@ -168,20 +188,16 @@ const SignIn = () => {
                   </Text>
                 </TouchableOpacity>
               </View>
+              {/* <ButtonCustom
+          title="SignUp"
+          onPressFunc={() => navigation.navigate("SignUp")}
+          txtColor={colors.primaryPurple}
+          border
+          /> */}
             </View>
           </View>
-        </ScrollView>
-
-        {/* Terceira View - Final */}
-        <Clouds />
-        <View
-          style={{
-            width: "100%",
-            height: "5%",
-            backgroundColor: colors.primaryPurple,
-          }}
-        />
-      </View>
+        </View>
+      </ScrollView>
     </>
   );
 };
@@ -191,10 +207,11 @@ export default SignIn;
 const styles = StyleSheet.create({
   container: {
     // flex: 1,
-    // justifyContent: "center",
+    justifyContent: "center",
     alignItems: "center",
-    // backgroundColor: colors.backgroundLight,
+    backgroundColor: colors.backgroundLight,
     // padding: 10,
+    height: "85%",
   },
   form: {
     width: "95%",

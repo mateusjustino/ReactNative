@@ -109,6 +109,7 @@ const Settings = () => {
           // flex: 1,
           // padding: 10,
           // backgroundColor: "red",
+          paddingBottom: 30,
         }}
       >
         <View
@@ -120,7 +121,7 @@ const Settings = () => {
         >
           <View style={{ alignItems: "center", marginVertical: 40 }}>
             <Image
-              style={{ height: 35 * 2.5, width: 64 * 2.5 }}
+              style={{ height: 35 * 2.2, width: 64 * 2.2 }}
               source={iconSource.logoRoxo}
             />
           </View>

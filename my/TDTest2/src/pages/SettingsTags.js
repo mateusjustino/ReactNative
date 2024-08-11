@@ -26,6 +26,7 @@ const SettingsTags = () => {
   const [theTagIsEditing, setTheTagIsEditing] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [activeLoading, setActiveLoading] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   const addTag = async () => {
     setActiveLoading(true);
@@ -58,12 +59,15 @@ const SettingsTags = () => {
       >
         <View
           style={[
+            styles.inputView,
             {
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-between",
+              borderColor: isFocused
+                ? colors.primaryPurpleAlfa
+                : colors.borderColorLight,
             },
-            styles.inputView,
           ]}
         >
           <TextInput
@@ -78,8 +82,10 @@ const SettingsTags = () => {
             value={tagName}
             onChangeText={(text) => setTagName(text)}
             placeholder="Create a tag..."
-            cursorColor={colors.primaryPurple}
-            selectionColor={colors.primaryPurple}
+            cursorColor={colors.primaryPurpleAlfa}
+            selectionColor={colors.primaryPurpleAlfa}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
           />
           {tagName ? (
             <>
@@ -147,6 +153,6 @@ const styles = StyleSheet.create({
     paddingBottom: 7,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: colors.borderColorLight,
+    // borderColor: colors.borderColorLight,
   },
 });

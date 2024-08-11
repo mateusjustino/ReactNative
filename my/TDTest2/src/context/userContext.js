@@ -9,6 +9,7 @@ export default function UserContextProvider({ children }) {
   const [selectedNotes, setSelectedNotes] = useState([]);
   const [user, setUser] = useState({});
   const [tags, setTags] = useState([]);
+  const [notesFiltered, setNotesFiltered] = useState([]);
   const [statusBarColor, setStatusBarColor] = useState(colors.backgroundLight);
   const [modalAction, setModalAction] = useState("");
 

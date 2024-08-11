@@ -67,7 +67,7 @@ const NoteList = ({ data, drag }) => {
 
   return (
     <ScaleDecorator activeScale={0.95}>
-      <OpacityDecorator activeOpacity={0.99}>
+      <OpacityDecorator activeOpacity={0.9}>
         <ShadowDecorator>
           <TouchableOpacity
             onLongPress={() => {
@@ -79,6 +79,7 @@ const NoteList = ({ data, drag }) => {
               backgroundColor: data.backgroundColor,
               borderColor: activeSelected ? "green" : colors.borderColorLight,
               marginBottom: 10,
+              padding: 10,
             }}
             onPress={() =>
               selectedNotes.length !== 0
@@ -88,7 +89,13 @@ const NoteList = ({ data, drag }) => {
                   })
             }
           >
-            <View style={{ margin: 10 }}>
+            <View
+              style={
+                {
+                  // margin: 10
+                }
+              }
+            >
               <Text
                 style={{
                   fontSize: fontSize.regular,
@@ -99,12 +106,19 @@ const NoteList = ({ data, drag }) => {
               </Text>
             </View>
 
-            <View style={{ margin: 10 }}>
+            <View
+              style={
+                {
+                  // margin: 10
+                }
+              }
+            >
               <Text
                 numberOfLines={5}
                 style={{
                   fontSize: fontSize.regular,
                   fontFamily: fontFamily.PoppinsRegular400,
+                  marginVertical: 10,
                 }}
               >
                 {data.contentText}
@@ -115,7 +129,8 @@ const NoteList = ({ data, drag }) => {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                padding: 5,
+                // height: 70,
+                // backgroundColor: "red",
               }}
             >
               <FlatList
@@ -125,51 +140,40 @@ const NoteList = ({ data, drag }) => {
                 }}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                style={{ marginRight: 10 }}
+                style={{
+                  marginRight: 10,
+                }}
               />
-              <View style={{ alignItems: "flex-end", margin: 0 }}>
-                {data.lastEditTime ? (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Ionicons
-                      name="time-outline"
-                      size={iconSize.small}
-                      color="black"
-                    />
-                    <Text
-                      style={{
-                        marginStart: 5,
-                        fontSize: fontSize.small,
-                        fontFamily: fontFamily.PoppinsRegularItalic400,
-                        marginTop: 4,
-                      }}
-                    >
-                      {formatDateTime(data.lastEditTime)}
-                    </Text>
-                  </View>
-                ) : (
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Ionicons
-                      name="time-outline"
-                      size={iconSize.small}
-                      color="black"
-                    />
-                    <Text
-                      style={{
-                        marginStart: 5,
-                        fontSize: fontSize.small,
-                        fontFamily: fontFamily.PoppinsRegularItalic400,
-                        marginTop: 4,
-                      }}
-                    >
-                      {formatDateTime(data.createdAt)}
-                    </Text>
-                  </View>
-                )}
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  // backgroundColor: "yellow",
+                  // height: 40,
+                  alignItems: "center",
+                }}
+              >
+                <Ionicons
+                  name="time-outline"
+                  size={iconSize.small}
+                  color="black"
+                  style={
+                    {
+                      // backgroundColor: "purple"
+                    }
+                  }
+                />
+                <Text
+                  style={{
+                    marginStart: 5,
+                    fontSize: fontSize.small,
+                    fontFamily: fontFamily.PoppinsRegularItalic400,
+                    // backgroundColor: "blue",
+                    paddingTop: 3,
+                  }}
+                >
+                  {formatDateTime(data.lastEditTime || data.createdAt)}
+                </Text>
               </View>
             </View>
           </TouchableOpacity>

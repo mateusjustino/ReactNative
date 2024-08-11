@@ -1,4 +1,11 @@
-import { Text, View, Modal, TouchableOpacity, Dimensions } from "react-native";
+import {
+  Text,
+  View,
+  Modal,
+  TouchableOpacity,
+  Dimensions,
+  StyleSheet,
+} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { auth, db } from "../firebaseConnection";
 import {
@@ -568,9 +575,10 @@ const CustomModal = ({
             {!modalAction && (
               <TouchableOpacity
                 onPress={() => setModalVisible(false)}
-                style={{
-                  padding: 5,
-                }}
+                style={[
+                  styles.button,
+                  { borderWidth: 1, borderColor: colors.borderColorLight },
+                ]}
               >
                 <Text
                   style={{
@@ -586,13 +594,14 @@ const CustomModal = ({
             {activeLoading ? (
               <TouchableOpacity
                 onPress={() => {}}
-                style={{
-                  padding: 5,
-                  borderRadius: 10,
-                  backgroundColor: modalAction
-                    ? colors.primaryPurple
-                    : colors.buttonRed,
-                }}
+                style={[
+                  styles.button,
+                  {
+                    backgroundColor: modalAction
+                      ? colors.primaryPurple
+                      : colors.buttonRed,
+                  },
+                ]}
               >
                 <Loading />
               </TouchableOpacity>
@@ -621,13 +630,14 @@ const CustomModal = ({
                     setModalVisible(false);
                   }
                 }}
-                style={{
-                  padding: 5,
-                  borderRadius: 10,
-                  backgroundColor: modalAction
-                    ? colors.primaryPurple
-                    : "#ff313b",
-                }}
+                style={[
+                  styles.button,
+                  {
+                    backgroundColor: modalAction
+                      ? colors.primaryPurple
+                      : "#ff313b",
+                  },
+                ]}
               >
                 <Text
                   style={{
@@ -648,3 +658,14 @@ const CustomModal = ({
 };
 
 export default CustomModal;
+
+const styles = StyleSheet.create({
+  button: {
+    padding: 8,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    width: 60,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
