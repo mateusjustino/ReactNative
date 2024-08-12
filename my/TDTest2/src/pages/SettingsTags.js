@@ -22,7 +22,7 @@ import { db } from "../firebaseConnection";
 
 const SettingsTags = () => {
   const { tags, user, setTags } = useContext(UserContext);
-  const [tagName, setTagName] = useState("a");
+  const [tagName, setTagName] = useState("");
   const [theTagIsEditing, setTheTagIsEditing] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [activeLoading, setActiveLoading] = useState(false);
@@ -86,6 +86,7 @@ const SettingsTags = () => {
             selectionColor={colors.primaryPurpleAlfa}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
+            autoCapitalize="none"
           />
           {tagName ? (
             <>

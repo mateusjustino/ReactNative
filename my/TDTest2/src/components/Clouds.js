@@ -23,7 +23,12 @@ const offsets = [
 
 const Clouds = ({ bottom }) => {
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { height: bottom ? height * 0.05 : height * 0.07 },
+      ]}
+    >
       {offsets.map((offset, index) =>
         bottom ? (
           <View
@@ -58,16 +63,17 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.primaryPurple,
     width: "100%",
-    height: height * 0.06,
+    // height: height * 0.06,
     flexDirection: "row",
     alignItems: "flex-end",
   },
   cloud: {
-    height: "40%",
+    height: "50%",
     width: width * 0.09,
     borderTopStartRadius: 20,
     borderTopEndRadius: 20,
     backgroundColor: colors.backgroundLight,
+    // backgroundColor: "red",
   },
 });
 

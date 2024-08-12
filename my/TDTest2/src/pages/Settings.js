@@ -34,7 +34,6 @@ const Settings = () => {
   const handleLogOut = () => {
     signOut(auth)
       .then(() => {
-        // console.log("deslogadoaaaa");
         navigation.navigate("SignIn");
       })
       .catch((error) => {

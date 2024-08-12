@@ -32,6 +32,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import Loading from "./Loading";
+import ButtonCustom from "./ButtonCustom";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -181,7 +182,6 @@ const CustomModal = ({
   ("mateus.justino.07@gmail.com");
   ("mateus_justino_07@hotmail.com");
   const handleLogin = () => {
-    console.log(modalAction);
     if (password) {
       // Reautenticar o usuário antes de atualizar a senha
       // const credential = EmailAuthProvider.credential(
@@ -215,6 +215,10 @@ const CustomModal = ({
                 console.log(
                   `Código do erro: ${error.code}, Descrição: ${error.message}`
                 );
+                if (error.code === "auth/email-already-in-use") {
+                  setModalAction("EmailAlreadyInUse");
+                }
+                setActiveLoading(false);
               });
           }
           // para mudar o password
@@ -227,6 +231,7 @@ const CustomModal = ({
               })
               .catch((error) => {
                 alert(error.message);
+                setActiveLoading(false);
               });
           }
           // para mudar o name
@@ -241,47 +246,53 @@ const CustomModal = ({
               })
               .catch((error) => {
                 console.log("error updateProfile", error);
+                setActiveLoading(false);
               });
           }
           // para mudar email e password
           else if (
             modalAction === "AccountSettingsConfirmPassForEmailAndPassword"
           ) {
-            updateEmail(auth.currentUser, newEmail)
-              .then(async () => {
-                console.log("email atualizadooo");
-                const userNow = auth.currentUser;
-                userNow.reload().then(() => {
-                  setUser(userNow);
-                });
-                checkVerifiedEmail();
-                const settingsRef = doc(db, "settings", user.uid);
-                await updateDoc(settingsRef, {
-                  LastTimeSendVerifiedEmail: null,
-                })
-                  .then(() => console.log("updateDoc tudo certo"))
-                  .catch((error) => {
-                    console.log("updateDoc deu erro:");
-                    console.log(error.message);
-                  });
+            updatePassword(auth.currentUser, newPassword)
+              .then(() => {
+                console.log("passworddd atualizadooo");
               })
               .catch((error) => {
-                console.log("updateEmail deu erro:");
+                console.log("updatePassword deu erro:");
                 console.log(error.message);
               });
 
             setTimeout(() => {
-              updatePassword(auth.currentUser, newPassword)
-                .then(() => {
-                  console.log("passworddd atualizadooo");
+              updateEmail(auth.currentUser, newEmail)
+                .then(async () => {
+                  console.log("email atualizadooo");
+                  const userNow = auth.currentUser;
+                  userNow.reload().then(() => {
+                    setUser(userNow);
+                  });
+
+                  const settingsRef = doc(db, "settings", user.uid);
+                  await updateDoc(settingsRef, {
+                    LastTimeSendVerifiedEmail: null,
+                  })
+                    .then(() => console.log("updateDoc tudo certo"))
+                    .catch((error) => {
+                      console.log("updateDoc deu erro:");
+                      console.log(error.message);
+                    });
+                  checkVerifiedEmail();
+                  setActiveLoading(false);
                   setModalAction(
                     "AccountSettingsConfirmMessageEmailAndPassword"
                   );
-                  setActiveLoading(false);
                 })
                 .catch((error) => {
-                  console.log("updatePassword deu erro:");
+                  console.log("updateEmail deu erro:");
                   console.log(error.message);
+                  if (error.code === "auth/email-already-in-use") {
+                    setModalAction("EmailAlreadyInUse");
+                  }
+                  setActiveLoading(false);
                 });
             }, 1000);
           }
@@ -297,7 +308,20 @@ const CustomModal = ({
               })
               .catch((error) => {
                 console.log("error updateProfile", error);
+                setActiveLoading(false);
               });
+            setTimeout(() => {
+              updatePassword(auth.currentUser, newPassword)
+                .then(() => {
+                  console.log("updatePassword deu certo");
+                })
+                .catch((error) => {
+                  console.log("updatePassword deu erro:");
+                  console.log(error.message);
+                  setActiveLoading(false);
+                });
+            }, 1000);
+
             setTimeout(() => {
               updateEmail(auth.currentUser, newEmail)
                 .then(async () => {
@@ -306,7 +330,7 @@ const CustomModal = ({
                   userNow.reload().then(() => {
                     setUser(userNow);
                   });
-                  checkVerifiedEmail();
+
                   const settingsRef = doc(db, "settings", user.uid);
                   await updateDoc(settingsRef, {
                     LastTimeSendVerifiedEmail: null,
@@ -316,25 +340,19 @@ const CustomModal = ({
                       console.log("updateDoc deu erro:");
                       console.log(error.message);
                     });
-                })
-                .catch((error) => {
-                  console.log("updateEmail deu erro:");
-                  console.log(error.message);
-                });
-            }, 1000);
-
-            setTimeout(() => {
-              updatePassword(auth.currentUser, newPassword)
-                .then(() => {
-                  console.log("updatePassword deu certo");
+                  checkVerifiedEmail();
                   setModalAction(
                     "AccountSettingsConfirmMessageEmailPasswordAndName"
                   );
                   setActiveLoading(false);
                 })
                 .catch((error) => {
-                  console.log("updatePassword deu erro:");
+                  console.log("updateEmail deu erro:");
                   console.log(error.message);
+                  if (error.code === "auth/email-already-in-use") {
+                    setModalAction("EmailAlreadyInUse");
+                  }
+                  setActiveLoading(false);
                 });
             }, 2000);
           }
@@ -374,11 +392,16 @@ const CustomModal = ({
                     .catch((error) => {
                       console.log("updateDoc deu erro:");
                       console.log(error.message);
+                      setActiveLoading(false);
                     });
                 })
                 .catch((error) => {
                   console.log("updateEmail deu erro:");
                   console.log(error.message);
+                  if (error.code === "auth/email-already-in-use") {
+                    setModalAction("EmailAlreadyInUse");
+                  }
+                  setActiveLoading(false);
                 });
             }, 1000);
           }
@@ -408,6 +431,7 @@ const CustomModal = ({
                 .catch((error) => {
                   console.log("updatePassword deu erro:");
                   console.log(error.message);
+                  setActiveLoading(false);
                 });
             }, 1000);
           }
@@ -447,7 +471,7 @@ const CustomModal = ({
           label="Password"
           text={password}
           setText={setPassword}
-          placeholder="enter"
+          // placeholder="Enter password..."
         />
       </View>
     );
@@ -537,6 +561,9 @@ const CustomModal = ({
           {modalAction === "AccountSettingsConfirmMessagePasswordAndName" && (
             <TitleMsg message="name e password alterado!" />
           )}
+          {modalAction === "EmailAlreadyInUse" && (
+            <TitleMsg message="Email ja esta sendo utilizado!" />
+          )}
 
           {/* --------------parte dos input-------------  */}
           {modalAction === "AccountSettingsConfirmPassForName" && (
@@ -573,41 +600,35 @@ const CustomModal = ({
             }}
           >
             {!modalAction && (
-              <TouchableOpacity
-                onPress={() => setModalVisible(false)}
-                style={[
-                  styles.button,
-                  { borderWidth: 1, borderColor: colors.borderColorLight },
-                ]}
-              >
-                <Text
-                  style={{
-                    fontSize: fontSize.regular,
-                    fontFamily: fontFamily.PoppinsRegular400,
-                  }}
-                >
-                  No
-                </Text>
-              </TouchableOpacity>
+              <View style={{ width: 50 }}>
+                <ButtonCustom
+                  onPressFunc={() => setModalVisible(false)}
+                  border
+                  title="No"
+                  txtColor={colors.primaryPurple}
+                />
+              </View>
+              // <TouchableOpacity
+              //   onPress={() => setModalVisible(false)}
+              //   style={[
+              //     styles.button,
+              //     { borderWidth: 1, borderColor: colors.borderColorLight },
+              //   ]}
+              // >
+              //   <Text
+              //     style={{
+              //       fontSize: fontSize.regular,
+              //       fontFamily: fontFamily.PoppinsRegular400,
+              //     }}
+              //   >
+              //     No
+              //   </Text>
+              // </TouchableOpacity>
             )}
 
-            {activeLoading ? (
-              <TouchableOpacity
-                onPress={() => {}}
-                style={[
-                  styles.button,
-                  {
-                    backgroundColor: modalAction
-                      ? colors.primaryPurple
-                      : colors.buttonRed,
-                  },
-                ]}
-              >
-                <Loading />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={() => {
+            <View style={{ width: 50 }}>
+              <ButtonCustom
+                onPressFunc={() => {
                   if (source === "Home" || source === "EditNote") {
                     delNote();
                   } else if (source === "SettingsTags") {
@@ -630,26 +651,14 @@ const CustomModal = ({
                     setModalVisible(false);
                   }
                 }}
-                style={[
-                  styles.button,
-                  {
-                    backgroundColor: modalAction
-                      ? colors.primaryPurple
-                      : "#ff313b",
-                  },
-                ]}
-              >
-                <Text
-                  style={{
-                    fontSize: fontSize.regular,
-                    color: colors.backgroundLight,
-                    fontFamily: fontFamily.PoppinsRegular400,
-                  }}
-                >
-                  {modalAction ? "Ok" : "Yes"}
-                </Text>
-              </TouchableOpacity>
-            )}
+                title={modalAction ? "Ok" : "Yes"}
+                background={
+                  modalAction ? colors.primaryPurple : colors.buttonRed
+                }
+                active={activeLoading}
+                txtColor={colors.backgroundLight}
+              />
+            </View>
           </View>
         </View>
       </TouchableOpacity>

@@ -142,6 +142,7 @@ const TagsSettings = ({
             selectionColor={colors.primaryPurpleAlfa}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
+            autoCapitalize="none"
           />
           <View style={{ flexDirection: "row", gap: 20, alignItems: "center" }}>
             <TouchableOpacity onPress={() => delTag(item)}>

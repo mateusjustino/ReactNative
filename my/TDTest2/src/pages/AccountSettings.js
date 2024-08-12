@@ -5,6 +5,8 @@ import {
   ScrollView,
   TouchableOpacity,
   Button,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import Header from "../components/Header";
@@ -36,6 +38,8 @@ const AccountSettings = () => {
   const [confirmPassword, setConfirmPassowrd] = useState("");
   const [verifiedEmail, setVerifiedEmail] = useState(user.emailVerified);
   const [modalVisible, setModalVisible] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   // const [source, setSource] = useState("");
 
   useFocusEffect(
@@ -51,28 +55,91 @@ const AccountSettings = () => {
 
   const profileUpdate = () => {
     // parte do email e senha
-    if (user.emailVerified) {
-      // mateus.justino.07@gmail.com
-      // mateus_justino_07@hotmail.com
+    if (name !== user.displayName || email !== user.email || password !== "") {
+      if (user.emailVerified) {
+        // mateus.justino.07@gmail.com
+        // mateus_justino_07@hotmail.com
 
-      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const checkEmail = re.test(String(email).toLowerCase());
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const checkEmail = re.test(String(email).toLowerCase());
 
-      //  email e password e name
-      if (
-        name !== user.displayName &&
-        email !== user.email &&
-        password !== ""
-      ) {
-        if (name !== "") {
+        //  email e password e name
+        if (
+          name !== user.displayName &&
+          email !== user.email &&
+          password !== ""
+        ) {
+          if (name !== "") {
+            if (checkEmail) {
+              if (password.length > 5) {
+                if (password === confirmPassword) {
+                  console.log("caiu aquiii");
+                  setModalAction(
+                    "AccountSettingsConfirmPassForEmailPasswordAndName"
+                  );
+                  setModalVisible(true); // não preciso deixar um setModalVisible(true) em cada if ........
+                } else {
+                  setModalAction("AccountSettingsPasswordConfirmDifferent");
+                  setModalVisible(true);
+                }
+              } else {
+                setModalAction("AccountSettingsPasswordShort");
+                setModalVisible(true);
+              }
+            } else {
+              setModalAction("AccountSettingsInvalidEmail");
+              setModalVisible(true);
+            }
+          } else {
+            setModalAction("AccountSettingsEmptyName");
+            setModalVisible(true);
+          }
+        }
+        // name e email
+        else if (name !== user.displayName && email !== user.email) {
+          if (name !== "") {
+            if (checkEmail) {
+              setModalAction("AccountSettingsConfirmPassForEmailAndName");
+              setModalVisible(true);
+            } else {
+              setModalAction("AccountSettingsInvalidEmail");
+              setModalVisible(true);
+            }
+          } else {
+            setModalAction("AccountSettingsEmptyName");
+            setModalVisible(true);
+          }
+        }
+
+        // name e password
+        else if (name !== user.displayName && password !== "") {
+          if (name !== "") {
+            if (password.length > 5) {
+              if (password === confirmPassword) {
+                setModalAction("AccountSettingsConfirmPassForPasswordAndName");
+                setModalVisible(true);
+              } else {
+                setModalAction("AccountSettingsPasswordConfirmDifferent");
+                setModalVisible(true);
+              }
+            } else {
+              setModalAction("AccountSettingsPasswordShort");
+              setModalVisible(true);
+            }
+          } else {
+            setModalAction("AccountSettingsEmptyName");
+            setModalVisible(true);
+          }
+        }
+
+        // aqui para baixo ja testado
+        // primeiro email e password
+        else if (email !== user.email && password !== "") {
           if (checkEmail) {
             if (password.length > 5) {
               if (password === confirmPassword) {
-                console.log("caiu aquiii");
-                setModalAction(
-                  "AccountSettingsConfirmPassForEmailPasswordAndName"
-                );
-                setModalVisible(true); // não preciso deixar um setModalVisible(true) em cada if ........
+                setModalAction("AccountSettingsConfirmPassForEmailAndPassword");
+                setModalVisible(true);
               } else {
                 setModalAction("AccountSettingsPasswordConfirmDifferent");
                 setModalVisible(true);
@@ -85,33 +152,22 @@ const AccountSettings = () => {
             setModalAction("AccountSettingsInvalidEmail");
             setModalVisible(true);
           }
-        } else {
-          setModalAction("AccountSettingsEmptyName");
-          setModalVisible(true);
         }
-      }
-      // name e email
-      else if (name !== user.displayName && email !== user.email) {
-        if (name !== "") {
+        // segundo apenas email
+        else if (email !== user.email) {
           if (checkEmail) {
-            setModalAction("AccountSettingsConfirmPassForEmailAndName");
+            setModalAction("AccountSettingsConfirmPassForEmail");
             setModalVisible(true);
           } else {
             setModalAction("AccountSettingsInvalidEmail");
             setModalVisible(true);
           }
-        } else {
-          setModalAction("AccountSettingsEmptyName");
-          setModalVisible(true);
         }
-      }
-
-      // name e password
-      else if (name !== user.displayName && password !== "") {
-        if (name !== "") {
+        // terceiro apenas password
+        else if (password !== "") {
           if (password.length > 5) {
             if (password === confirmPassword) {
-              setModalAction("AccountSettingsConfirmPassForPasswordAndName");
+              setModalAction("AccountSettingsConfirmPassForPassword");
               setModalVisible(true);
             } else {
               setModalAction("AccountSettingsPasswordConfirmDifferent");
@@ -121,71 +177,21 @@ const AccountSettings = () => {
             setModalAction("AccountSettingsPasswordShort");
             setModalVisible(true);
           }
-        } else {
-          setModalAction("AccountSettingsEmptyName");
-          setModalVisible(true);
         }
-      }
-
-      // aqui para baixo ja testado
-      // primeiro email e password
-      else if (email !== user.email && password !== "") {
-        if (checkEmail) {
-          if (password.length > 5) {
-            if (password === confirmPassword) {
-              setModalAction("AccountSettingsConfirmPassForEmailAndPassword");
-              setModalVisible(true);
-            } else {
-              setModalAction("AccountSettingsPasswordConfirmDifferent");
-              setModalVisible(true);
-            }
-          } else {
-            setModalAction("AccountSettingsPasswordShort");
-            setModalVisible(true);
-          }
-        } else {
-          setModalAction("AccountSettingsInvalidEmail");
-          setModalVisible(true);
-        }
-      }
-      // segundo apenas email
-      else if (email !== user.email) {
-        if (checkEmail) {
-          setModalAction("AccountSettingsConfirmPassForEmail");
-          setModalVisible(true);
-        } else {
-          setModalAction("AccountSettingsInvalidEmail");
-          setModalVisible(true);
-        }
-      }
-      // terceiro apenas password
-      else if (password !== "") {
-        if (password.length > 5) {
-          if (password === confirmPassword) {
-            setModalAction("AccountSettingsConfirmPassForPassword");
+        // quarto apenas name
+        else if (name !== user.displayName) {
+          if (name !== "") {
+            setModalAction("AccountSettingsConfirmPassForName");
             setModalVisible(true);
           } else {
-            setModalAction("AccountSettingsPasswordConfirmDifferent");
+            setModalAction("AccountSettingsEmptyName");
             setModalVisible(true);
           }
-        } else {
-          setModalAction("AccountSettingsPasswordShort");
-          setModalVisible(true);
         }
+      } else {
+        setModalAction("AccountSettingsVerifyEmail");
+        setModalVisible(true);
       }
-      // quarto apenas name
-      else if (name !== user.displayName) {
-        if (name !== "") {
-          setModalAction("AccountSettingsConfirmPassForName");
-          setModalVisible(true);
-        } else {
-          setModalAction("AccountSettingsEmptyName");
-          setModalVisible(true);
-        }
-      }
-    } else {
-      setModalAction("AccountSettingsVerifyEmail");
-      setModalVisible(true);
     }
   };
 
@@ -240,52 +246,151 @@ const AccountSettings = () => {
         style={styles.container}
         contentContainerStyle={{ alignItems: "center" }}
       >
-        <TextInputCustom text={name} setText={setName} label="Name" />
+        <View style={styles.form}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+          >
+            <TextInputCustom
+              text={name}
+              setText={setName}
+              label="Name"
+              autoCapitalize="none"
+            />
 
-        <TextInputCustom text={email} setText={setEmail} label="Email" />
-        {!verifiedEmail && (
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <TouchableOpacity
-              onPress={sendVerifiedEmail}
-              style={{ width: "90%", backgroundColor: colors.primaryGreen }}
+            <TextInputCustom
+              text={email}
+              setText={setEmail}
+              label="Email"
+              inputMode="email"
+              autoCapitalize="none"
+            />
+            {!verifiedEmail && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View style={{ width: "80%" }}>
+                  <ButtonCustom
+                    title="Verify email"
+                    onPressFunc={sendVerifiedEmail}
+                    txtColor={colors.primaryPurple}
+                    border
+                  />
+                </View>
+                <View style={{ width: "15%" }}>
+                  <ButtonCustom
+                    onPressFunc={checkVerifiedEmail}
+                    txtColor={colors.primaryPurple}
+                    border
+                    icon={
+                      <Ionicons
+                        name="refresh"
+                        size={iconSize.regular}
+                        color={colors.primaryPurple}
+                      />
+                    }
+                  />
+                </View>
+                {/* <TouchableOpacity
+                  onPress={sendVerifiedEmail}
+                  style={{ width: "90%", backgroundColor: colors.primaryGreen }}
+                >
+                  <Text style={{ textAlign: "center" }}>Verificar Email</Text>
+                </TouchableOpacity> */}
+                {/* <TouchableOpacity onPress={checkVerifiedEmail}>
+                  <Ionicons
+                    name="refresh"
+                    size={iconSize.regular}
+                    color={colors.primaryPurple}
+                  />
+                </TouchableOpacity> */}
+              </View>
+            )}
+
+            <TextInputCustom
+              text={password}
+              setText={setPassowrd}
+              label="Senha"
+              autoCapitalize="none"
+              secure={!showPassword}
+            />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                paddingHorizontal: 5,
+                alignItems: "center",
+              }}
             >
-              <Text style={{ textAlign: "center" }}>Verificar Email</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={checkVerifiedEmail}>
-              <Ionicons
-                name="refresh"
-                size={iconSize.regular}
-                color={colors.primaryPurple}
-              />
-            </TouchableOpacity>
-          </View>
-        )}
+              {showPassword ? (
+                <TouchableOpacity
+                  onPress={() => setShowPassword(false)}
+                  activeOpacity={0.5}
+                >
+                  <Ionicons
+                    name="eye-outline"
+                    size={iconSize.regular}
+                    color={colors.primaryPurple}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={() => setShowPassword(true)}>
+                  <Ionicons
+                    name="eye-off-outline"
+                    size={iconSize.regular}
+                    color={colors.primaryPurple}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+            <TextInputCustom
+              text={confirmPassword}
+              setText={setConfirmPassowrd}
+              label="Confirmar Senha"
+              autoCapitalize="none"
+              secure={!showConfirmPassword}
+            />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                paddingHorizontal: 5,
+                alignItems: "center",
+                // marginBottom: 15,
+              }}
+            >
+              {showConfirmPassword ? (
+                <TouchableOpacity
+                  onPress={() => setShowConfirmPassword(false)}
+                  activeOpacity={0.5}
+                >
+                  <Ionicons
+                    name="eye-outline"
+                    size={iconSize.regular}
+                    color={colors.primaryPurple}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={() => setShowConfirmPassword(true)}>
+                  <Ionicons
+                    name="eye-off-outline"
+                    size={iconSize.regular}
+                    color={colors.primaryPurple}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
 
-        <TextInputCustom text={password} setText={setPassowrd} label="Senha" />
-        <TextInputCustom
-          text={confirmPassword}
-          setText={setConfirmPassowrd}
-          label="Confirmar Senha"
-        />
-
-        {/* <Button title="confirm" onPress={profileUpdate} /> */}
-        <ButtonCustom
-          title="Confirm"
-          onPressFunc={profileUpdate}
-          background={colors.primaryPurple}
-        />
-
-        <View></View>
-        {/* <Text>verificação de email</Text>
-        <Text>atualizar o nome</Text>
-        <Text>atualizar o email</Text>
-        <Text>atualizar a senha</Text>
-        <Text>
-          enviar email para atualizar senha (isso posso colocar no login, em
-          esqueceu a senha)
-        </Text> */}
-
-        {/* <Button title="confirm" onPress={() => setModalVisible(true)} /> */}
+            <ButtonCustom
+              title="Confirm"
+              onPressFunc={profileUpdate}
+              background={colors.primaryPurple}
+            />
+          </KeyboardAvoidingView>
+        </View>
 
         <CustomModal
           modalVisible={modalVisible}
@@ -309,13 +414,11 @@ export default AccountSettings;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.backgroundLight,
-    padding: 10,
+    // padding: 10,
   },
-  containerInfo: {
-    flexDirection: "row",
-    width: "100%",
-    // backgroundColor: "red",
-    paddingHorizontal: 10,
-    justifyContent: "space-between",
+  form: {
+    width: "95%",
+    maxWidth: 500,
+    paddingBottom: 10,
   },
 });

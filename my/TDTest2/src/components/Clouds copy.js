@@ -21,21 +21,35 @@ const offsets = [
   { top: 0.015, left: 0.43 },
 ];
 
-const Clouds = () => {
+const Clouds = ({ bottom }) => {
   return (
     <View style={styles.container}>
-      {offsets.map((offset, index) => (
-        <View
-          key={index}
-          style={[
-            styles.cloud,
-            {
-              top: height * offset.top,
-              left: -width * offset.left,
-            },
-          ]}
-        />
-      ))}
+      {offsets.map((offset, index) =>
+        bottom ? (
+          <View
+            key={index}
+            style={[
+              styles.cloud,
+              {
+                bottom: height * 0.028 + height * offset.top,
+                left: -width * offset.left,
+                transform: [{ rotate: "180deg" }],
+              },
+            ]}
+          />
+        ) : (
+          <View
+            key={index}
+            style={[
+              styles.cloud,
+              {
+                top: height * offset.top,
+                left: -width * offset.left,
+              },
+            ]}
+          />
+        )
+      )}
     </View>
   );
 };

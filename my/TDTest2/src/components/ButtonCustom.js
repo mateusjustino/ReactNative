@@ -25,7 +25,7 @@ const ButtonCustom = ({
           borderColor: border ? colors.primaryPurple : "#fff",
         },
       ]}
-      activeOpacity={active ? 1 : 0.8}
+      activeOpacity={active ? 1 : 0.5}
       onPress={active ? null : onPressFunc}
     >
       {active ? (

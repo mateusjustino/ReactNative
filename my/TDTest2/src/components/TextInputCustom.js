@@ -3,7 +3,14 @@ import { fontFamily, fontSize } from "../theme/font";
 import colors from "../theme/colors";
 import { useState } from "react";
 
-const TextInputCustom = ({ text, setText, placeholder, label, secure }) => {
+const TextInputCustom = ({
+  text,
+  setText,
+  label,
+  secure,
+  inputMode,
+  autoCapitalize,
+}) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -21,12 +28,13 @@ const TextInputCustom = ({ text, setText, placeholder, label, secure }) => {
                 : colors.borderColorLight,
             },
           ]}
-          placeholder={placeholder}
           cursorColor={colors.primaryPurpleAlfa}
           selectionColor={colors.primaryPurpleAlfa}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           secureTextEntry={secure}
+          inputMode={inputMode ? inputMode : "text"}
+          autoCapitalize={autoCapitalize ? autoCapitalize : "sentences"}
         />
       </View>
       {/* <Text>

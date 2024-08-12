@@ -11,7 +11,7 @@ import {
   Button,
 } from "react-native";
 import React, { useContext, useState, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { auth } from "../firebaseConnection";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { UserContext } from "../context/userContext";
@@ -21,7 +21,7 @@ import colors from "../theme/colors";
 import { iconSize, iconSource } from "../theme/icon";
 import { fontFamily, fontSize } from "../theme/font";
 import CheckBox from "../components/CheckBox";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Ionicons } from "@expo/vector-icons";
 import Header from "../components/Header";
 import { StatusBar } from "expo-status-bar";
 import Clouds from "../components/Clouds";
@@ -29,26 +29,23 @@ import { configureNavigationBar } from "../scripts/NavigationBar";
 
 const SignIn = () => {
   const navigation = useNavigation();
-  const [email, setEmail] = useState("mateus_justino_07@hotmail.com");
-  const [password, setPassword] = useState("123123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const { user, setUser, EnterUser } = useContext(UserContext);
   const [loadingLogin, setLoadingLogin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {
-    configureNavigationBar(colors.primaryPurple);
-    return () => {};
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      configureNavigationBar(colors.primaryPurple);
+    }, [])
+  );
 
   const handleLogin = () => {
     if (email && password) {
       setLoadingLogin(true);
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-          // const user = userCredential.user;
-          // console.log(userCredential.user);
-
-          // setUser(userCredential.user);
           EnterUser(userCredential.user);
 
           navigation.navigate("Home");
@@ -69,13 +66,7 @@ const SignIn = () => {
     <>
       <StatusBar style="light" />
       <View style={{ flex: 1, backgroundColor: colors.backgroundLight }}>
-        {/* Primeira View - Topo */}
-
         <Clouds />
-        {/* <Text style={{ textAlign: "center" }}>|</Text> */}
-        {/* <Button title="a" /> */}
-
-        {/* Segunda View - Área central com Scroll */}
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
@@ -94,16 +85,17 @@ const SignIn = () => {
               <TextInputCustom
                 text={email}
                 setText={(text) => setEmail(text)}
-                placeholder="email"
                 label="Email"
+                inputMode="email"
+                autoCapitalize="none"
               />
 
               <TextInputCustom
                 text={password}
                 setText={(text) => setPassword(text)}
-                placeholder="password"
                 label="Password"
                 secure={!showPassword}
+                autoCapitalize="none"
               />
 
               <View
@@ -111,7 +103,6 @@ const SignIn = () => {
                   flexDirection: "row",
                   justifyContent: "space-between",
                   paddingHorizontal: 5,
-                  // height: 50,
                   alignItems: "center",
                   marginBottom: 15,
                 }}
@@ -144,7 +135,7 @@ const SignIn = () => {
               </View>
 
               <ButtonCustom
-                title="SignIn"
+                title="Login"
                 background={colors.primaryPurple}
                 onPressFunc={handleLogin}
                 active={loadingLogin}
@@ -162,15 +153,13 @@ const SignIn = () => {
                   onPress={() => navigation.navigate("SignUp")}
                 >
                   <Text style={[styles.text, { color: colors.primaryPurple }]}>
-                    SingUp
+                    Sing up
                   </Text>
                 </TouchableOpacity>
               </View>
             </View>
           </View>
         </ScrollView>
-
-        {/* Terceira View - Final */}
         <Clouds bottom />
       </View>
     </>
@@ -181,11 +170,7 @@ export default SignIn;
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    // justifyContent: "center",
     alignItems: "center",
-    // backgroundColor: colors.backgroundLight,
-    // padding: 10,
     zIndex: 98,
   },
   form: {

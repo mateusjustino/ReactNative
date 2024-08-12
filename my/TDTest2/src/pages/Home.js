@@ -37,6 +37,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { fontFamily, fontSize } from "../theme/font";
 import { configureNavigationBar } from "../scripts/NavigationBar";
 import ButtonCustom from "../components/ButtonCustom";
+import CloudButton from "../components/CloudButton";
 
 const Home = () => {
   const navigation = useNavigation();
@@ -69,7 +70,7 @@ const Home = () => {
       }
 
       setIsLoading(false);
-    }, [activeTags, searchText, selectedNotes])
+    }, [activeTags, searchText, selectedNotes, user])
   );
 
   const updateDocs = async () => {
@@ -396,6 +397,7 @@ const Home = () => {
                 selectionColor={colors.primaryPurpleAlfa}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
+                autoCapitalize="none"
               />
               {tags.length !== 0 && (
                 <View
@@ -468,8 +470,8 @@ const Home = () => {
         />
 
         <View style={styles.favContainer}>
-          {/* <FavButton style={styles.favButton} /> */}
-          <ButtonCustom
+          <CloudButton onPress={() => navigation.navigate("AddEditNote")} />
+          {/* <ButtonCustom
             icon={
               <Ionicons
                 name="pencil-outline"
@@ -480,20 +482,8 @@ const Home = () => {
             background={colors.primaryPurple}
             heightBtn={50}
             onPressFunc={() => navigation.navigate("AddEditNote")}
-          />
+          /> */}
         </View>
-
-        {/* <FlatList
-          data={notesSearch}
-          renderItem={({ item }) => <Text>{item.title}</Text>}
-        /> */}
-
-        {/* {activeTags.length !== 0 ? (
-          <Text>tem tags</Text>
-        ) : (
-          <Text>nao tem </Text>
-        )}
-        {searchText !== "" ? <Text>tem text</Text> : <Text>nao tem </Text>} */}
 
         <CustomModal
           modalVisible={modalVisible}
@@ -510,9 +500,9 @@ const styles = StyleSheet.create({
   favContainer: {
     position: "absolute",
     bottom: 20,
-    width: 60,
+    // width: 60,
   },
-  favButton: {},
+
   input: {
     paddingHorizontal: 10,
     paddingTop: 10,

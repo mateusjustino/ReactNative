@@ -85,93 +85,97 @@ export default function AddEditNote() {
   }, []);
 
   const handleAdd = async () => {
-    setActiveLoading(true);
-    const now = moment().format("YYYY-MM-DD HH:mm:ss");
-    let orderVar = 1;
+    if (title || content) {
+      setActiveLoading(true);
+      const now = moment().format("YYYY-MM-DD HH:mm:ss");
+      let orderVar = 1;
 
-    const q = query(
-      collection(db, "notes"),
-      orderBy("order"),
-      where("uid", "==", user.uid)
-    );
-    const querySnapshot = await getDocs(q);
-    // primeiro vou aumentar a order de todos os itens
-    for (let i = 0; i < querySnapshot.docs.length; i++) {
-      const item = querySnapshot.docs[i];
-      const noteRef = doc(db, "notes", item.id);
-      await updateDoc(noteRef, {
-        order: orderVar,
+      const q = query(
+        collection(db, "notes"),
+        orderBy("order"),
+        where("uid", "==", user.uid)
+      );
+      const querySnapshot = await getDocs(q);
+      // primeiro vou aumentar a order de todos os itens
+      for (let i = 0; i < querySnapshot.docs.length; i++) {
+        const item = querySnapshot.docs[i];
+        const noteRef = doc(db, "notes", item.id);
+        await updateDoc(noteRef, {
+          order: orderVar,
+        })
+          .then(() => {
+            orderVar += 1;
+          })
+          .catch((error) => console.log(error.message));
+      }
+
+      // depois apenos adiciono um novo com order em 0
+      const contentLower = content.toLowerCase();
+      await addDoc(collection(db, "notes"), {
+        title: title,
+        contentText: content,
+        contentTextLower: contentLower,
+        order: 0,
+        tags: activeTags,
+        createdAt: now,
+        uid: user.uid,
+        backgroundColor: statusBarColor,
       })
-        .then(() => {
-          orderVar += 1;
+        .then(async () => {
+          navigation.goBack();
         })
         .catch((error) => console.log(error.message));
+
+      setActiveLoading(false);
     }
-
-    // depois apenos adiciono um novo com order em 0
-    const contentLower = content.toLowerCase();
-    await addDoc(collection(db, "notes"), {
-      title: title,
-      contentText: content,
-      contentTextLower: contentLower,
-      order: 0,
-      tags: activeTags,
-      createdAt: now,
-      uid: user.uid,
-      backgroundColor: statusBarColor,
-    })
-      .then(async () => {
-        navigation.goBack();
-      })
-      .catch((error) => console.log(error.message));
-
-    setActiveLoading(false);
   };
 
   const handleUpdate = async () => {
-    setActiveLoading(true);
-    const contentLower = content.toLowerCase();
+    if (data.title !== title || data.contentText !== content) {
+      setActiveLoading(true);
+      const contentLower = content.toLowerCase();
 
-    const now = moment().format("YYYY-MM-DD HH:mm:ss");
+      const now = moment().format("YYYY-MM-DD HH:mm:ss");
 
-    // primeiro vou atualizar a nota atual com as novas infos e order em 0
-    const noteRef = doc(db, "notes", data.id);
-    await updateDoc(noteRef, {
-      title: title,
-      contentText: content,
-      contentTextLower: contentLower,
-      order: 0,
-      tags: activeTags,
-      lastEditTime: now,
-      backgroundColor: statusBarColor,
-    })
-      .then(async () => {
-        let orderVar = 1;
-        const q = query(
-          collection(db, "notes"),
-          orderBy("order"),
-          where("uid", "==", user.uid)
-        );
-        const querySnapshot = await getDocs(q);
-        for (let i = 0; i < querySnapshot.docs.length; i++) {
-          const item = querySnapshot.docs[i];
-          if (item.id != data.id) {
-            // aqui vou atualizar todos as notas aumentar a order delas em 1, menos a que foi atualizada anteriormente
-            const noteRef = doc(db, "notes", item.id);
-            await updateDoc(noteRef, {
-              order: orderVar,
-            })
-              .then(() => {
-                orderVar += 1;
-              })
-              .catch((error) => console.log(error.message));
-          }
-        }
-        navigation.goBack();
+      // primeiro vou atualizar a nota atual com as novas infos e order em 0
+      const noteRef = doc(db, "notes", data.id);
+      await updateDoc(noteRef, {
+        title: title,
+        contentText: content,
+        contentTextLower: contentLower,
+        order: 0,
+        tags: activeTags,
+        lastEditTime: now,
+        backgroundColor: statusBarColor,
       })
-      .catch((error) => console.log(error.message));
+        .then(async () => {
+          let orderVar = 1;
+          const q = query(
+            collection(db, "notes"),
+            orderBy("order"),
+            where("uid", "==", user.uid)
+          );
+          const querySnapshot = await getDocs(q);
+          for (let i = 0; i < querySnapshot.docs.length; i++) {
+            const item = querySnapshot.docs[i];
+            if (item.id != data.id) {
+              // aqui vou atualizar todos as notas aumentar a order delas em 1, menos a que foi atualizada anteriormente
+              const noteRef = doc(db, "notes", item.id);
+              await updateDoc(noteRef, {
+                order: orderVar,
+              })
+                .then(() => {
+                  orderVar += 1;
+                })
+                .catch((error) => console.log(error.message));
+            }
+          }
+          navigation.goBack();
+        })
+        .catch((error) => console.log(error.message));
 
-    setActiveLoading(false);
+      setActiveLoading(false);
+    }
   };
 
   const activeTagsFunction = (tag) => {
@@ -240,8 +244,8 @@ export default function AddEditNote() {
           placeholder="Title"
           value={title}
           onChangeText={(text) => setTitle(text)}
-          cursorColor={colors.primaryPurple}
-          selectionColor={colors.primaryPurple}
+          cursorColor={colors.primaryPurpleAlfa}
+          selectionColor={colors.primaryPurpleAlfa}
         />
         <TextInput
           style={[
@@ -257,8 +261,8 @@ export default function AddEditNote() {
           onChangeText={(text) => setContent(text)}
           textAlignVertical="top"
           multiline
-          cursorColor={colors.primaryPurple}
-          selectionColor={colors.primaryPurple}
+          cursorColor={colors.primaryPurpleAlfa}
+          selectionColor={colors.primaryPurpleAlfa}
         />
 
         <View
