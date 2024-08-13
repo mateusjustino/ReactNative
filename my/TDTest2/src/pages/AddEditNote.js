@@ -114,7 +114,6 @@ export default function AddEditNote() {
       await addDoc(collection(db, "notes"), {
         title: title,
         contentText: content,
-        contentTextLower: contentLower,
         order: 0,
         tags: activeTags,
         createdAt: now,
@@ -131,9 +130,12 @@ export default function AddEditNote() {
   };
 
   const handleUpdate = async () => {
-    if (data.title !== title || data.contentText !== content) {
+    if (
+      data.title !== title ||
+      data.contentText !== content ||
+      data.backgroundColor !== backgroundColorNote
+    ) {
       setActiveLoading(true);
-      const contentLower = content.toLowerCase();
 
       const now = moment().format("YYYY-MM-DD HH:mm:ss");
 
@@ -142,7 +144,6 @@ export default function AddEditNote() {
       await updateDoc(noteRef, {
         title: title,
         contentText: content,
-        contentTextLower: contentLower,
         order: 0,
         tags: activeTags,
         lastEditTime: now,
@@ -373,8 +374,20 @@ export default function AddEditNote() {
               <View style={{ flexDirection: "row", gap: 10 }}>
                 <ColorComponent colorValue={colors.backgroundLight} />
                 <ColorComponent colorValue={colors.customBackgroundNoteRed} />
+                <ColorComponent
+                  colorValue={colors.customBackgroundNoteOrange}
+                />
+                <ColorComponent
+                  colorValue={colors.customBackgroundNoteYellow}
+                />
                 <ColorComponent colorValue={colors.customBackgroundNoteGreen} />
                 <ColorComponent colorValue={colors.customBackgroundNoteBlue} />
+                <ColorComponent
+                  colorValue={colors.customBackgroundNoteIndigo}
+                />
+                <ColorComponent
+                  colorValue={colors.customBackgroundNoteViolet}
+                />
               </View>
               <TouchableOpacity onPress={() => setShowOptions(null)}>
                 <Ionicons

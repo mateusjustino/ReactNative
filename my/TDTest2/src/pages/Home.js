@@ -88,7 +88,6 @@ const Home = () => {
         uid: doc.data().uid,
         title: doc.data().title,
         contentText: doc.data().contentText,
-        contentTextLower: doc.data().contentTextLower,
         createdAt: doc.data().createdAt,
         lastEditTime: doc.data().lastEditTime,
         order: doc.data().order,
@@ -118,7 +117,6 @@ const Home = () => {
             uid: doc.data().uid,
             title: doc.data().title,
             contentText: doc.data().contentText,
-            contentTextLower: doc.data().contentTextLower,
             createdAt: doc.data().createdAt,
             lastEditTime: doc.data().lastEditTime,
             order: doc.data().order,
@@ -129,25 +127,31 @@ const Home = () => {
       });
       setNotesSearch(list);
     }
+
+    // SEMPRE CONFERIR SE ESTE AQUI ESTA ATUALIZADO IGUAL O PRINCIPALLLLLLLLLLLLLLLLLLLLLLLLLLLL
     if (searchText !== "") {
-      // console.log("tem texto ativa");
-      const searchTextLower = searchText.toLowerCase();
+      const list = [];
+      const itemLowerCase = searchText.trim().toLowerCase();
+
       const q = query(
         collection(db, "notes"),
         orderBy("order"),
         where("uid", "==", user.uid)
       );
       const querySnapshot = await getDocs(q);
-      const list = [];
       querySnapshot.forEach((doc) => {
-        const contentTextLower = doc.data().contentTextLower;
-        if (contentTextLower.includes(searchTextLower)) {
+        const contentTextLowerCase = doc.data().contentText.toLowerCase();
+        const titleLowerCase = doc.data().title.toLowerCase();
+
+        if (
+          titleLowerCase.includes(itemLowerCase) ||
+          contentTextLowerCase.includes(itemLowerCase)
+        ) {
           list.push({
             id: doc.id,
             uid: doc.data().uid,
             title: doc.data().title,
             contentText: doc.data().contentText,
-            contentTextLower: doc.data().contentTextLower,
             createdAt: doc.data().createdAt,
             lastEditTime: doc.data().lastEditTime,
             order: doc.data().order,
@@ -219,7 +223,6 @@ const Home = () => {
             uid: doc.data().uid,
             title: doc.data().title,
             contentText: doc.data().contentText,
-            contentTextLower: doc.data().contentTextLower,
             createdAt: doc.data().createdAt,
             lastEditTime: doc.data().lastEditTime,
             order: doc.data().order,
@@ -244,23 +247,28 @@ const Home = () => {
       setActiveTags([]);
       setSearchFilter(true);
 
-      const searchTextLower = item.toLowerCase();
+      const list = [];
+      const itemLowerCase = searchText.trim().toLowerCase();
+
       const q = query(
         collection(db, "notes"),
         orderBy("order"),
         where("uid", "==", user.uid)
       );
       const querySnapshot = await getDocs(q);
-      const list = [];
       querySnapshot.forEach((doc) => {
-        const contentTextLower = doc.data().contentTextLower;
-        if (contentTextLower.includes(searchTextLower)) {
+        const contentTextLowerCase = doc.data().contentText.toLowerCase();
+        const titleLowerCase = doc.data().title.toLowerCase();
+
+        if (
+          titleLowerCase.includes(itemLowerCase) ||
+          contentTextLowerCase.includes(itemLowerCase)
+        ) {
           list.push({
             id: doc.id,
             uid: doc.data().uid,
             title: doc.data().title,
             contentText: doc.data().contentText,
-            contentTextLower: doc.data().contentTextLower,
             createdAt: doc.data().createdAt,
             lastEditTime: doc.data().lastEditTime,
             order: doc.data().order,

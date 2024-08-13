@@ -12,11 +12,20 @@ const colors = {
   backgroundLight: "#f6fce3ff",
   backgroundLightStatusBarModal: "#7b7e6e",
   // color notes
-  customBackgroundNoteRed: "rgb(250,200,200)",
+  // ainda falta ajustar as coras do customStatusBarModalNoteTALlllllll
+
+  customBackgroundNoteRed: "#EEBCBD",
+  customBackgroundNoteOrange: "#EFDDBE",
+  customBackgroundNoteYellow: "#EFEBBE",
+  customBackgroundNoteGreen: "#DAEFBE",
+  customBackgroundNoteBlue: "#BECEEF",
+  customBackgroundNoteIndigo: "#C8BEEF",
+  customBackgroundNoteViolet: "#D9BEEF",
+
+  // RedOrangeYellowGreenBlueIndigoViolet
+
   customStatusBarModalNoteRed: "#7d6464",
-  customBackgroundNoteGreen: "rgb(200,250,200)",
   customStatusBarModalNoteGreen: "#647d64",
-  customBackgroundNoteBlue: "rgb(200,200,250)",
   customStatusBarModalNoteBlue: "#64647d",
 
   mainGreen: "#eaf9b2ff",
