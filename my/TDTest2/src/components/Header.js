@@ -39,6 +39,16 @@ export default function Header({
     ) {
       return colors.customBackgroundNoteRed;
     } else if (
+      statusBarColor == colors.customStatusBarModalNoteOrange ||
+      statusBarColor == colors.customBackgroundNoteOrange
+    ) {
+      return colors.customBackgroundNoteOrange;
+    } else if (
+      statusBarColor == colors.customStatusBarModalNoteYellow ||
+      statusBarColor == colors.customBackgroundNoteYellow
+    ) {
+      return colors.customBackgroundNoteYellow;
+    } else if (
       statusBarColor == colors.customStatusBarModalNoteGreen ||
       statusBarColor == colors.customBackgroundNoteGreen
     ) {
@@ -48,6 +58,16 @@ export default function Header({
       statusBarColor == colors.customBackgroundNoteBlue
     ) {
       return colors.customBackgroundNoteBlue;
+    } else if (
+      statusBarColor == colors.customStatusBarModalNoteIndigo ||
+      statusBarColor == colors.customBackgroundNoteIndigo
+    ) {
+      return colors.customBackgroundNoteIndigo;
+    } else if (
+      statusBarColor == colors.customStatusBarModalNoteViolet ||
+      statusBarColor == colors.customBackgroundNoteViolet
+    ) {
+      return colors.customBackgroundNoteViolet;
     } else if (
       statusBarColor == colors.backgroundLightStatusBarModal ||
       statusBarColor == colors.backgroundLight

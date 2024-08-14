@@ -24,9 +24,13 @@ const colors = {
 
   // RedOrangeYellowGreenBlueIndigoViolet
 
-  customStatusBarModalNoteRed: "#7d6464",
-  customStatusBarModalNoteGreen: "#647d64",
-  customStatusBarModalNoteBlue: "#64647d",
+  customStatusBarModalNoteRed: "#775e5e",
+  customStatusBarModalNoteOrange: "#776e5f",
+  customStatusBarModalNoteYellow: "#77755f",
+  customStatusBarModalNoteGreen: "#6d775f",
+  customStatusBarModalNoteBlue: "#5f6777",
+  customStatusBarModalNoteIndigo: "#645f77",
+  customStatusBarModalNoteViolet: "#6c5f77",
 
   mainGreen: "#eaf9b2ff",
   mainGreenLight1: "#f0faccff",

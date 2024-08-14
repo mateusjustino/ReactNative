@@ -8,14 +8,14 @@ const CloudButton = ({ onPress }) => {
   return (
     <TouchableOpacity
       style={styles.container}
-      activeOpacity={0.85}
+      activeOpacity={0.9}
       onPress={onPress}
     >
-      <View style={[styles.dots, { left: -20, top: 60 }]} />
+      <View style={[styles.dots, { left: -10, top: 65 }]} />
       <View
         style={[
           styles.dots,
-          { left: -10, top: 50, width: 15, height: 15, borderRadius: 7.5 },
+          { left: 0, top: 57, width: 12, height: 12, borderRadius: 6 },
         ]}
       />
       <View style={[styles.cloud, {}]} />
@@ -25,7 +25,7 @@ const CloudButton = ({ onPress }) => {
       <View style={[styles.clouds, { top: 1, height: 59 }]} />
       <Ionicons
         name="pencil-outline"
-        size={iconSize.regular}
+        size={iconSize.large}
         color={colors.backgroundLight}
       />
     </TouchableOpacity>

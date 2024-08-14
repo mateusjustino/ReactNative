@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
+  ScrollView,
 } from "react-native";
 import {
   useNavigation,
@@ -47,8 +48,11 @@ export default function AddEditNote() {
   const [content, setContent] = useState(data ? data.contentText : "");
   const [activeTags, setActiveTags] = useState(data ? data.tags : []);
   const [modalVisible, setModalVisible] = useState(false);
+  // const [backgroundColorNote, setBackgroundColorNote] = useState(
+  //   data ? data.backgroundColor : colors.backgroundLight
+  // );
   const [backgroundColorNote, setBackgroundColorNote] = useState(
-    data ? data.backgroundColor : colors.backgroundLight
+    colors.backgroundLight
   );
   const [showOptions, setShowOptions] = useState(null);
   const [activeLoading, setActiveLoading] = useState(false);
@@ -76,13 +80,57 @@ export default function AddEditNote() {
   // }, [modalVisible]);
   useEffect(() => {
     if (data) {
-      setStatusBarColor(data.backgroundColor);
-      configureNavigationBar(data.backgroundColor);
+      // setStatusBarColor(data.backgroundColor);
+      // configureNavigationBar(data.backgroundColor);
+      setBackgroundColorNote(returnHexColor(data.backgroundColor));
+      setStatusBarColor(returnHexColor(data.backgroundColor));
+      configureNavigationBar(returnHexColor(data.backgroundColor));
     } else {
       setStatusBarColor(colors.backgroundLight);
       configureNavigationBar(colors.backgroundLight);
+      setBackgroundColorNote(colors.backgroundLight);
     }
   }, []);
+
+  const returnHexColor = (color) => {
+    if (color === "red") {
+      return colors.customBackgroundNoteRed;
+    } else if (color === "orange") {
+      return colors.customBackgroundNoteOrange;
+    } else if (color === "yellow") {
+      return colors.customBackgroundNoteYellow;
+    } else if (color === "green") {
+      return colors.customBackgroundNoteGreen;
+    } else if (color === "blue") {
+      return colors.customBackgroundNoteBlue;
+    } else if (color === "indigo") {
+      return colors.customBackgroundNoteIndigo;
+    } else if (color === "violet") {
+      return colors.customBackgroundNoteViolet;
+    } else if (color === "default") {
+      return colors.backgroundLight;
+    }
+  };
+
+  const returnNameColor = (color) => {
+    if (color === colors.customBackgroundNoteRed) {
+      return "red";
+    } else if (color === colors.customBackgroundNoteOrange) {
+      return "orange";
+    } else if (color === colors.customBackgroundNoteYellow) {
+      return "yellow";
+    } else if (color === colors.customBackgroundNoteGreen) {
+      return "green";
+    } else if (color === colors.customBackgroundNoteBlue) {
+      return "blue";
+    } else if (color === colors.customBackgroundNoteIndigo) {
+      return "indigo";
+    } else if (color === colors.customBackgroundNoteViolet) {
+      return "violet";
+    } else if (color === colors.backgroundLight) {
+      return "default";
+    }
+  };
 
   const handleAdd = async () => {
     if (title || content) {
@@ -109,8 +157,7 @@ export default function AddEditNote() {
           .catch((error) => console.log(error.message));
       }
 
-      // depois apenos adiciono um novo com order em 0
-      const contentLower = content.toLowerCase();
+      // depois apenos adiciono o novo com order em 0
       await addDoc(collection(db, "notes"), {
         title: title,
         contentText: content,
@@ -118,7 +165,7 @@ export default function AddEditNote() {
         tags: activeTags,
         createdAt: now,
         uid: user.uid,
-        backgroundColor: statusBarColor,
+        backgroundColor: returnNameColor(backgroundColorNote),
       })
         .then(async () => {
           navigation.goBack();
@@ -147,7 +194,7 @@ export default function AddEditNote() {
         order: 0,
         tags: activeTags,
         lastEditTime: now,
-        backgroundColor: statusBarColor,
+        backgroundColor: returnNameColor(backgroundColorNote),
       })
         .then(async () => {
           let orderVar = 1;
@@ -191,7 +238,7 @@ export default function AddEditNote() {
     });
   };
 
-  const ColorComponent = ({ colorValue }) => {
+  const ColorComponent = ({ colorValue, defaultColor }) => {
     const changeColor = () => {
       setBackgroundColorNote(colorValue);
       setStatusBarColor(colorValue);
@@ -207,9 +254,44 @@ export default function AddEditNote() {
           borderRadius: 30,
           borderColor: colors.borderColorLight,
           borderWidth: 1,
+          position: "relative",
+          overflow: "hidden",
         }}
         onPress={changeColor}
-      />
+      >
+        {defaultColor && (
+          <>
+            <View
+              style={{
+                position: "absolute",
+                width: 1.5, // Largura da linha
+                height: "141.4%", // Diagonal de um quadrado com largura/altura 200px é 200 * sqrt(2) = ~282.8px
+                backgroundColor: colors.borderColorLight,
+                transform: [{ rotate: "45deg" }], // Rotaciona a linha para ficar diagonal
+                top: -6,
+                left: "50%",
+                // top: -41.4, // Para centralizar a linha diagonalmente
+                // left: "50%",
+                // marginLeft: -1, // Compensa metade da largura da linha para centralizar
+              }}
+            />
+            <View
+              style={{
+                position: "absolute",
+                width: 1.5, // Largura da linha
+                height: "141.4%", // Diagonal de um quadrado com largura/altura 200px é 200 * sqrt(2) = ~282.8px
+                backgroundColor: colors.borderColorLight,
+                transform: [{ rotate: "-45deg" }], // Rotaciona a linha para ficar diagonal
+                top: -6,
+                right: "50%",
+                // top: -41.4, // Para centralizar a linha diagonalmente
+                // left: "50%",
+                // marginLeft: -1, // Compensa metade da largura da linha para centralizar
+              }}
+            />
+          </>
+        )}
+      </TouchableOpacity>
     );
   };
 
@@ -309,7 +391,6 @@ export default function AddEditNote() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 gap: 10,
-                // backgroundColor: "red",
               }}
             >
               <TouchableOpacity onPress={() => setShowOptions(null)}>
@@ -369,10 +450,18 @@ export default function AddEditNote() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 gap: 10,
+                // backgroundColor: "red",
               }}
             >
-              <View style={{ flexDirection: "row", gap: 10 }}>
-                <ColorComponent colorValue={colors.backgroundLight} />
+              <ScrollView
+                horizontal
+                contentContainerStyle={{ gap: 10 }}
+                showsHorizontalScrollIndicator={false}
+              >
+                <ColorComponent
+                  colorValue={colors.backgroundLight}
+                  defaultColor
+                />
                 <ColorComponent colorValue={colors.customBackgroundNoteRed} />
                 <ColorComponent
                   colorValue={colors.customBackgroundNoteOrange}
@@ -388,7 +477,7 @@ export default function AddEditNote() {
                 <ColorComponent
                   colorValue={colors.customBackgroundNoteViolet}
                 />
-              </View>
+              </ScrollView>
               <TouchableOpacity onPress={() => setShowOptions(null)}>
                 <Ionicons
                   name="close-outline"

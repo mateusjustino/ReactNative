@@ -69,12 +69,24 @@ const CustomModal = ({
       if (statusBarColor == colors.customBackgroundNoteRed) {
         setStatusBarColor(colors.customStatusBarModalNoteRed);
         configureNavigationBar(colors.customStatusBarModalNoteRed);
+      } else if (statusBarColor == colors.customBackgroundNoteOrange) {
+        setStatusBarColor(colors.customStatusBarModalNoteOrange);
+        configureNavigationBar(colors.customStatusBarModalNoteOrange);
+      } else if (statusBarColor == colors.customBackgroundNoteYellow) {
+        setStatusBarColor(colors.customStatusBarModalNoteYellow);
+        configureNavigationBar(colors.customStatusBarModalNoteYellow);
       } else if (statusBarColor == colors.customBackgroundNoteGreen) {
         setStatusBarColor(colors.customStatusBarModalNoteGreen);
         configureNavigationBar(colors.customStatusBarModalNoteGreen);
       } else if (statusBarColor == colors.customBackgroundNoteBlue) {
         setStatusBarColor(colors.customStatusBarModalNoteBlue);
         configureNavigationBar(colors.customStatusBarModalNoteBlue);
+      } else if (statusBarColor == colors.customBackgroundNoteIndigo) {
+        setStatusBarColor(colors.customStatusBarModalNoteIndigo);
+        configureNavigationBar(colors.customStatusBarModalNoteIndigo);
+      } else if (statusBarColor == colors.customBackgroundNoteViolet) {
+        setStatusBarColor(colors.customStatusBarModalNoteViolet);
+        configureNavigationBar(colors.customStatusBarModalNoteViolet);
       } else if (statusBarColor == colors.backgroundLight) {
         setStatusBarColor(colors.backgroundLightStatusBarModal);
         configureNavigationBar(colors.backgroundLightStatusBarModal);
@@ -83,12 +95,24 @@ const CustomModal = ({
       if (statusBarColor == colors.customStatusBarModalNoteRed) {
         setStatusBarColor(colors.customBackgroundNoteRed);
         configureNavigationBar(colors.customBackgroundNoteRed);
+      } else if (statusBarColor == colors.customStatusBarModalNoteOrange) {
+        setStatusBarColor(colors.customBackgroundNoteOrange);
+        configureNavigationBar(colors.customBackgroundNoteOrange);
+      } else if (statusBarColor == colors.customStatusBarModalNoteYellow) {
+        setStatusBarColor(colors.customBackgroundNoteYellow);
+        configureNavigationBar(colors.customBackgroundNoteYellow);
       } else if (statusBarColor == colors.customStatusBarModalNoteGreen) {
         setStatusBarColor(colors.customBackgroundNoteGreen);
         configureNavigationBar(colors.customBackgroundNoteGreen);
       } else if (statusBarColor == colors.customStatusBarModalNoteBlue) {
         setStatusBarColor(colors.customBackgroundNoteBlue);
         configureNavigationBar(colors.customBackgroundNoteBlue);
+      } else if (statusBarColor == colors.customStatusBarModalNoteIndigo) {
+        setStatusBarColor(colors.customBackgroundNoteIndigo);
+        configureNavigationBar(colors.customBackgroundNoteIndigo);
+      } else if (statusBarColor == colors.customStatusBarModalNoteViolet) {
+        setStatusBarColor(colors.customBackgroundNoteViolet);
+        configureNavigationBar(colors.customBackgroundNoteViolet);
       } else if (statusBarColor == colors.backgroundLightStatusBarModal) {
         setStatusBarColor(colors.backgroundLight);
         configureNavigationBar(colors.backgroundLight);

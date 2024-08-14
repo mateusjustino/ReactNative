@@ -65,6 +65,26 @@ const NoteList = ({ data, drag }) => {
     }
   };
 
+  const returnHexColor = (color) => {
+    if (color === "red") {
+      return colors.customBackgroundNoteRed;
+    } else if (color === "orange") {
+      return colors.customBackgroundNoteOrange;
+    } else if (color === "yellow") {
+      return colors.customBackgroundNoteYellow;
+    } else if (color === "green") {
+      return colors.customBackgroundNoteGreen;
+    } else if (color === "blue") {
+      return colors.customBackgroundNoteBlue;
+    } else if (color === "indigo") {
+      return colors.customBackgroundNoteIndigo;
+    } else if (color === "violet") {
+      return colors.customBackgroundNoteViolet;
+    } else if (color === "default") {
+      return colors.backgroundLight;
+    }
+  };
+
   return (
     <ScaleDecorator activeScale={0.95}>
       <OpacityDecorator activeOpacity={0.9}>
@@ -76,7 +96,7 @@ const NoteList = ({ data, drag }) => {
             style={{
               borderWidth: 1,
               borderRadius: 10,
-              backgroundColor: data.backgroundColor,
+              backgroundColor: returnHexColor(data.backgroundColor),
               borderColor: activeSelected ? "green" : colors.borderColorLight,
               marginBottom: 10,
               padding: 10,
@@ -89,13 +109,7 @@ const NoteList = ({ data, drag }) => {
                   })
             }
           >
-            <View
-              style={
-                {
-                  // margin: 10
-                }
-              }
-            >
+            <View>
               <Text
                 style={{
                   fontSize: fontSize.regular,
@@ -106,13 +120,7 @@ const NoteList = ({ data, drag }) => {
               </Text>
             </View>
 
-            <View
-              style={
-                {
-                  // margin: 10
-                }
-              }
-            >
+            <View>
               <Text
                 numberOfLines={5}
                 style={{
@@ -129,8 +137,6 @@ const NoteList = ({ data, drag }) => {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                // height: 70,
-                // backgroundColor: "red",
               }}
             >
               <FlatList
@@ -148,8 +154,6 @@ const NoteList = ({ data, drag }) => {
               <View
                 style={{
                   flexDirection: "row",
-                  // backgroundColor: "yellow",
-                  // height: 40,
                   alignItems: "center",
                 }}
               >
@@ -157,18 +161,12 @@ const NoteList = ({ data, drag }) => {
                   name="time-outline"
                   size={iconSize.small}
                   color="black"
-                  style={
-                    {
-                      // backgroundColor: "purple"
-                    }
-                  }
                 />
                 <Text
                   style={{
                     marginStart: 5,
                     fontSize: fontSize.small,
                     fontFamily: fontFamily.PoppinsRegularItalic400,
-                    // backgroundColor: "blue",
                     paddingTop: 3,
                   }}
                 >
