@@ -54,7 +54,7 @@ const Home = () => {
   const [forceUpdate, setForceUpdate] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
-  const { selectedNotes, setSelectedNotes, user, tags } =
+  const { selectedNotes, setSelectedNotes, user, tags, setStatusBarColor } =
     useContext(UserContext);
 
   useFocusEffect(
@@ -62,6 +62,7 @@ const Home = () => {
       setIsLoading(true);
       setForceUpdate((prev) => !prev);
       configureNavigationBar(colors.backgroundLight);
+      setStatusBarColor(colors.backgroundLight);
 
       updateDocs();
 
@@ -479,18 +480,6 @@ const Home = () => {
 
         <View style={styles.favContainer}>
           <CloudButton onPress={() => navigation.navigate("AddEditNote")} />
-          {/* <ButtonCustom
-            icon={
-              <Ionicons
-                name="pencil-outline"
-                size={iconSize.regular}
-                color={colors.backgroundLight}
-              />
-            }
-            background={colors.primaryPurple}
-            heightBtn={50}
-            onPressFunc={() => navigation.navigate("AddEditNote")}
-          /> */}
         </View>
 
         <CustomModal

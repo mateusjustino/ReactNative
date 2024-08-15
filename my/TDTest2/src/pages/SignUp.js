@@ -28,9 +28,11 @@ import TextInputCustom from "../components/TextInputCustom";
 import ButtonCustom from "../components/ButtonCustom";
 import { fontFamily, fontSize } from "../theme/font";
 import { Ionicons } from "@expo/vector-icons";
+import CustomModal from "../components/CustomModal";
 
 const SignUp = () => {
   const navigation = useNavigation();
+  const { setModalAction, setStatusBarColor } = useContext(UserContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,53 +41,78 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loadingRegister, setLoadingRegister] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
       configureNavigationBar(colors.primaryPurple);
+      // setStatusBarColor(colors.primaryPurple);
+
+      const unsubscribe = navigation.addListener("beforeRemove", () => {
+        setModalAction("");
+        return true;
+      });
+
+      return unsubscribe;
     }, [])
   );
 
   const handleRegister = () => {
-    if (email && password) {
-      setLoadingRegister(true);
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(async (userCredential) => {
-          // Signed up
-          // const user = userCredential.user;
-          // console.log(user);
+    if (name && email && password && confirmPassword) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const checkEmail = re.test(String(email).toLowerCase());
+      if (checkEmail) {
+        if (password.length > 5) {
+          if (password === confirmPassword) {
+            //oficial aqui em baixo
+            setLoadingRegister(true);
+            createUserWithEmailAndPassword(auth, email, password)
+              .then(async (userCredential) => {
+                updateProfile(auth.currentUser, {
+                  displayName: name,
+                });
 
-          updateProfile(auth.currentUser, {
-            displayName: name,
-          });
+                // provavel que nao precise criar um doc vazio no banco aqui
+                await setDoc(doc(db, "settings", userCredential.user.uid), {
+                  tags: [],
+                  LastTimeSendVerifiedEmail: null,
+                });
 
-          // EnterUser(userCredential.user); // era esse que eu estava utilizando
-
-          // provavel que nao precise criar um doc vazio no banco aqui
-          await setDoc(doc(db, "settings", userCredential.user.uid), {
-            tags: [],
-            LastTimeSendVerifiedEmail: null,
-          });
-
-          signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-              console.log(userCredential.user);
-              EnterUser(userCredential.user);
-              navigation.navigate("Home");
-            })
-            .catch((error) => {
-              const errorCode = error.code;
-              const errorMessage = error.message;
-              alert(errorMessage);
-            });
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          alert(errorMessage);
-        });
-      setLoadingRegister(false);
+                signInWithEmailAndPassword(auth, email, password)
+                  .then((userCredential) => {
+                    console.log(userCredential.user);
+                    EnterUser(userCredential.user);
+                    navigation.navigate("Home");
+                  })
+                  .catch((error) => {
+                    const errorMessage = error.message;
+                    alert(errorMessage);
+                  });
+              })
+              .catch((error) => {
+                const errorMessage = error.message;
+                // alert(errorMessage);
+                setModalAction("EmailAlreadyInUse");
+                setModalVisible(true);
+              });
+            setLoadingRegister(false);
+          } else {
+            setModalAction("AccountSettingsPasswordConfirmDifferent");
+            setModalVisible(true);
+          }
+        } else {
+          setModalAction("AccountSettingsPasswordShort");
+          setModalVisible(true);
+        }
+      } else {
+        setModalAction("AccountSettingsInvalidEmail");
+        setModalVisible(true);
+      }
+    } else {
+      setModalAction("RequireAllFields");
+      setModalVisible(true);
     }
+    // mateus_justino_07@hotmail.com
   };
 
   return (
@@ -220,7 +247,13 @@ const SignUp = () => {
                     onPress={() => navigation.navigate("SignIn")}
                   >
                     <Text
-                      style={[styles.text, { color: colors.primaryPurple }]}
+                      style={[
+                        styles.text,
+                        {
+                          color: colors.primaryPurple,
+                          textDecorationLine: "underline",
+                        },
+                      ]}
                     >
                       Sing in
                     </Text>
@@ -228,6 +261,10 @@ const SignUp = () => {
                 </View>
               </KeyboardAvoidingView>
             </View>
+            <CustomModal
+              modalVisible={modalVisible}
+              setModalVisible={setModalVisible}
+            />
           </View>
         </ScrollView>
         <Clouds bottom />

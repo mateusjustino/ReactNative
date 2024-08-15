@@ -14,7 +14,6 @@ import {
   doc,
   getDocs,
   query,
-  setDoc,
   updateDoc,
 } from "firebase/firestore";
 import { UserContext } from "../context/userContext";
@@ -24,14 +23,11 @@ import colors from "../theme/colors";
 import { configureNavigationBar } from "../scripts/NavigationBar";
 import TextInputCustom from "./TextInputCustom";
 import {
-  EmailAuthProvider,
-  reauthenticateWithCredential,
   signInWithEmailAndPassword,
   updateEmail,
   updatePassword,
   updateProfile,
 } from "firebase/auth";
-import Loading from "./Loading";
 import ButtonCustom from "./ButtonCustom";
 
 const windowWidth = Dimensions.get("window").width;
@@ -175,28 +171,6 @@ const CustomModal = ({
         }
       });
     });
-
-    // await setDoc(doc(db, "settings", user.uid), {
-    //   tags: list,
-    // }).then(async () => {
-    //   const q = query(collection(db, "notes"));
-    //   const querySnapshot = await getDocs(q);
-    //   querySnapshot.forEach(async (document) => {
-    //     if (user.uid === document.data().uid) {
-    //       let listTags = document.data().tags;
-    //       const indexItem = listTags.indexOf(item);
-    //       if (indexItem !== -1) {
-    //         listTags.splice(indexItem, 1);
-    //         const ref = doc(db, "notes", document.id);
-    //         await updateDoc(ref, {
-    //           tags: listTags,
-    //         })
-    //           .then(() => console.log("tudo certo"))
-    //           .catch((error) => console.log(error.message));
-    //       }
-    //     }
-    //   });
-    // });
 
     setTheTagIsEditing(null);
     setModalVisible(false);
@@ -588,6 +562,9 @@ const CustomModal = ({
           {modalAction === "EmailAlreadyInUse" && (
             <TitleMsg message="Email ja esta sendo utilizado!" />
           )}
+          {modalAction === "RequireAllFields" && (
+            <TitleMsg message="Preencha todos os campos!" />
+          )}
 
           {/* --------------parte dos input-------------  */}
           {modalAction === "AccountSettingsConfirmPassForName" && (
@@ -612,8 +589,6 @@ const CustomModal = ({
           {modalAction === "AccountSettingsConfirmPassForPasswordAndName" && (
             <InputPassword message="Confirme sua senha antes de alterar seu password e name" />
           )}
-
-          {/* <Text>modalAction: {modalAction}</Text> */}
 
           <View
             style={{

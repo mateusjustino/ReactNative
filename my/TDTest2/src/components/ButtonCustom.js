@@ -22,7 +22,7 @@ const ButtonCustom = ({
           backgroundColor: background,
           height: heightBtn ? heightBtn : 40,
           borderWidth: border ? 1 : 0,
-          borderColor: border ? colors.primaryPurple : "#fff",
+          borderColor: border ? colors.primaryPurple : "transparent",
         },
       ]}
       activeOpacity={active ? 1 : 0.5}
@@ -36,7 +36,12 @@ const ButtonCustom = ({
         <>
           {icon && icon}
           {title && (
-            <Text style={[styles.txt, { color: txtColor ? txtColor : "#fff" }]}>
+            <Text
+              style={[
+                styles.txt,
+                { color: txtColor ? txtColor : colors.backgroundLight },
+              ]}
+            >
               {title}
             </Text>
           )}
@@ -50,7 +55,7 @@ export default ButtonCustom;
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 5,
+    paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 10,
     width: "100%",

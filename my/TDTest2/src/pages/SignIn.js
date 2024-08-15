@@ -20,7 +20,6 @@ import ButtonCustom from "../components/ButtonCustom";
 import colors from "../theme/colors";
 import { iconSize, iconSource } from "../theme/icon";
 import { fontFamily, fontSize } from "../theme/font";
-import CheckBox from "../components/CheckBox";
 import { Ionicons } from "@expo/vector-icons";
 import Header from "../components/Header";
 import { StatusBar } from "expo-status-bar";
@@ -108,7 +107,15 @@ const SignIn = () => {
                 }}
               >
                 <TouchableOpacity>
-                  <Text style={[styles.text, { color: colors.primaryPurple }]}>
+                  <Text
+                    style={[
+                      styles.text,
+                      {
+                        color: colors.primaryPurple,
+                        textDecorationLine: "underline",
+                      },
+                    ]}
+                  >
                     Forgot Password?
                   </Text>
                 </TouchableOpacity>
@@ -152,7 +159,15 @@ const SignIn = () => {
                   style={{}}
                   onPress={() => navigation.navigate("SignUp")}
                 >
-                  <Text style={[styles.text, { color: colors.primaryPurple }]}>
+                  <Text
+                    style={[
+                      styles.text,
+                      {
+                        color: colors.primaryPurple,
+                        textDecorationLine: "underline",
+                      },
+                    ]}
+                  >
                     Sing up
                   </Text>
                 </TouchableOpacity>

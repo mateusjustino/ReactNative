@@ -395,10 +395,6 @@ const AccountSettings = () => {
         <CustomModal
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
-          // source="AccountSettingsConfirmPassForEmail"
-          // source={source}
-          // setSource={setSource}
-          // source={usar um objeto aqui dentro}
           newEmail={email}
           newPassword={password}
           newName={name}

@@ -57,8 +57,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primaryPurple,
   },
   dots: {
-    width: 10,
-    height: 10,
+    width: 8,
+    height: 8,
     borderRadius: 5,
     position: "absolute",
     backgroundColor: "red",
