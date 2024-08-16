@@ -23,6 +23,7 @@ import colors from "../theme/colors";
 import { configureNavigationBar } from "../scripts/NavigationBar";
 import TextInputCustom from "./TextInputCustom";
 import {
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   updateEmail,
   updatePassword,
@@ -59,6 +60,7 @@ const CustomModal = ({
   } = useContext(UserContext);
   const [activeLoading, setActiveLoading] = useState(false);
   const [password, setPassword] = useState("123123");
+  const [email, setEmail] = useState("123123");
 
   useEffect(() => {
     if (modalVisible) {
@@ -113,6 +115,9 @@ const CustomModal = ({
         setStatusBarColor(colors.backgroundLight);
         configureNavigationBar(colors.backgroundLight);
       }
+    }
+    if (!modalVisible) {
+      setModalAction("");
     }
   }, [modalVisible]);
 
@@ -177,8 +182,6 @@ const CustomModal = ({
     setActiveLoading(false);
   };
 
-  ("mateus.justino.07@gmail.com");
-  ("mateus_justino_07@hotmail.com");
   const handleLogin = () => {
     if (password) {
       // Reautenticar o usuário antes de atualizar a senha
@@ -440,6 +443,20 @@ const CustomModal = ({
     }
   };
 
+  const sendResetPassword = () => {
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        setModalAction("ConfirmeMessageForEmailForSendPasswordReset");
+      })
+      .catch((error) => {
+        console.log(error.code);
+        console.log(error.message);
+        if (error.code === "auth/user-not-found") {
+          setModalAction("UserNotFound");
+        }
+      });
+  };
+
   const TitleMsg = ({ message }) => {
     return (
       <Text
@@ -469,6 +486,28 @@ const CustomModal = ({
           label="Password"
           text={password}
           setText={setPassword}
+          // placeholder="Enter password..."
+        />
+      </View>
+    );
+  };
+
+  const InputEmail = ({ message }) => {
+    return (
+      <View>
+        <Text
+          style={{
+            fontSize: fontSize.regular,
+            fontFamily: fontFamily.PoppinsSemiBold600,
+          }}
+        >
+          {message}
+        </Text>
+
+        <TextInputCustom
+          label="Email"
+          text={email}
+          setText={setEmail}
           // placeholder="Enter password..."
         />
       </View>
@@ -565,6 +604,18 @@ const CustomModal = ({
           {modalAction === "RequireAllFields" && (
             <TitleMsg message="Preencha todos os campos!" />
           )}
+          {modalAction === "UserNotFound" && (
+            <TitleMsg message="Usuario nao encontrado" />
+          )}
+          {modalAction === "WrongPassword" && (
+            <TitleMsg message="Password errado" />
+          )}
+          {modalAction === "TooManyRequests" && (
+            <TitleMsg message="muitas tentativas erradas, tente mais tarde" />
+          )}
+          {modalAction === "ConfirmeMessageForEmailForSendPasswordReset" && (
+            <TitleMsg message="email de reset pass enviado" />
+          )}
 
           {/* --------------parte dos input-------------  */}
           {modalAction === "AccountSettingsConfirmPassForName" && (
@@ -589,6 +640,9 @@ const CustomModal = ({
           {modalAction === "AccountSettingsConfirmPassForPasswordAndName" && (
             <InputPassword message="Confirme sua senha antes de alterar seu password e name" />
           )}
+          {modalAction === "ConfirmEmailForSendPasswordReset" && (
+            <InputEmail message="Insira seu email para recuperar" />
+          )}
 
           <View
             style={{
@@ -607,22 +661,6 @@ const CustomModal = ({
                   txtColor={colors.primaryPurple}
                 />
               </View>
-              // <TouchableOpacity
-              //   onPress={() => setModalVisible(false)}
-              //   style={[
-              //     styles.button,
-              //     { borderWidth: 1, borderColor: colors.borderColorLight },
-              //   ]}
-              // >
-              //   <Text
-              //     style={{
-              //       fontSize: fontSize.regular,
-              //       fontFamily: fontFamily.PoppinsRegular400,
-              //     }}
-              //   >
-              //     No
-              //   </Text>
-              // </TouchableOpacity>
             )}
 
             <View style={{ width: 50 }}>
@@ -646,6 +684,10 @@ const CustomModal = ({
                     modalAction === "AccountSettingsConfirmPassForName"
                   ) {
                     handleLogin();
+                  } else if (
+                    modalAction === "ConfirmEmailForSendPasswordReset"
+                  ) {
+                    sendResetPassword();
                   } else {
                     setModalVisible(false);
                   }

@@ -25,40 +25,70 @@ import Header from "../components/Header";
 import { StatusBar } from "expo-status-bar";
 import Clouds from "../components/Clouds";
 import { configureNavigationBar } from "../scripts/NavigationBar";
+import CustomModal from "../components/CustomModal";
 
 const SignIn = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { user, setUser, EnterUser } = useContext(UserContext);
+  const { user, setUser, EnterUser, setModalAction } = useContext(UserContext);
   const [loadingLogin, setLoadingLogin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
       configureNavigationBar(colors.primaryPurple);
+
+      const unsubscribe = navigation.addListener("beforeRemove", () => {
+        setModalAction("");
+        return true;
+      });
+
+      return unsubscribe;
     }, [])
   );
 
   const handleLogin = () => {
     if (email && password) {
-      setLoadingLogin(true);
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          EnterUser(userCredential.user);
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const checkEmail = re.test(String(email).toLowerCase());
+      if (checkEmail) {
+        setLoadingLogin(true);
+        signInWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            EnterUser(userCredential.user);
 
-          navigation.navigate("Home");
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          alert(errorMessage);
-          console.log(errorCode);
-          console.log(errorMessage);
-          console.log(error);
-        });
-      setLoadingLogin(false);
+            navigation.navigate("Home");
+          })
+          .catch((error) => {
+            console.log(error.code);
+            console.log(error.message);
+            if (error.code === "auth/user-not-found") {
+              setModalAction("UserNotFound");
+              setModalVisible(true);
+            }
+            if (error.code === "auth/wrong-password") {
+              setModalAction("WrongPassword");
+              setModalVisible(true);
+            }
+            if (error.code === "auth/too-many-requests") {
+              setModalAction("TooManyRequests");
+              setModalVisible(true);
+            }
+          });
+        setLoadingLogin(false);
+      } else {
+        setModalAction("AccountSettingsInvalidEmail");
+        setModalVisible(true);
+      }
     }
+  };
+
+  const forgotPassword = () => {
+    // console.log("dsasds");
+    setModalAction("ConfirmEmailForSendPasswordReset");
+    setModalVisible(true);
   };
 
   return (
@@ -106,7 +136,7 @@ const SignIn = () => {
                   marginBottom: 15,
                 }}
               >
-                <TouchableOpacity>
+                <TouchableOpacity onPress={forgotPassword}>
                   <Text
                     style={[
                       styles.text,
@@ -175,6 +205,10 @@ const SignIn = () => {
             </View>
           </View>
         </ScrollView>
+        <CustomModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+        />
         <Clouds bottom />
       </View>
     </>

@@ -63,7 +63,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.primaryPurple,
     width: "100%",
-    // height: height * 0.06,
     flexDirection: "row",
     alignItems: "flex-end",
   },
@@ -73,7 +72,6 @@ const styles = StyleSheet.create({
     borderTopStartRadius: 20,
     borderTopEndRadius: 20,
     backgroundColor: colors.backgroundLight,
-    // backgroundColor: "red",
   },
 });
 
