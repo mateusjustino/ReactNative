@@ -4,7 +4,6 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
-  Button,
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
@@ -13,16 +12,10 @@ import Header from "../components/Header";
 import colors from "../theme/colors";
 import TextInputCustom from "../components/TextInputCustom";
 import { UserContext } from "../context/userContext";
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { iconSize } from "../theme/icon";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import {
-  onAuthStateChanged,
-  sendEmailVerification,
-  updateEmail,
-  updatePassword,
-  updateProfile,
-} from "firebase/auth";
+import { sendEmailVerification } from "firebase/auth";
 import { auth, db } from "../firebaseConnection";
 import CustomModal from "../components/CustomModal";
 import moment from "moment";
@@ -40,7 +33,6 @@ const AccountSettings = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  // const [source, setSource] = useState("");
 
   useFocusEffect(
     React.useCallback(() => {
@@ -54,16 +46,11 @@ const AccountSettings = () => {
   );
 
   const profileUpdate = () => {
-    // parte do email e senha
     if (name !== user.displayName || email !== user.email || password !== "") {
       if (user.emailVerified) {
-        // mateus.justino.07@gmail.com
-        // mateus_justino_07@hotmail.com
-
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const checkEmail = re.test(String(email).toLowerCase());
 
-        //  email e password e name
         if (
           name !== user.displayName &&
           email !== user.email &&
@@ -77,7 +64,7 @@ const AccountSettings = () => {
                   setModalAction(
                     "AccountSettingsConfirmPassForEmailPasswordAndName"
                   );
-                  setModalVisible(true); // não preciso deixar um setModalVisible(true) em cada if ........
+                  setModalVisible(true);
                 } else {
                   setModalAction("AccountSettingsPasswordConfirmDifferent");
                   setModalVisible(true);
@@ -94,9 +81,7 @@ const AccountSettings = () => {
             setModalAction("AccountSettingsEmptyName");
             setModalVisible(true);
           }
-        }
-        // name e email
-        else if (name !== user.displayName && email !== user.email) {
+        } else if (name !== user.displayName && email !== user.email) {
           if (name !== "") {
             if (checkEmail) {
               setModalAction("AccountSettingsConfirmPassForEmailAndName");
@@ -109,10 +94,7 @@ const AccountSettings = () => {
             setModalAction("AccountSettingsEmptyName");
             setModalVisible(true);
           }
-        }
-
-        // name e password
-        else if (name !== user.displayName && password !== "") {
+        } else if (name !== user.displayName && password !== "") {
           if (name !== "") {
             if (password.length > 5) {
               if (password === confirmPassword) {
@@ -130,11 +112,7 @@ const AccountSettings = () => {
             setModalAction("AccountSettingsEmptyName");
             setModalVisible(true);
           }
-        }
-
-        // aqui para baixo ja testado
-        // primeiro email e password
-        else if (email !== user.email && password !== "") {
+        } else if (email !== user.email && password !== "") {
           if (checkEmail) {
             if (password.length > 5) {
               if (password === confirmPassword) {
@@ -152,9 +130,7 @@ const AccountSettings = () => {
             setModalAction("AccountSettingsInvalidEmail");
             setModalVisible(true);
           }
-        }
-        // segundo apenas email
-        else if (email !== user.email) {
+        } else if (email !== user.email) {
           if (checkEmail) {
             setModalAction("AccountSettingsConfirmPassForEmail");
             setModalVisible(true);
@@ -162,9 +138,7 @@ const AccountSettings = () => {
             setModalAction("AccountSettingsInvalidEmail");
             setModalVisible(true);
           }
-        }
-        // terceiro apenas password
-        else if (password !== "") {
+        } else if (password !== "") {
           if (password.length > 5) {
             if (password === confirmPassword) {
               setModalAction("AccountSettingsConfirmPassForPassword");
@@ -177,9 +151,7 @@ const AccountSettings = () => {
             setModalAction("AccountSettingsPasswordShort");
             setModalVisible(true);
           }
-        }
-        // quarto apenas name
-        else if (name !== user.displayName) {
+        } else if (name !== user.displayName) {
           if (name !== "") {
             setModalAction("AccountSettingsConfirmPassForName");
             setModalVisible(true);
@@ -196,13 +168,10 @@ const AccountSettings = () => {
   };
 
   const sendVerifiedEmail = async () => {
-    ("mateus.justino.07@gmail.com");
-    ("mateus_justino_07@hotmail.com");
     const docRef = doc(db, "settings", user.uid);
     const docSnap = await getDoc(docRef);
     const lastDate = docSnap.data().LastTimeSendVerifiedEmail;
     const lastDateMoment = moment(lastDate, "YYYY-MM-DD HH:mm:ss");
-    // const now = moment().format("YYYY-MM-DD HH:mm:ss");
     const now = moment();
 
     const lastDatePlus = lastDateMoment.add(1, "minutes");
@@ -250,6 +219,7 @@ const AccountSettings = () => {
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
+            <Text>{modalVisible ? "sim" : "nao"}</Text>
             <TextInputCustom
               text={name}
               setText={setName}

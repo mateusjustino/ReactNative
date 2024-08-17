@@ -10,12 +10,25 @@ const TextInputCustom = ({
   secure,
   inputMode,
   autoCapitalize,
+  forModal,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+      <Text
+        style={[
+          styles.label,
+          {
+            fontFamily: forModal
+              ? fontFamily.PoppinsSemiBold600
+              : fontFamily.PoppinsRegular400,
+            marginBottom: forModal ? 10 : 0,
+          },
+        ]}
+      >
+        {label}:
+      </Text>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <TextInput
           value={text}
@@ -37,9 +50,6 @@ const TextInputCustom = ({
           autoCapitalize={autoCapitalize ? autoCapitalize : "sentences"}
         />
       </View>
-      {/* <Text>
-        {isFocused ? "TextInput está ativo" : "TextInput está inativo"}
-      </Text> */}
     </View>
   );
 };
@@ -58,12 +68,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     width: "100%",
     fontSize: fontSize.regular,
-    // borderColor: colors.borderColorLight,
     paddingTop: 10,
     paddingBottom: 7,
   },
   label: {
-    fontFamily: fontFamily.PoppinsRegular400,
     fontSize: fontSize.regular,
     paddingStart: 5,
   },

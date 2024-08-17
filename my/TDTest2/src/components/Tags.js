@@ -15,13 +15,7 @@ const Tags = ({ item, activeTags, onPressFunc }) => {
       onPress={onPressFunc ? onPressFunc : null}
       activeOpacity={onPressFunc ? 0.5 : 1}
     >
-      <Text
-        style={{
-          fontSize: fontSize.small,
-          fontFamily: fontFamily.PoppinsRegular400,
-          paddingTop: 3,
-        }}
-      >
+      <Text style={styles.txt} numberOfLines={1}>
         #{item}
       </Text>
     </TouchableOpacity>
@@ -38,6 +32,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 10,
     borderWidth: 1,
-    // borderColor: colors.borderColorLight,
+    maxWidth: 200,
+  },
+  txt: {
+    fontSize: fontSize.small,
+    fontFamily: fontFamily.PoppinsRegular400,
+    paddingTop: 3,
   },
 });

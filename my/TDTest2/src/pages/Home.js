@@ -19,7 +19,6 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import FavButton from "../components/FavButton";
 import Header from "../components/Header";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { UserContext } from "../context/userContext";
@@ -54,8 +53,14 @@ const Home = () => {
   const [forceUpdate, setForceUpdate] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
-  const { selectedNotes, setSelectedNotes, user, tags, setStatusBarColor } =
-    useContext(UserContext);
+  const {
+    selectedNotes,
+    setSelectedNotes,
+    user,
+    tags,
+    setStatusBarColor,
+    setModalAction,
+  } = useContext(UserContext);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -376,7 +381,12 @@ const Home = () => {
                         style={{ padding: 10 }}
                       />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => setModalVisible(true)}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setModalAction("Home");
+                        setModalVisible(true);
+                      }}
+                    >
                       <Ionicons
                         name="trash-outline"
                         size={iconSize.regular}
@@ -486,7 +496,7 @@ const Home = () => {
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
           selectedNotes={selectedNotes}
-          source="Home"
+          // source="Home"
         />
       </View>
     </>

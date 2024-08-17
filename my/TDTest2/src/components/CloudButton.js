@@ -18,7 +18,7 @@ const CloudButton = ({ onPress }) => {
           { left: 0, top: 57, width: 12, height: 12, borderRadius: 6 },
         ]}
       />
-      <View style={[styles.cloud, {}]} />
+      <View style={styles.cloud} />
       <View style={[styles.clouds, { left: -11, width: 83 }]} />
       <View style={[styles.clouds, { top: 1, height: 59 }]} />
       <Ionicons
@@ -34,7 +34,6 @@ export default CloudButton;
 
 const styles = StyleSheet.create({
   container: {
-    // borderWidth: 1,
     height: 60,
     width: 60,
     alignItems: "center",

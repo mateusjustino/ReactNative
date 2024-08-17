@@ -23,13 +23,16 @@ import colors from "../theme/colors";
 import { configureNavigationBar } from "../scripts/NavigationBar";
 import TextInputCustom from "./TextInputCustom";
 import {
+  EmailAuthProvider,
+  reauthenticateWithCredential,
   sendPasswordResetEmail,
-  signInWithEmailAndPassword,
   updateEmail,
   updatePassword,
   updateProfile,
 } from "firebase/auth";
 import ButtonCustom from "./ButtonCustom";
+import { Ionicons } from "@expo/vector-icons";
+import { iconSize } from "../theme/icon";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -59,8 +62,9 @@ const CustomModal = ({
     setModalAction,
   } = useContext(UserContext);
   const [activeLoading, setActiveLoading] = useState(false);
-  const [password, setPassword] = useState("123123");
-  const [email, setEmail] = useState("123123");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (modalVisible) {
@@ -118,6 +122,10 @@ const CustomModal = ({
     }
     if (!modalVisible) {
       setModalAction("");
+      setActiveLoading(false);
+      setPassword("");
+      setEmail("");
+      setShowPassword(false);
     }
   }, [modalVisible]);
 
@@ -185,16 +193,16 @@ const CustomModal = ({
   const handleLogin = () => {
     if (password) {
       // Reautenticar o usuário antes de atualizar a senha
-      // const credential = EmailAuthProvider.credential(
-      //   auth.currentUser.email,
-      //   password
-      // );
+      const credential = EmailAuthProvider.credential(
+        auth.currentUser.email,
+        password
+      );
 
-      // reauthenticateWithCredential(auth.currentUser, credential)
-      //   .then(() => {
-      setActiveLoading(true);
-      signInWithEmailAndPassword(auth, user.email, password)
+      reauthenticateWithCredential(auth.currentUser, credential)
+        //   .then(() => {
+        // signInWithEmailAndPassword(auth, user.email, password)
         .then(() => {
+          setActiveLoading(true);
           // substituir o signin pelo reauthenticate??????????
           // para mudar email
           if (modalAction === "AccountSettingsConfirmPassForEmail") {
@@ -438,23 +446,33 @@ const CustomModal = ({
           }
         })
         .catch((error) => {
-          console.log("signInWithEmailAndPassword erro:", error.message);
+          console.log("reauthenticateWithCredential erro:", error.message);
+          if (error.code === "auth/wrong-password") {
+            setModalAction("WrongPassword");
+            setModalVisible(true);
+          }
         });
     }
   };
 
   const sendResetPassword = () => {
-    sendPasswordResetEmail(auth, email)
-      .then(() => {
-        setModalAction("ConfirmeMessageForEmailForSendPasswordReset");
-      })
-      .catch((error) => {
-        console.log(error.code);
-        console.log(error.message);
-        if (error.code === "auth/user-not-found") {
-          setModalAction("UserNotFound");
-        }
-      });
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const checkEmail = re.test(String(email).toLowerCase());
+    if (checkEmail) {
+      sendPasswordResetEmail(auth, email)
+        .then(() => {
+          setModalAction("ConfirmeMessageForEmailForSendPasswordReset");
+        })
+        .catch((error) => {
+          console.log(error.code);
+          console.log(error.message);
+          if (error.code === "auth/user-not-found") {
+            setModalAction("UserNotFound");
+          }
+        });
+    } else {
+      setModalAction("AccountSettingsInvalidEmail");
+    }
   };
 
   const TitleMsg = ({ message }) => {
@@ -470,46 +488,36 @@ const CustomModal = ({
     );
   };
 
-  const InputPassword = ({ message }) => {
+  const IconShowPass = () => {
     return (
-      <View>
-        <Text
-          style={{
-            fontSize: fontSize.regular,
-            fontFamily: fontFamily.PoppinsSemiBold600,
-          }}
-        >
-          {message}
-        </Text>
-
-        <TextInputCustom
-          label="Password"
-          text={password}
-          setText={setPassword}
-          // placeholder="Enter password..."
-        />
-      </View>
-    );
-  };
-
-  const InputEmail = ({ message }) => {
-    return (
-      <View>
-        <Text
-          style={{
-            fontSize: fontSize.regular,
-            fontFamily: fontFamily.PoppinsSemiBold600,
-          }}
-        >
-          {message}
-        </Text>
-
-        <TextInputCustom
-          label="Email"
-          text={email}
-          setText={setEmail}
-          // placeholder="Enter password..."
-        />
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "flex-end",
+          paddingHorizontal: 5,
+          alignItems: "center",
+        }}
+      >
+        {showPassword ? (
+          <TouchableOpacity
+            onPress={() => setShowPassword(false)}
+            activeOpacity={0.5}
+          >
+            <Ionicons
+              name="eye-outline"
+              size={iconSize.regular}
+              color={colors.primaryPurple}
+            />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={() => setShowPassword(true)}>
+            <Ionicons
+              name="eye-off-outline"
+              size={iconSize.regular}
+              color={colors.primaryPurple}
+            />
+          </TouchableOpacity>
+        )}
       </View>
     );
   };
@@ -520,7 +528,6 @@ const CustomModal = ({
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
-        // Alert.alert("Modal has been closed.");
         setModalVisible(!modalVisible);
       }}
     >
@@ -546,13 +553,13 @@ const CustomModal = ({
             width: windowWidth > 400 ? 400 : "90%",
           }}
         >
-          {source === "Home" && (
+          {modalAction === "Home" && (
             <TitleMsg message="Deseja excluir as notas selecionadas?" />
           )}
-          {source === "EditNote" && (
+          {modalAction === "EditNote" && (
             <TitleMsg message="Deseja excluir esta nota?" />
           )}
-          {source === "SettingsTags" && (
+          {modalAction === "SettingsTags" && (
             <TitleMsg message="Deseja excluir esta tag?" />
           )}
           {modalAction === "AccountSettingsConfirmMessageEmail" && (
@@ -616,32 +623,110 @@ const CustomModal = ({
           {modalAction === "ConfirmeMessageForEmailForSendPasswordReset" && (
             <TitleMsg message="email de reset pass enviado" />
           )}
+          {modalAction === "TagAlreadyExist" && (
+            <TitleMsg message="Tag ja existe" />
+          )}
 
-          {/* --------------parte dos input-------------  */}
+          {/* parte dos input */}
+
           {modalAction === "AccountSettingsConfirmPassForName" && (
-            <InputPassword message="Confirme sua senha antes de alterar seu name" />
+            <TextInputCustom
+              label="Confirme sua senha antes de alterar seu name"
+              text={password}
+              setText={setPassword}
+              forModal
+              secure={!showPassword}
+            />
           )}
           {modalAction === "AccountSettingsConfirmPassForEmail" && (
-            <InputPassword message="Confirme sua senha antes de alterar seu email" />
+            <TextInputCustom
+              label="Confirme sua senha antes de alterar seu email"
+              text={password}
+              setText={setPassword}
+              forModal
+              secure={!showPassword}
+            />
           )}
           {modalAction === "AccountSettingsConfirmPassForPassword" && (
-            <InputPassword message="Confirme sua senha antes de alterar seu password" />
+            <TextInputCustom
+              label="Confirme sua senha antes de alterar seu password"
+              text={password}
+              setText={setPassword}
+              forModal
+              secure={!showPassword}
+            />
           )}
           {modalAction === "AccountSettingsConfirmPassForEmailAndPassword" && (
-            <InputPassword message="Confirme sua senha antes de alterar seu email e password" />
+            <TextInputCustom
+              label="Confirme sua senha antes de alterar seu email e password"
+              text={password}
+              setText={setPassword}
+              forModal
+              secure={!showPassword}
+            />
           )}
           {modalAction ===
             "AccountSettingsConfirmPassForEmailPasswordAndName" && (
-            <InputPassword message="Confirme sua senha antes de alterar seu email e password e name" />
+            <TextInputCustom
+              label="Confirme sua senha antes de alterar seu email e password e name"
+              text={password}
+              setText={setPassword}
+              forModal
+              secure={!showPassword}
+            />
           )}
           {modalAction === "AccountSettingsConfirmPassForEmailAndName" && (
-            <InputPassword message="Confirme sua senha antes de alterar seu email e name" />
+            <TextInputCustom
+              label="Confirme sua senha antes de alterar seu email e name"
+              text={password}
+              setText={setPassword}
+              forModal
+              secure={!showPassword}
+            />
           )}
           {modalAction === "AccountSettingsConfirmPassForPasswordAndName" && (
-            <InputPassword message="Confirme sua senha antes de alterar seu password e name" />
+            <TextInputCustom
+              label="Confirme sua senha antes de alterar seu password e name"
+              text={password}
+              setText={setPassword}
+              forModal
+              secure={!showPassword}
+            />
           )}
           {modalAction === "ConfirmEmailForSendPasswordReset" && (
-            <InputEmail message="Insira seu email para recuperar" />
+            <TextInputCustom
+              label="Insira seu email para recuperar"
+              text={email}
+              setText={setEmail}
+              forModal
+              inputMode="email"
+              autoCapitalize="none"
+            />
+          )}
+
+          {/* parte do show password */}
+
+          {modalAction === "AccountSettingsConfirmPassForName" && (
+            <IconShowPass />
+          )}
+          {modalAction === "AccountSettingsConfirmPassForEmail" && (
+            <IconShowPass />
+          )}
+          {modalAction === "AccountSettingsConfirmPassForPassword" && (
+            <IconShowPass />
+          )}
+          {modalAction === "AccountSettingsConfirmPassForEmailAndPassword" && (
+            <IconShowPass />
+          )}
+          {modalAction ===
+            "AccountSettingsConfirmPassForEmailPasswordAndName" && (
+            <IconShowPass />
+          )}
+          {modalAction === "AccountSettingsConfirmPassForEmailAndName" && (
+            <IconShowPass />
+          )}
+          {modalAction === "AccountSettingsConfirmPassForPasswordAndName" && (
+            <IconShowPass />
           )}
 
           <View
@@ -652,23 +737,25 @@ const CustomModal = ({
               marginTop: 20,
             }}
           >
-            {!modalAction && (
-              <View style={{ width: 50 }}>
-                <ButtonCustom
-                  onPressFunc={() => setModalVisible(false)}
-                  border
-                  title="No"
-                  txtColor={colors.primaryPurple}
-                />
-              </View>
-            )}
+            {modalAction === "Home" ||
+              modalAction === "EditNote" ||
+              (modalAction === "SettingsTags" && (
+                <View style={{ width: 50 }}>
+                  <ButtonCustom
+                    onPressFunc={() => setModalVisible(false)}
+                    border
+                    title="No"
+                    txtColor={colors.primaryPurple}
+                  />
+                </View>
+              ))}
 
             <View style={{ width: 50 }}>
               <ButtonCustom
                 onPressFunc={() => {
-                  if (source === "Home" || source === "EditNote") {
+                  if (modalAction === "Home" || modalAction === "EditNote") {
                     delNote();
-                  } else if (source === "SettingsTags") {
+                  } else if (modalAction === "SettingsTags") {
                     delTag();
                   } else if (
                     modalAction === "AccountSettingsConfirmPassForEmail" ||
@@ -692,9 +779,19 @@ const CustomModal = ({
                     setModalVisible(false);
                   }
                 }}
-                title={modalAction ? "Ok" : "Yes"}
+                title={
+                  modalAction === "Home" ||
+                  modalAction === "EditNote" ||
+                  modalAction === "SettingsTags"
+                    ? "Yes"
+                    : "Ok"
+                }
                 background={
-                  modalAction ? colors.primaryPurple : colors.buttonRed
+                  modalAction === "Home" ||
+                  modalAction === "EditNote" ||
+                  modalAction === "SettingsTags"
+                    ? colors.buttonRed
+                    : colors.primaryPurple
                 }
                 active={activeLoading}
                 txtColor={colors.backgroundLight}

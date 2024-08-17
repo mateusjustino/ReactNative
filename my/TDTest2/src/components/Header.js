@@ -26,7 +26,7 @@ export default function Header({
   settingsTitle,
 }) {
   const navigation = useNavigation();
-  const { user, statusBarColor } = useContext(UserContext);
+  const { user, statusBarColor, setModalAction } = useContext(UserContext);
 
   useEffect(() => {
     colorBackground();
@@ -81,16 +81,7 @@ export default function Header({
       style={[styles.container, { backgroundColor: colorBackground() }]}
     >
       <StatusBarExpo backgroundColor={statusBarColor} style="auto" />
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          // padding: 10,
-          paddingTop: 10,
-          // backgroundColor: "red",
-        }}
-      >
+      <View style={styles.containerContent}>
         {fromHome && (
           <>
             <View
@@ -98,7 +89,6 @@ export default function Header({
                 flexDirection: "row",
                 gap: 5,
                 alignItems: "center",
-                // backgroundColor: "red",
                 padding: 5,
               }}
             >
@@ -120,7 +110,6 @@ export default function Header({
             <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
               <Ionicons
                 name="menu-outline"
-                // name="settings-outline"
                 size={iconSize.regular}
                 color={colors.primaryPurple}
                 style={{
@@ -143,7 +132,12 @@ export default function Header({
               />
             </TouchableOpacity>
             {canDelete ? (
-              <TouchableOpacity onPress={() => setModalVisible(true)}>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalAction("EditNote");
+                  setModalVisible(true);
+                }}
+              >
                 <Ionicons
                   name="trash-outline"
                   size={iconSize.regular}
@@ -198,5 +192,11 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     paddingHorizontal: 10,
+  },
+  containerContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingTop: 10,
   },
 });

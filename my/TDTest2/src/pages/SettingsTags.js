@@ -12,7 +12,7 @@ import Header from "../components/Header";
 import { fontFamily, fontSize } from "../theme/font";
 import colors from "../theme/colors";
 import { UserContext } from "../context/userContext";
-import TagsSettings from "../components/TagsSettings";
+import TagsControl from "../components/TagsControl";
 import CustomModal from "../components/CustomModal";
 import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { iconSize } from "../theme/icon";
@@ -21,7 +21,7 @@ import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebaseConnection";
 
 const SettingsTags = () => {
-  const { tags, user, setTags } = useContext(UserContext);
+  const { tags, user, setTags, setModalAction } = useContext(UserContext);
   const [tagName, setTagName] = useState("");
   const [theTagIsEditing, setTheTagIsEditing] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -31,7 +31,9 @@ const SettingsTags = () => {
   const addTag = async () => {
     setActiveLoading(true);
     if (tags.includes(tagName)) {
-      console.log("ja existe");
+      setActiveLoading(false);
+      setModalVisible(true);
+      setModalAction("TagAlreadyExist");
       return;
     }
     let list = [...tags, tagName];
@@ -117,7 +119,7 @@ const SettingsTags = () => {
         <FlatList
           data={tags}
           renderItem={({ item }) => (
-            <TagsSettings
+            <TagsControl
               item={item}
               theTagIsEditing={theTagIsEditing}
               setTheTagIsEditing={setTheTagIsEditing}
@@ -133,7 +135,7 @@ const SettingsTags = () => {
           setModalVisible={setModalVisible}
           theTagIsEditing={theTagIsEditing}
           setTheTagIsEditing={setTheTagIsEditing}
-          source="SettingsTags"
+          // source="SettingsTags"
         />
       </ScrollView>
     </>

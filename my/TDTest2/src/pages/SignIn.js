@@ -86,7 +86,6 @@ const SignIn = () => {
   };
 
   const forgotPassword = () => {
-    // console.log("dsasds");
     setModalAction("ConfirmEmailForSendPasswordReset");
     setModalVisible(true);
   };

@@ -14,7 +14,7 @@ import {
   OpacityDecorator,
 } from "react-native-draggable-flatlist";
 import { UserContext } from "../context/userContext";
-import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import Tags from "./Tags";
 import { fontFamily, fontSize } from "../theme/font";
 import { iconSize } from "../theme/icon";
@@ -26,7 +26,6 @@ const NoteList = ({ data, drag }) => {
   const [activeSelected, setActiveSelected] = useState(false);
 
   useEffect(() => {
-    // filtrando as notas que estão selecionadas
     const isActiveSelected = selectedNotes.some((note) => note.id === data.id);
     setActiveSelected(isActiveSelected);
   }, [selectedNotes]);
@@ -56,11 +55,9 @@ const NoteList = ({ data, drag }) => {
       }
     }
     if (hasItem) {
-      // Remover o item do estado
       const updatedNotes = selectedNotes.filter((note) => note.id !== data.id);
       setSelectedNotes(updatedNotes);
     } else {
-      // Adicionar o item ao estado
       setSelectedNotes([...selectedNotes, data]);
     }
   };
@@ -93,14 +90,13 @@ const NoteList = ({ data, drag }) => {
             onLongPress={() => {
               drag();
             }}
-            style={{
-              borderWidth: 1,
-              borderRadius: 10,
-              backgroundColor: returnHexColor(data.backgroundColor),
-              borderColor: activeSelected ? "green" : colors.borderColorLight,
-              marginBottom: 10,
-              padding: 10,
-            }}
+            style={[
+              styles.container,
+              {
+                backgroundColor: returnHexColor(data.backgroundColor),
+                borderColor: activeSelected ? "green" : colors.borderColorLight,
+              },
+            ]}
             onPress={() =>
               selectedNotes.length !== 0
                 ? controlSelectecNotes()
@@ -183,4 +179,11 @@ const NoteList = ({ data, drag }) => {
 
 export default NoteList;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    borderWidth: 1,
+    borderRadius: 10,
+    marginBottom: 10,
+    padding: 10,
+  },
+});

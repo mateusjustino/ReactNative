@@ -12,7 +12,6 @@ import {
   doc,
   getDocs,
   query,
-  setDoc,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -23,13 +22,13 @@ import { fontFamily, fontSize } from "../theme/font";
 import { iconSize } from "../theme/icon";
 import Loading from "./Loading";
 
-const TagsSettings = ({
+const TagsControl = ({
   item,
   theTagIsEditing,
   setTheTagIsEditing,
   setModalVisible,
 }) => {
-  const { user, tags, setTags } = useContext(UserContext);
+  const { user, tags, setTags, setModalAction } = useContext(UserContext);
   const [tagNameItem, setTagNameItem] = useState(item);
   const [editItem, setEditItem] = useState(false);
   const [activeLoading, setActiveLoading] = useState(false);
@@ -48,8 +47,9 @@ const TagsSettings = ({
     if (item != tagNameItem) {
       setActiveLoading(true);
       if (tags.includes(tagNameItem)) {
-        console.log("ja existe");
-        alert("já existe");
+        setActiveLoading(false);
+        setModalVisible(true);
+        setModalAction("TagAlreadyExist");
         return;
       }
 
@@ -66,7 +66,6 @@ const TagsSettings = ({
       await updateDoc(settingsRef, {
         tags: list,
       }).then(async () => {
-        console.log("-".repeat("99"));
         const q = query(collection(db, "notes"), where("uid", "==", user.uid));
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach(async (document) => {
@@ -90,42 +89,28 @@ const TagsSettings = ({
     setTheTagIsEditing(null);
   };
 
-  const delTag = async (item) => {
+  const delTag = async () => {
     setModalVisible(true);
+    setModalAction("SettingsTags");
   };
 
   return (
     <View
-      style={{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingVertical: 5,
-        height: 70,
-        borderBottomWidth: theTagIsEditing ? 0 : 1,
-        borderRadius: 10,
-        borderColor: colors.borderColorLight,
-        marginVertical: 10,
-      }}
+      style={[
+        styles.container,
+        {
+          borderBottomWidth: theTagIsEditing ? 0 : 1,
+        },
+      ]}
     >
-      {/* <Text>ao clicar em um, ja abrir o input</Text> */}
       {editItem ? (
         <View
           style={[
             styles.input,
             {
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              width: "100%",
-              borderRadius: 10,
-              borderWidth: 1,
               borderColor: isFocused
                 ? colors.primaryPurpleAlfa
                 : colors.borderColorLight,
-
-              padding: 10,
-              paddingStart: 17.5,
             },
           ]}
         >
@@ -136,7 +121,6 @@ const TagsSettings = ({
               width: "70%",
               fontSize: fontSize.regular,
               fontFamily: fontFamily.PoppinsRegular400,
-              // backgroundColor: "red",
             }}
             cursorColor={colors.primaryPurpleAlfa}
             selectionColor={colors.primaryPurpleAlfa}
@@ -184,9 +168,6 @@ const TagsSettings = ({
             width: "100%",
             paddingHorizontal: 10,
             paddingStart: 5,
-            // paddingVertical: 7,
-            // height: 29,
-            // backgroundColor: "red",
           }}
           onPress={() => {
             setTheTagIsEditing(item);
@@ -220,8 +201,27 @@ const TagsSettings = ({
   );
 };
 
-export default TagsSettings;
+export default TagsControl;
 
 const styles = StyleSheet.create({
-  input: {},
+  container: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 5,
+    height: 70,
+    borderRadius: 10,
+    borderColor: colors.borderColorLight,
+    marginVertical: 10,
+  },
+  input: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    borderRadius: 10,
+    borderWidth: 1,
+    padding: 10,
+    paddingStart: 17.5,
+  },
 });
