@@ -9,27 +9,19 @@ export default function UserContextProvider({ children }) {
   const [selectedNotes, setSelectedNotes] = useState([]);
   const [user, setUser] = useState({});
   const [tags, setTags] = useState([]);
-  const [notesFiltered, setNotesFiltered] = useState([]);
   const [statusBarColor, setStatusBarColor] = useState(colors.backgroundLight);
   const [modalAction, setModalAction] = useState("");
+  // const [unknownError, setUnknownError] = useState("");
 
   const EnterUser = async (userInfo) => {
     setUser(userInfo);
 
-    const docRef = doc(db, "settings", userInfo.uid);
+    const docRef = doc(db, "userData", userInfo.uid);
     const docSnap = await getDoc(docRef);
 
     const list = docSnap.data().tags;
     list.sort((a, b) => a.localeCompare(b));
     setTags(list);
-
-    // if (docSnap.exists()) {
-    //   let list = docSnap.data().tags;
-    //   list.sort((a, b) => a.localeCompare(b));
-    //   setTags(list);
-    // } else {
-    //   setTags([]);
-    // }
   };
 
   return (

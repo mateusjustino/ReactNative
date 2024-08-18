@@ -1,26 +1,60 @@
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import colors from "../theme/colors";
 import { fontFamily, fontSize } from "../theme/font";
 
 const Tags = ({ item, activeTags, onPressFunc }) => {
+  if (onPressFunc) {
+    return (
+      <TouchableOpacity
+        style={[
+          styles.tag,
+          Array.isArray(activeTags) && activeTags.includes(item)
+            ? { borderColor: colors.primaryPurple }
+            : { borderColor: colors.borderColorLight },
+        ]}
+        onPress={onPressFunc}
+        activeOpacity={onPressFunc ? 0.5 : 1}
+      >
+        <Text style={styles.txt} numberOfLines={1}>
+          #{item}
+        </Text>
+      </TouchableOpacity>
+    );
+  }
   return (
-    <TouchableOpacity
+    <View
       style={[
         styles.tag,
         Array.isArray(activeTags) && activeTags.includes(item)
           ? { borderColor: colors.primaryPurple }
           : { borderColor: colors.borderColorLight },
       ]}
-      onPress={onPressFunc ? onPressFunc : null}
-      activeOpacity={onPressFunc ? 0.5 : 1}
     >
       <Text style={styles.txt} numberOfLines={1}>
         #{item}
       </Text>
-    </TouchableOpacity>
+    </View>
   );
 };
+// const Tags = ({ item, activeTags, onPressFunc }) => {
+//   return (
+//     <TouchableOpacity
+//       style={[
+//         styles.tag,
+//         Array.isArray(activeTags) && activeTags.includes(item)
+//           ? { borderColor: colors.primaryPurple }
+//           : { borderColor: colors.borderColorLight },
+//       ]}
+//       onPress={onPressFunc ? onPressFunc : null}
+//       activeOpacity={onPressFunc ? 0.5 : 1}
+//     >
+//       <Text style={styles.txt} numberOfLines={1}>
+//         #{item}
+//       </Text>
+//     </TouchableOpacity>
+//   );
+// };
 
 export default Tags;
 

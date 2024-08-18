@@ -168,7 +168,7 @@ const AccountSettings = () => {
   };
 
   const sendVerifiedEmail = async () => {
-    const docRef = doc(db, "settings", user.uid);
+    const docRef = doc(db, "userData", user.uid);
     const docSnap = await getDoc(docRef);
     const lastDate = docSnap.data().LastTimeSendVerifiedEmail;
     const lastDateMoment = moment(lastDate, "YYYY-MM-DD HH:mm:ss");
@@ -182,8 +182,8 @@ const AccountSettings = () => {
           setModalAction("AccountSettingsSendEmail");
           setModalVisible(true);
           const nowDate = moment().format("YYYY-MM-DD HH:mm:ss");
-          const settingsRef = doc(db, "settings", user.uid);
-          await updateDoc(settingsRef, {
+          const docRef = doc(db, "userData", user.uid);
+          await updateDoc(docRef, {
             LastTimeSendVerifiedEmail: nowDate,
           });
         })
@@ -219,7 +219,6 @@ const AccountSettings = () => {
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
-            <Text>{modalVisible ? "sim" : "nao"}</Text>
             <TextInputCustom
               text={name}
               setText={setName}
@@ -264,19 +263,6 @@ const AccountSettings = () => {
                     }
                   />
                 </View>
-                {/* <TouchableOpacity
-                  onPress={sendVerifiedEmail}
-                  style={{ width: "90%", backgroundColor: colors.primaryGreen }}
-                >
-                  <Text style={{ textAlign: "center" }}>Verificar Email</Text>
-                </TouchableOpacity> */}
-                {/* <TouchableOpacity onPress={checkVerifiedEmail}>
-                  <Ionicons
-                    name="refresh"
-                    size={iconSize.regular}
-                    color={colors.primaryPurple}
-                  />
-                </TouchableOpacity> */}
               </View>
             )}
 
@@ -329,7 +315,6 @@ const AccountSettings = () => {
                 justifyContent: "flex-end",
                 paddingHorizontal: 5,
                 alignItems: "center",
-                // marginBottom: 15,
               }}
             >
               {showConfirmPassword ? (
@@ -380,7 +365,6 @@ export default AccountSettings;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.backgroundLight,
-    // padding: 10,
   },
   form: {
     width: "95%",

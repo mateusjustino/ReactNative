@@ -7,29 +7,17 @@ import {
   Image,
   Linking,
 } from "react-native";
-import React, { useContext, useState } from "react";
 import Header from "../components/Header";
-import { UserContext } from "../context/userContext";
-import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../firebaseConnection";
+import { auth } from "../firebaseConnection";
 import { signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
-import CustomModal from "../components/CustomModal";
 import colors from "../theme/colors";
-import {
-  Ionicons,
-  MaterialCommunityIcons,
-  Feather,
-  SimpleLineIcons,
-  AntDesign,
-} from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { iconSize, iconSource } from "../theme/icon";
-import ButtonCustom from "../components/ButtonCustom";
 import { fontFamily, fontSize } from "../theme/font";
 
 const Settings = () => {
   const navigation = useNavigation();
-  const { setUser } = useContext(UserContext);
 
   const handleLogOut = () => {
     signOut(auth)
@@ -47,11 +35,9 @@ const Settings = () => {
         style={{
           borderBottomWidth: 1,
           borderColor: colors.borderColorLight,
-          // paddingBottom: 10,
           marginVertical: 13,
           paddingVertical: 5,
           paddingStart: 5,
-          // borderLeftWidth: 1,
         }}
       >
         <TouchableOpacity
@@ -65,11 +51,8 @@ const Settings = () => {
             style={{
               flexDirection: "row",
               alignItems: "center",
-              // marginVertical: 10,
               gap: 15,
-              // borderBottomWidth: 1,
-              // borderColor: colors.borderColorLight,
-              paddingBottom: 10,
+              paddingBottom: 5,
             }}
           >
             {icon}
@@ -77,7 +60,6 @@ const Settings = () => {
               style={{
                 fontFamily: fontFamily.PoppinsRegular400,
                 fontSize: fontSize.regular,
-                // backgroundColor: "red",
                 paddingTop: 4,
               }}
             >
@@ -97,24 +79,17 @@ const Settings = () => {
   };
 
   return (
-    // <Text>colocar algo ou uma tela para quando o usuario esta sem internet?</Text>
-
     <>
       <Header fromSettings settingsTitle="Settings" />
       <ScrollView
         style={styles.container}
         contentContainerStyle={{
           alignItems: "center",
-          // flex: 1,
-          // padding: 10,
-          // backgroundColor: "red",
           paddingBottom: 30,
         }}
       >
         <View
           style={{
-            // justifyContent: "space-between",
-            // flex: 1,
             width: "100%",
           }}
         >

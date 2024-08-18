@@ -1,5 +1,4 @@
 import {
-  FlatList,
   StyleSheet,
   Text,
   TextInput,
@@ -13,7 +12,6 @@ import {
   collection,
   doc,
   getDocs,
-  onSnapshot,
   orderBy,
   query,
   updateDoc,
@@ -23,24 +21,19 @@ import Header from "../components/Header";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { UserContext } from "../context/userContext";
 import LoadingScreen from "../components/LoadingScreen";
-import {
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import CustomModal from "../components/CustomModal";
-import Tags from "../components/Tags";
 import colors from "../theme/colors";
 import { iconSize } from "../theme/icon";
 import { Ionicons } from "@expo/vector-icons";
 import { fontFamily, fontSize } from "../theme/font";
 import { configureNavigationBar } from "../scripts/NavigationBar";
-import ButtonCustom from "../components/ButtonCustom";
 import CloudButton from "../components/CloudButton";
+import ListTags from "../components/ListTags";
+import NoNotes from "../components/NoNotes";
 
 const Home = () => {
   const navigation = useNavigation();
-  const route = useRoute();
   const [notes, setNotes] = useState([]);
   const [notesSearch, setNotesSearch] = useState([]);
   const [searchFilter, setSearchFilter] = useState(false);
@@ -62,9 +55,17 @@ const Home = () => {
     setModalAction,
   } = useContext(UserContext);
 
+  useEffect(() => {
+    setIsLoading(true);
+    const loadDocs = async () => {
+      await updateDocs();
+      setIsLoading(false);
+    };
+    loadDocs();
+  }, []);
+
   useFocusEffect(
     React.useCallback(() => {
-      setIsLoading(true);
       setForceUpdate((prev) => !prev);
       configureNavigationBar(colors.backgroundLight);
       setStatusBarColor(colors.backgroundLight);
@@ -74,8 +75,6 @@ const Home = () => {
       if (activeTags.length !== 0 || searchText !== "") {
         updateDocsFiltered();
       }
-
-      setIsLoading(false);
     }, [activeTags, searchText, selectedNotes, user])
   );
 
@@ -91,14 +90,14 @@ const Home = () => {
     querySnapshot.forEach((doc) => {
       list.push({
         id: doc.id,
-        uid: doc.data().uid,
-        title: doc.data().title,
+        backgroundColor: doc.data().backgroundColor,
         contentText: doc.data().contentText,
         createdAt: doc.data().createdAt,
         lastEditTime: doc.data().lastEditTime,
         order: doc.data().order,
         tags: doc.data().tags,
-        backgroundColor: doc.data().backgroundColor,
+        title: doc.data().title,
+        uid: doc.data().uid,
       });
     });
     setNotes(list);
@@ -106,7 +105,6 @@ const Home = () => {
 
   const updateDocsFiltered = async () => {
     if (activeTags.length !== 0) {
-      // console.log("tem tag ativa");
       const q = query(
         collection(db, "notes"),
         orderBy("order"),
@@ -117,24 +115,22 @@ const Home = () => {
       querySnapshot.forEach((doc) => {
         const tagsFromNote = doc.data().tags;
         if (containsAllElements(tagsFromNote, activeTags)) {
-          // Faça algo se tagsFromNote contém todos os elementos de activeTagsList
           list.push({
             id: doc.id,
-            uid: doc.data().uid,
-            title: doc.data().title,
+            backgroundColor: doc.data().backgroundColor,
             contentText: doc.data().contentText,
             createdAt: doc.data().createdAt,
             lastEditTime: doc.data().lastEditTime,
             order: doc.data().order,
             tags: doc.data().tags,
-            backgroundColor: doc.data().backgroundColor,
+            title: doc.data().title,
+            uid: doc.data().uid,
           });
         }
       });
       setNotesSearch(list);
     }
 
-    // SEMPRE CONFERIR SE ESTE AQUI ESTA ATUALIZADO IGUAL O PRINCIPALLLLLLLLLLLLLLLLLLLLLLLLLLLL
     if (searchText !== "") {
       const list = [];
       const itemLowerCase = searchText.trim().toLowerCase();
@@ -155,14 +151,14 @@ const Home = () => {
         ) {
           list.push({
             id: doc.id,
-            uid: doc.data().uid,
-            title: doc.data().title,
+            backgroundColor: doc.data().backgroundColor,
             contentText: doc.data().contentText,
             createdAt: doc.data().createdAt,
             lastEditTime: doc.data().lastEditTime,
             order: doc.data().order,
             tags: doc.data().tags,
-            backgroundColor: doc.data().backgroundColor,
+            title: doc.data().title,
+            uid: doc.data().uid,
           });
         }
       });
@@ -172,7 +168,6 @@ const Home = () => {
 
   const handleAdjustOrder = async ({ data, from, to }) => {
     let needUpdate = false;
-    // checo se as order de alguma nota foi alterada, faço isso pela ordem dos ids
     for (let i = 0; i < data.length; i++) {
       if (data[i].id !== notes[i].id) {
         needUpdate = true;
@@ -180,16 +175,13 @@ const Home = () => {
     }
     if (needUpdate) {
       setNotes(data);
-      // Itera sobre os itens reordenados e atualiza a ordem dos documentos no Firestore
       await Promise.all(
         data.map(async (item, index) => {
           const noteRef = doc(db, "notes", item.id);
           await updateDoc(noteRef, { order: index });
         })
       )
-        .then(() => {
-          // setNotes(data);
-        })
+        .then(() => {})
         .catch((error) =>
           console.log("Erro ao atualizar a ordem no Firestore:", error)
         );
@@ -199,16 +191,13 @@ const Home = () => {
   };
 
   const searchNotes = async (fromWhere, item) => {
-    // com o searchFilter eu digo se algum meio de pesquisa esta ativo
     setSearchFilter(false);
 
     if (fromWhere === "tags") {
       let activeTagsList = activeTags;
       if (activeTagsList.includes(item)) {
-        // Se a tag já existe, remove-a
         activeTagsList = activeTagsList.filter((t) => t !== item).sort();
       } else {
-        // Se a tag não existe, adiciona-a
         activeTagsList = [...activeTagsList, item].sort();
       }
       setActiveTags(activeTagsList);
@@ -223,17 +212,16 @@ const Home = () => {
       querySnapshot.forEach((doc) => {
         const tagsFromNote = doc.data().tags;
         if (containsAllElements(tagsFromNote, activeTagsList)) {
-          // Faça algo se tagsFromNote contém todos os elementos de activeTagsList
           list.push({
             id: doc.id,
-            uid: doc.data().uid,
-            title: doc.data().title,
+            backgroundColor: doc.data().backgroundColor,
             contentText: doc.data().contentText,
             createdAt: doc.data().createdAt,
             lastEditTime: doc.data().lastEditTime,
             order: doc.data().order,
             tags: doc.data().tags,
-            backgroundColor: doc.data().backgroundColor,
+            title: doc.data().title,
+            uid: doc.data().uid,
           });
         }
       });
@@ -272,14 +260,14 @@ const Home = () => {
         ) {
           list.push({
             id: doc.id,
-            uid: doc.data().uid,
-            title: doc.data().title,
+            backgroundColor: doc.data().backgroundColor,
             contentText: doc.data().contentText,
             createdAt: doc.data().createdAt,
             lastEditTime: doc.data().lastEditTime,
             order: doc.data().order,
             tags: doc.data().tags,
-            backgroundColor: doc.data().backgroundColor,
+            title: doc.data().title,
+            uid: doc.data().uid,
           });
         }
       });
@@ -288,9 +276,9 @@ const Home = () => {
   };
 
   function containsAllElements(array1, array2) {
-    const set1 = new Set(array1);
+    const set = new Set(array1);
     for (let item of array2) {
-      if (!set1.has(item)) {
+      if (!set.has(item)) {
         return false;
       }
     }
@@ -303,27 +291,8 @@ const Home = () => {
   return (
     <>
       <Header fromHome />
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          paddingHorizontal: 10,
-          paddingTop: 10,
-          backgroundColor: colors.backgroundLight,
-          // backgroundColor: "red",
-        }}
-      >
-        <View
-          style={{
-            width: "100%",
-            // height: 100,
-            alignItems: "center",
-            marginTop: 10,
-            gap: 10,
-            // backgroundColor: "red",
-            marginBottom: 25,
-          }}
-        >
+      <View style={styles.container}>
+        <View style={styles.containerSearchFilter}>
           {selectedNotes.length !== 0 ? (
             <>
               <View
@@ -331,7 +300,6 @@ const Home = () => {
                   width: "100%",
                   alignItems: "center",
                   justifyContent: "center",
-                  // paddingBottom: 10,
                 }}
               >
                 <View
@@ -340,9 +308,6 @@ const Home = () => {
                     borderColor: colors.borderColorLight,
                     borderRadius: 10,
                     width: "100%",
-                    // padding: 10,
-                    // gap: 10,
-                    // backgroundColor: "red",
                   }}
                 >
                   <Text
@@ -351,7 +316,6 @@ const Home = () => {
                       fontFamily: fontFamily.PoppinsRegular400,
                       padding: 10,
                       paddingBottom: 7,
-                      // backgroundColor: "pink",
                     }}
                   >
                     <Text
@@ -370,7 +334,6 @@ const Home = () => {
                     style={{
                       flexDirection: "row",
                       justifyContent: "space-between",
-                      // backgroundColor: "yellow",
                     }}
                   >
                     <TouchableOpacity onPress={() => setSelectedNotes([])}>
@@ -424,69 +387,41 @@ const Home = () => {
                     flexDirection: "row",
                   }}
                 >
-                  <FlatList
-                    data={tags}
-                    renderItem={({ item }) => {
-                      return (
-                        <Tags
-                          item={item}
-                          activeTags={activeTags}
-                          onPressFunc={() => searchNotes("tags", item)}
-                        />
-                      );
-                    }}
-                    horizontal
-                    extraData={forceUpdate}
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{ alignItems: "center" }}
-                    ListFooterComponent={
-                      <TouchableOpacity
-                        onPress={() => navigation.navigate("SettingsTags")}
-                        style={{
-                          backgroundColor: colors.primaryGreenAlfa,
-                          padding: 3,
-                          paddingHorizontal: 10,
-                          marginRight: 10,
-                          borderRadius: 10,
-                          borderWidth: 1,
-                          borderColor: colors.borderColorLight,
-                        }}
-                      >
-                        <Ionicons
-                          // name="menu-outline"
-                          name="add-outline"
-                          size={iconSize.small}
-                          color={colors.primaryPurple}
-                        />
-                      </TouchableOpacity>
-                    }
+                  <ListTags
+                    forceUpdate={forceUpdate}
+                    activeTags={activeTags}
+                    searchNotes={searchNotes}
                   />
                 </View>
               )}
             </>
           )}
         </View>
-        <DraggableFlatList
-          data={searchFilter ? notesSearch : notes}
-          keyExtractor={(item) => item.id}
-          onDragBegin={(index) => {
-            setDraggingItem(searchFilter ? notesSearch[index] : notes[index]);
-          }}
-          onDragEnd={handleAdjustOrder}
-          renderItem={({ item, drag }) => (
-            <NoteList
-              data={item}
-              drag={
-                searchFilter || selectedNotes.length !== 0 ? () => {} : drag
-              }
-            />
-          )}
-          containerStyle={{
-            width: "100%",
-            flex: 1,
-          }}
-          showsVerticalScrollIndicator={false}
-        />
+        {notes.length === 0 ? (
+          <NoNotes />
+        ) : (
+          <DraggableFlatList
+            data={searchFilter ? notesSearch : notes}
+            keyExtractor={(item) => item.id}
+            onDragBegin={(index) => {
+              setDraggingItem(searchFilter ? notesSearch[index] : notes[index]);
+            }}
+            onDragEnd={handleAdjustOrder}
+            renderItem={({ item, drag }) => (
+              <NoteList
+                data={item}
+                drag={
+                  searchFilter || selectedNotes.length !== 0 ? () => {} : drag
+                }
+              />
+            )}
+            containerStyle={{
+              width: "100%",
+              flex: 1,
+            }}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
 
         <View style={styles.favContainer}>
           <CloudButton onPress={() => navigation.navigate("AddEditNote")} />
@@ -496,7 +431,6 @@ const Home = () => {
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
           selectedNotes={selectedNotes}
-          // source="Home"
         />
       </View>
     </>
@@ -504,10 +438,23 @@ const Home = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    backgroundColor: colors.backgroundLight,
+  },
+  containerSearchFilter: {
+    width: "100%",
+    alignItems: "center",
+    marginTop: 10,
+    gap: 10,
+    marginBottom: 25,
+  },
   favContainer: {
     position: "absolute",
     bottom: 20,
-    // width: 60,
   },
 
   input: {

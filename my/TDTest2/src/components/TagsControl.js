@@ -62,8 +62,8 @@ const TagsControl = ({
       list.sort((a, b) => a.localeCompare(b));
       setTags(list);
 
-      const settingsRef = doc(db, "settings", user.uid);
-      await updateDoc(settingsRef, {
+      const docRef = doc(db, "userData", user.uid);
+      await updateDoc(docRef, {
         tags: list,
       }).then(async () => {
         const q = query(collection(db, "notes"), where("uid", "==", user.uid));

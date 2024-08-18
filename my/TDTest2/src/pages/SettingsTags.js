@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  Text,
   View,
   ScrollView,
   FlatList,
@@ -14,10 +13,10 @@ import colors from "../theme/colors";
 import { UserContext } from "../context/userContext";
 import TagsControl from "../components/TagsControl";
 import CustomModal from "../components/CustomModal";
-import { FontAwesome6, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { iconSize } from "../theme/icon";
 import Loading from "../components/Loading";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebaseConnection";
 
 const SettingsTags = () => {
@@ -39,14 +38,11 @@ const SettingsTags = () => {
     let list = [...tags, tagName];
     list.sort((a, b) => a.localeCompare(b));
 
-    const settingsRef = doc(db, "settings", user.uid);
-    await updateDoc(settingsRef, {
+    const docRef = doc(db, "userData", user.uid);
+    await updateDoc(docRef, {
       tags: list,
     });
 
-    // await setDoc(doc(db, "settings", user.uid), {
-    //   tags: list,
-    // });
     setTags(list);
     setTagName("");
     setActiveLoading(false);
@@ -63,9 +59,6 @@ const SettingsTags = () => {
           style={[
             styles.inputView,
             {
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
               borderColor: isFocused
                 ? colors.primaryPurpleAlfa
                 : colors.borderColorLight,
@@ -73,14 +66,7 @@ const SettingsTags = () => {
           ]}
         >
           <TextInput
-            style={{
-              flex: 1,
-              fontSize: fontSize.regular,
-              fontFamily: fontFamily.PoppinsRegular400,
-              // backgroundColor: "red",
-              height: 35,
-              paddingStart: 5,
-            }}
+            style={styles.input}
             value={tagName}
             onChangeText={(text) => setTagName(text)}
             placeholder="Create a tag..."
@@ -135,7 +121,6 @@ const SettingsTags = () => {
           setModalVisible={setModalVisible}
           theTagIsEditing={theTagIsEditing}
           setTheTagIsEditing={setTheTagIsEditing}
-          // source="SettingsTags"
         />
       </ScrollView>
     </>
@@ -156,6 +141,15 @@ const styles = StyleSheet.create({
     paddingBottom: 7,
     borderRadius: 10,
     borderWidth: 1,
-    // borderColor: colors.borderColorLight,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  input: {
+    flex: 1,
+    fontSize: fontSize.regular,
+    fontFamily: fontFamily.PoppinsRegular400,
+    height: 35,
+    paddingStart: 5,
   },
 });

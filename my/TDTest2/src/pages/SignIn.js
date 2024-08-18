@@ -3,7 +3,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
   KeyboardAvoidingView,
@@ -105,102 +104,106 @@ const SignIn = () => {
           <View style={styles.container}>
             <View style={{ marginBottom: 50 }}>
               <Image
-                style={{ height: 35 * 2.2, width: 64 * 2.2 }}
+                style={{ height: 77, width: 140.8 }}
                 source={iconSource.logoRoxo}
               />
             </View>
             <View style={styles.form}>
-              <TextInputCustom
-                text={email}
-                setText={(text) => setEmail(text)}
-                label="Email"
-                inputMode="email"
-                autoCapitalize="none"
-              />
-
-              <TextInputCustom
-                text={password}
-                setText={(text) => setPassword(text)}
-                label="Password"
-                secure={!showPassword}
-                autoCapitalize="none"
-              />
-
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  paddingHorizontal: 5,
-                  alignItems: "center",
-                  marginBottom: 15,
-                }}
+              <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
               >
-                <TouchableOpacity onPress={forgotPassword}>
-                  <Text
-                    style={[
-                      styles.text,
-                      {
-                        color: colors.primaryPurple,
-                        textDecorationLine: "underline",
-                      },
-                    ]}
-                  >
-                    Forgot Password?
-                  </Text>
-                </TouchableOpacity>
-                {showPassword ? (
-                  <TouchableOpacity
-                    onPress={() => setShowPassword(false)}
-                    activeOpacity={0.5}
-                  >
-                    <Ionicons
-                      name="eye-outline"
-                      size={iconSize.regular}
-                      color={colors.primaryPurple}
-                    />
-                  </TouchableOpacity>
-                ) : (
-                  <TouchableOpacity onPress={() => setShowPassword(true)}>
-                    <Ionicons
-                      name="eye-off-outline"
-                      size={iconSize.regular}
-                      color={colors.primaryPurple}
-                    />
-                  </TouchableOpacity>
-                )}
-              </View>
+                <TextInputCustom
+                  text={email}
+                  setText={(text) => setEmail(text)}
+                  label="Email"
+                  inputMode="email"
+                  autoCapitalize="none"
+                />
 
-              <ButtonCustom
-                title="Login"
-                background={colors.primaryPurple}
-                onPressFunc={handleLogin}
-                active={loadingLogin}
-              />
-              <View
-                style={{
-                  alignItems: "center",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                }}
-              >
-                <Text style={[styles.text]}>Don't have account? </Text>
-                <TouchableOpacity
-                  style={{}}
-                  onPress={() => navigation.navigate("SignUp")}
+                <TextInputCustom
+                  text={password}
+                  setText={(text) => setPassword(text)}
+                  label="Password"
+                  secure={!showPassword}
+                  autoCapitalize="none"
+                />
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    paddingHorizontal: 5,
+                    alignItems: "center",
+                    marginBottom: 15,
+                  }}
                 >
-                  <Text
-                    style={[
-                      styles.text,
-                      {
-                        color: colors.primaryPurple,
-                        textDecorationLine: "underline",
-                      },
-                    ]}
+                  <TouchableOpacity onPress={forgotPassword}>
+                    <Text
+                      style={[
+                        styles.text,
+                        {
+                          color: colors.primaryPurple,
+                          textDecorationLine: "underline",
+                        },
+                      ]}
+                    >
+                      Forgot Password?
+                    </Text>
+                  </TouchableOpacity>
+                  {showPassword ? (
+                    <TouchableOpacity
+                      onPress={() => setShowPassword(false)}
+                      activeOpacity={0.5}
+                    >
+                      <Ionicons
+                        name="eye-outline"
+                        size={iconSize.regular}
+                        color={colors.primaryPurple}
+                      />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity onPress={() => setShowPassword(true)}>
+                      <Ionicons
+                        name="eye-off-outline"
+                        size={iconSize.regular}
+                        color={colors.primaryPurple}
+                      />
+                    </TouchableOpacity>
+                  )}
+                </View>
+
+                <ButtonCustom
+                  title="Login"
+                  background={colors.primaryPurple}
+                  onPressFunc={handleLogin}
+                  active={loadingLogin}
+                />
+                <View
+                  style={{
+                    alignItems: "center",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text style={[styles.text]}>Don't have account? </Text>
+                  <TouchableOpacity
+                    style={{}}
+                    onPress={() => navigation.navigate("SignUp")}
                   >
-                    Sing up
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                    <Text
+                      style={[
+                        styles.text,
+                        {
+                          color: colors.primaryPurple,
+                          textDecorationLine: "underline",
+                        },
+                      ]}
+                    >
+                      Sing up
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </KeyboardAvoidingView>
             </View>
           </View>
         </ScrollView>
@@ -219,13 +222,11 @@ export default SignIn;
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    zIndex: 98,
   },
   form: {
     width: "95%",
     maxWidth: 500,
     paddingBottom: 10,
-    zIndex: 99,
   },
   text: {
     fontSize: fontSize.regular,

@@ -1,7 +1,6 @@
 import {
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
   ScrollView,
@@ -18,7 +17,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { UserContext } from "../context/userContext";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { configureNavigationBar } from "../scripts/NavigationBar";
 import colors from "../theme/colors";
 import { StatusBar } from "expo-status-bar";
@@ -32,12 +31,12 @@ import CustomModal from "../components/CustomModal";
 
 const SignUp = () => {
   const navigation = useNavigation();
-  const { setModalAction, setStatusBarColor } = useContext(UserContext);
+  const { setModalAction } = useContext(UserContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { user, setUser, EnterUser } = useContext(UserContext);
+  const { EnterUser } = useContext(UserContext);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loadingRegister, setLoadingRegister] = useState(false);
@@ -46,7 +45,6 @@ const SignUp = () => {
   useFocusEffect(
     React.useCallback(() => {
       configureNavigationBar(colors.primaryPurple);
-      // setStatusBarColor(colors.primaryPurple);
 
       const unsubscribe = navigation.addListener("beforeRemove", () => {
         setModalAction("");
@@ -64,7 +62,6 @@ const SignUp = () => {
       if (checkEmail) {
         if (password.length > 5) {
           if (password === confirmPassword) {
-            //oficial aqui em baixo
             setLoadingRegister(true);
             createUserWithEmailAndPassword(auth, email, password)
               .then(async (userCredential) => {
@@ -72,15 +69,13 @@ const SignUp = () => {
                   displayName: name,
                 });
 
-                // provavel que nao precise criar um doc vazio no banco aqui
-                await setDoc(doc(db, "settings", userCredential.user.uid), {
+                await setDoc(doc(db, "userData", userCredential.user.uid), {
                   tags: [],
                   LastTimeSendVerifiedEmail: null,
                 });
 
                 signInWithEmailAndPassword(auth, email, password)
                   .then((userCredential) => {
-                    console.log(userCredential.user);
                     EnterUser(userCredential.user);
                     navigation.navigate("Home");
                   })
@@ -90,10 +85,10 @@ const SignUp = () => {
                   });
               })
               .catch((error) => {
-                const errorMessage = error.message;
-                // alert(errorMessage);
-                setModalAction("EmailAlreadyInUse");
-                setModalVisible(true);
+                if (error.code === "auth/email-already-in-use") {
+                  setModalAction("EmailAlreadyInUse");
+                  setModalVisible(true);
+                }
               });
             setLoadingRegister(false);
           } else {
@@ -112,7 +107,6 @@ const SignUp = () => {
       setModalAction("RequireAllFields");
       setModalVisible(true);
     }
-    // mateus_justino_07@hotmail.com
   };
 
   return (

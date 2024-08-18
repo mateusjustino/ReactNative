@@ -1,11 +1,4 @@
-import {
-  Text,
-  View,
-  Modal,
-  TouchableOpacity,
-  Dimensions,
-  StyleSheet,
-} from "react-native";
+import { Text, View, Modal, TouchableOpacity, StyleSheet } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { auth, db } from "../firebaseConnection";
 import {
@@ -34,15 +27,12 @@ import ButtonCustom from "./ButtonCustom";
 import { Ionicons } from "@expo/vector-icons";
 import { iconSize } from "../theme/icon";
 
-const windowWidth = Dimensions.get("window").width;
-
 const CustomModal = ({
   modalVisible,
   setModalVisible,
   idNote,
   theTagIsEditing,
   setTheTagIsEditing,
-  source,
   newName,
   newEmail,
   newPassword,
@@ -162,8 +152,8 @@ const CustomModal = ({
     list.sort((a, b) => a.localeCompare(b));
     setTags(list);
 
-    const settingsRef = doc(db, "settings", user.uid);
-    await updateDoc(settingsRef, {
+    const docRef = doc(db, "userData", user.uid);
+    await updateDoc(docRef, {
       tags: list,
     }).then(async () => {
       const q = query(collection(db, "notes"));
@@ -192,19 +182,14 @@ const CustomModal = ({
 
   const handleLogin = () => {
     if (password) {
-      // Reautenticar o usuário antes de atualizar a senha
       const credential = EmailAuthProvider.credential(
         auth.currentUser.email,
         password
       );
 
       reauthenticateWithCredential(auth.currentUser, credential)
-        //   .then(() => {
-        // signInWithEmailAndPassword(auth, user.email, password)
         .then(() => {
           setActiveLoading(true);
-          // substituir o signin pelo reauthenticate??????????
-          // para mudar email
           if (modalAction === "AccountSettingsConfirmPassForEmail") {
             updateEmail(auth.currentUser, newEmail)
               .then(async () => {
@@ -214,8 +199,8 @@ const CustomModal = ({
                 });
                 checkVerifiedEmail();
                 setModalAction("AccountSettingsConfirmMessageEmail");
-                const settingsRef = doc(db, "settings", user.uid);
-                await updateDoc(settingsRef, {
+                const docRef = doc(db, "userData", user.uid);
+                await updateDoc(docRef, {
                   LastTimeSendVerifiedEmail: null,
                 });
                 setActiveLoading(false);
@@ -229,12 +214,9 @@ const CustomModal = ({
                 }
                 setActiveLoading(false);
               });
-          }
-          // para mudar o password
-          else if (modalAction === "AccountSettingsConfirmPassForPassword") {
+          } else if (modalAction === "AccountSettingsConfirmPassForPassword") {
             updatePassword(user, newPassword)
               .then(() => {
-                console.log("password atualizado");
                 setModalAction("AccountSettingsConfirmMessagePassword");
                 setActiveLoading(false);
               })
@@ -242,9 +224,7 @@ const CustomModal = ({
                 alert(error.message);
                 setActiveLoading(false);
               });
-          }
-          // para mudar o name
-          else if (modalAction === "AccountSettingsConfirmPassForName") {
+          } else if (modalAction === "AccountSettingsConfirmPassForName") {
             updateProfile(auth.currentUser, {
               displayName: newName,
             })
@@ -257,9 +237,7 @@ const CustomModal = ({
                 console.log("error updateProfile", error);
                 setActiveLoading(false);
               });
-          }
-          // para mudar email e password
-          else if (
+          } else if (
             modalAction === "AccountSettingsConfirmPassForEmailAndPassword"
           ) {
             updatePassword(auth.currentUser, newPassword)
@@ -280,8 +258,8 @@ const CustomModal = ({
                     setUser(userNow);
                   });
 
-                  const settingsRef = doc(db, "settings", user.uid);
-                  await updateDoc(settingsRef, {
+                  const docRef = doc(db, "userData", user.uid);
+                  await updateDoc(docRef, {
                     LastTimeSendVerifiedEmail: null,
                   })
                     .then(() => console.log("updateDoc tudo certo"))
@@ -304,9 +282,7 @@ const CustomModal = ({
                   setActiveLoading(false);
                 });
             }, 1000);
-          }
-          // para mudar email password e name
-          else if (
+          } else if (
             modalAction === "AccountSettingsConfirmPassForEmailPasswordAndName"
           ) {
             updateProfile(auth.currentUser, {
@@ -340,8 +316,8 @@ const CustomModal = ({
                     setUser(userNow);
                   });
 
-                  const settingsRef = doc(db, "settings", user.uid);
-                  await updateDoc(settingsRef, {
+                  const docRef = doc(db, "userData", user.uid);
+                  await updateDoc(docRef, {
                     LastTimeSendVerifiedEmail: null,
                   })
                     .then(() => console.log("updateDoc tudo certo"))
@@ -364,9 +340,7 @@ const CustomModal = ({
                   setActiveLoading(false);
                 });
             }, 2000);
-          }
-          // para mudar email e name
-          else if (
+          } else if (
             modalAction === "AccountSettingsConfirmPassForEmailAndName"
           ) {
             updateProfile(auth.currentUser, {
@@ -387,8 +361,8 @@ const CustomModal = ({
                     setUser(userNow);
                   });
                   checkVerifiedEmail();
-                  const settingsRef = doc(db, "settings", user.uid);
-                  await updateDoc(settingsRef, {
+                  const docRef = doc(db, "userData", user.uid);
+                  await updateDoc(docRef, {
                     LastTimeSendVerifiedEmail: null,
                   })
                     .then(() => {
@@ -413,9 +387,7 @@ const CustomModal = ({
                   setActiveLoading(false);
                 });
             }, 1000);
-          }
-          // para mudar  password e name
-          else if (
+          } else if (
             modalAction === "AccountSettingsConfirmPassForPasswordAndName"
           ) {
             updateProfile(auth.currentUser, {
@@ -522,6 +494,19 @@ const CustomModal = ({
     );
   };
 
+  const ButtonNo = () => {
+    return (
+      <View style={{ width: 50 }}>
+        <ButtonCustom
+          onPressFunc={() => setModalVisible(false)}
+          border
+          title="No"
+          txtColor={colors.primaryPurple}
+        />
+      </View>
+    );
+  };
+
   return (
     <Modal
       animationType="fade"
@@ -550,7 +535,8 @@ const CustomModal = ({
             borderRadius: 10,
             borderWidth: 1,
             borderColor: colors.borderColorLight,
-            width: windowWidth > 400 ? 400 : "90%",
+            width: "90%",
+            maxWidth: 400,
           }}
         >
           {modalAction === "Home" && (
@@ -729,26 +715,10 @@ const CustomModal = ({
             <IconShowPass />
           )}
 
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-end",
-              gap: 10,
-              marginTop: 20,
-            }}
-          >
-            {modalAction === "Home" ||
-              modalAction === "EditNote" ||
-              (modalAction === "SettingsTags" && (
-                <View style={{ width: 50 }}>
-                  <ButtonCustom
-                    onPressFunc={() => setModalVisible(false)}
-                    border
-                    title="No"
-                    txtColor={colors.primaryPurple}
-                  />
-                </View>
-              ))}
+          <View style={styles.buttonContainer}>
+            {modalAction === "Home" && <ButtonNo />}
+            {modalAction === "EditNote" && <ButtonNo />}
+            {modalAction === "SettingsTags" && <ButtonNo />}
 
             <View style={{ width: 50 }}>
               <ButtonCustom
@@ -807,12 +777,10 @@ const CustomModal = ({
 export default CustomModal;
 
 const styles = StyleSheet.create({
-  button: {
-    padding: 8,
-    paddingHorizontal: 15,
-    borderRadius: 10,
-    width: 60,
-    justifyContent: "center",
-    alignItems: "center",
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: 10,
+    marginTop: 20,
   },
 });

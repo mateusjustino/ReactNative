@@ -1,7 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "../pages/Home";
 import AddEditNote from "../pages/AddEditNote";
-import Welcome from "../pages/Welcome";
 import SignIn from "../pages/SignIn";
 import SignUp from "../pages/SignUp";
 import { useContext, useEffect, useState } from "react";
@@ -10,8 +9,6 @@ import { auth } from "../firebaseConnection";
 import LoadingScreen from "../components/LoadingScreen";
 import { UserContext } from "../context/userContext";
 import Settings from "../pages/Settings";
-import * as NavigationBar from "expo-navigation-bar";
-import { startTransition } from "react";
 import colors from "../theme/colors";
 import { configureNavigationBar } from "../scripts/NavigationBar";
 import AccountSettings from "../pages/AccountSettings";
@@ -21,16 +18,14 @@ const Stack = createNativeStackNavigator();
 
 const AppRoutes = () => {
   const [userAuth, setUserAuth] = useState(null);
-  const { user, setUser, EnterUser } = useContext(UserContext);
+  const { EnterUser } = useContext(UserContext);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // setUser(user);
         EnterUser(user);
         setUserAuth(true);
       } else {
-        // setUser({});
         setUserAuth(false);
       }
     });
@@ -52,7 +47,6 @@ const AppRoutes = () => {
       }}
       initialRouteName={userAuth ? "Home" : "SignIn"}
     >
-      <Stack.Screen name="Welcome" component={Welcome} />
       <Stack.Screen name="SignIn" component={SignIn} />
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="Home" component={Home} />

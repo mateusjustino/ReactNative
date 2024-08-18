@@ -1,11 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
-  Text,
   View,
   TextInput,
   TouchableOpacity,
-  FlatList,
   ScrollView,
 } from "react-native";
 import {
@@ -27,30 +25,25 @@ import {
 } from "firebase/firestore";
 import moment from "moment";
 import { UserContext } from "../context/userContext";
-import Tags from "../components/Tags";
 import CustomModal from "../components/CustomModal";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../theme/colors";
 import { fontFamily, fontSize } from "../theme/font";
 import { iconSize } from "../theme/icon";
-import Loading from "../components/Loading";
 import { configureNavigationBar } from "../scripts/NavigationBar";
 import ButtonCustom from "../components/ButtonCustom";
+import ListTags from "../components/ListTags";
 
 export default function AddEditNote() {
   const navigation = useNavigation();
   const route = useRoute();
   const data = route.params?.data;
 
-  const { user, tags, setStatusBarColor, statusBarColor } =
-    useContext(UserContext);
+  const { user, setStatusBarColor } = useContext(UserContext);
   const [title, setTitle] = useState(data ? data.title : "");
   const [content, setContent] = useState(data ? data.contentText : "");
   const [activeTags, setActiveTags] = useState(data ? data.tags : []);
   const [modalVisible, setModalVisible] = useState(false);
-  // const [backgroundColorNote, setBackgroundColorNote] = useState(
-  //   data ? data.backgroundColor : colors.backgroundLight
-  // );
   const [backgroundColorNote, setBackgroundColorNote] = useState(
     colors.backgroundLight
   );
@@ -60,7 +53,6 @@ export default function AddEditNote() {
   useFocusEffect(
     React.useCallback(() => {
       const unsubscribe = navigation.addListener("beforeRemove", () => {
-        // aqui consigo executar algo quando volto para a tela anterior
         setStatusBarColor(colors.backgroundLight);
         setBackgroundColorNote(colors.backgroundLight);
         return true;
@@ -70,18 +62,8 @@ export default function AddEditNote() {
     }, [navigation])
   );
 
-  // useEffect(() => {
-  //   if (data) {
-  //     // if (!modalVisible) {
-  //     //   setStatusBarColor(data.backgroundColor);
-  //     // }
-  //     // configureNavigationBar(data.backgroundColor);
-  //   }
-  // }, [modalVisible]);
   useEffect(() => {
     if (data) {
-      // setStatusBarColor(data.backgroundColor);
-      // configureNavigationBar(data.backgroundColor);
       setBackgroundColorNote(returnHexColor(data.backgroundColor));
       setStatusBarColor(returnHexColor(data.backgroundColor));
       configureNavigationBar(returnHexColor(data.backgroundColor));
@@ -144,7 +126,6 @@ export default function AddEditNote() {
         where("uid", "==", user.uid)
       );
       const querySnapshot = await getDocs(q);
-      // primeiro vou aumentar a order de todos os itens
       for (let i = 0; i < querySnapshot.docs.length; i++) {
         const item = querySnapshot.docs[i];
         const noteRef = doc(db, "notes", item.id);
@@ -157,15 +138,15 @@ export default function AddEditNote() {
           .catch((error) => console.log(error.message));
       }
 
-      // depois apenos adiciono o novo com order em 0
       await addDoc(collection(db, "notes"), {
-        title: title,
+        backgroundColor: returnNameColor(backgroundColorNote),
         contentText: content,
+        createdAt: now,
+        lastEditTime: now,
         order: 0,
         tags: activeTags,
-        createdAt: now,
+        title: title,
         uid: user.uid,
-        backgroundColor: returnNameColor(backgroundColorNote),
       })
         .then(async () => {
           navigation.goBack();
@@ -186,15 +167,14 @@ export default function AddEditNote() {
 
       const now = moment().format("YYYY-MM-DD HH:mm:ss");
 
-      // primeiro vou atualizar a nota atual com as novas infos e order em 0
       const noteRef = doc(db, "notes", data.id);
       await updateDoc(noteRef, {
-        title: title,
+        backgroundColor: returnNameColor(backgroundColorNote),
         contentText: content,
+        lastEditTime: now,
         order: 0,
         tags: activeTags,
-        lastEditTime: now,
-        backgroundColor: returnNameColor(backgroundColorNote),
+        title: title,
       })
         .then(async () => {
           let orderVar = 1;
@@ -207,7 +187,6 @@ export default function AddEditNote() {
           for (let i = 0; i < querySnapshot.docs.length; i++) {
             const item = querySnapshot.docs[i];
             if (item.id != data.id) {
-              // aqui vou atualizar todos as notas aumentar a order delas em 1, menos a que foi atualizada anteriormente
               const noteRef = doc(db, "notes", item.id);
               await updateDoc(noteRef, {
                 order: orderVar,
@@ -224,18 +203,6 @@ export default function AddEditNote() {
 
       setActiveLoading(false);
     }
-  };
-
-  const activeTagsFunction = (tag) => {
-    setActiveTags((prevTags) => {
-      if (prevTags.includes(tag)) {
-        // Se a tag já existe, remove-a
-        return prevTags.filter((t) => t !== tag).sort();
-      } else {
-        // Se a tag não existe, adiciona-a
-        return [...prevTags, tag].sort();
-      }
-    });
   };
 
   const ColorComponent = ({ colorValue, defaultColor }) => {
@@ -264,29 +231,23 @@ export default function AddEditNote() {
             <View
               style={{
                 position: "absolute",
-                width: 1.5, // Largura da linha
-                height: "141.4%", // Diagonal de um quadrado com largura/altura 200px é 200 * sqrt(2) = ~282.8px
+                width: 1.5,
+                height: "141.4%",
                 backgroundColor: colors.borderColorLight,
-                transform: [{ rotate: "45deg" }], // Rotaciona a linha para ficar diagonal
+                transform: [{ rotate: "45deg" }],
                 top: -6,
                 left: "50%",
-                // top: -41.4, // Para centralizar a linha diagonalmente
-                // left: "50%",
-                // marginLeft: -1, // Compensa metade da largura da linha para centralizar
               }}
             />
             <View
               style={{
                 position: "absolute",
-                width: 1.5, // Largura da linha
-                height: "141.4%", // Diagonal de um quadrado com largura/altura 200px é 200 * sqrt(2) = ~282.8px
+                width: 1.5,
+                height: "141.4%",
                 backgroundColor: colors.borderColorLight,
-                transform: [{ rotate: "-45deg" }], // Rotaciona a linha para ficar diagonal
+                transform: [{ rotate: "-45deg" }],
                 top: -6,
                 right: "50%",
-                // top: -41.4, // Para centralizar a linha diagonalmente
-                // left: "50%",
-                // marginLeft: -1, // Compensa metade da largura da linha para centralizar
               }}
             />
           </>
@@ -299,9 +260,7 @@ export default function AddEditNote() {
     <>
       <Header
         setModalVisible={setModalVisible}
-        // modalVisible={modalVisible}
         fromAddEditNote
-        // idNote={data ? data.id : null}
         canDelete={data ? true : false}
       />
       <View
@@ -320,7 +279,6 @@ export default function AddEditNote() {
             {
               fontSize: fontSize.large,
               fontFamily: fontFamily.PoppinsSemiBold600,
-              // backgroundColor: "red",
               height: 50,
             },
           ]}
@@ -348,17 +306,7 @@ export default function AddEditNote() {
           selectionColor={colors.primaryPurpleAlfa}
         />
 
-        <View
-          style={{
-            flexDirection: "row",
-            width: "100%",
-            marginBottom: 10,
-            justifyContent: "space-between",
-            height: 40,
-            alignItems: "center",
-            // backgroundColor: "red",
-          }}
-        >
+        <View style={styles.options}>
           {!showOptions && (
             <>
               <TouchableOpacity onPress={() => setShowOptions("tags")}>
@@ -403,43 +351,7 @@ export default function AddEditNote() {
                   }}
                 />
               </TouchableOpacity>
-              <FlatList
-                data={tags}
-                renderItem={({ item }) => {
-                  return (
-                    <Tags
-                      item={item}
-                      activeTags={activeTags}
-                      onPressFunc={() => activeTagsFunction(item)}
-                    />
-                  );
-                }}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={{ marginRight: 20 }}
-                contentContainerStyle={{ alignItems: "center" }}
-                ListFooterComponent={
-                  <TouchableOpacity
-                    onPress={() => navigation.navigate("SettingsTags")}
-                    style={{
-                      backgroundColor: colors.primaryGreenAlfa,
-                      padding: 3,
-                      paddingHorizontal: 10,
-                      marginRight: 10,
-                      borderRadius: 10,
-                      borderWidth: 1,
-                      borderColor: colors.borderColorLight,
-                    }}
-                  >
-                    <Ionicons
-                      // name="menu-outline"
-                      name="add-outline"
-                      size={iconSize.small}
-                      color={colors.primaryPurple}
-                    />
-                  </TouchableOpacity>
-                }
-              />
+              <ListTags activeTags={activeTags} setActiveTags={setActiveTags} />
             </View>
           )}
           {showOptions === "colors" && (
@@ -450,7 +362,6 @@ export default function AddEditNote() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 gap: 10,
-                // backgroundColor: "red",
               }}
             >
               <ScrollView
@@ -523,11 +434,18 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingBottom: 0,
   },
+  options: {
+    flexDirection: "row",
+    width: "100%",
+    marginBottom: 10,
+    justifyContent: "space-between",
+    height: 40,
+    alignItems: "center",
+  },
   input: {
     marginVertical: 5,
     padding: 10,
     borderRadius: 10,
-    // borderWidth: 1,
     borderColor: colors.borderColorLight,
   },
   tag: {
