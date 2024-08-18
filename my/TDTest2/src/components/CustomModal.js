@@ -13,7 +13,7 @@ import { UserContext } from "../context/userContext";
 import { useNavigation } from "@react-navigation/native";
 import { fontFamily, fontSize } from "../theme/font";
 import colors from "../theme/colors";
-import { configureNavigationBar } from "../scripts/NavigationBar";
+import configureNavigationBar from "../scripts/configureNavigationBar";
 import TextInputCustom from "./TextInputCustom";
 import {
   EmailAuthProvider,
@@ -26,6 +26,7 @@ import {
 import ButtonCustom from "./ButtonCustom";
 import { Ionicons } from "@expo/vector-icons";
 import { iconSize } from "../theme/icon";
+import getUnknownErrorFirebase from "../scripts/getUnknownErrorFirebase";
 
 const CustomModal = ({
   modalVisible,
@@ -123,16 +124,33 @@ const CustomModal = ({
     setActiveLoading(true);
     if (selectedNotes.length !== 0) {
       for (let i = 0; i < selectedNotes.length; i++) {
-        console.log(selectedNotes[i].title);
-        await deleteDoc(doc(db, "notes", selectedNotes[i].id));
+        await deleteDoc(doc(db, "notes", selectedNotes[i].id)).catch(
+          (error) => {
+            getUnknownErrorFirebase(
+              "CustomModal",
+              "delNote/deleteDoc",
+              error.code,
+              error.message
+            );
+            setModalAction("UnknownError");
+            setActiveLoading(false);
+            return;
+          }
+        );
       }
       setSelectedNotes([]);
     } else {
-      await deleteDoc(doc(db, "notes", idNote))
-        .then(() => {})
-        .catch((error) => {
-          console.log(error.message);
-        });
+      await deleteDoc(doc(db, "notes", idNote)).catch((error) => {
+        getUnknownErrorFirebase(
+          "CustomModal",
+          "delNote/deleteDoc",
+          error.code,
+          error.message
+        );
+        setModalAction("UnknownError");
+        setActiveLoading(false);
+        return;
+      });
       navigation.goBack();
     }
     setModalVisible(false);
@@ -155,25 +173,47 @@ const CustomModal = ({
     const docRef = doc(db, "userData", user.uid);
     await updateDoc(docRef, {
       tags: list,
-    }).then(async () => {
-      const q = query(collection(db, "notes"));
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach(async (document) => {
-        if (user.uid === document.data().uid) {
-          let listTags = document.data().tags;
-          const indexItem = listTags.indexOf(item);
-          if (indexItem !== -1) {
-            listTags.splice(indexItem, 1);
-            const ref = doc(db, "notes", document.id);
-            await updateDoc(ref, {
-              tags: listTags,
-            })
-              .then(() => console.log("tudo certo"))
-              .catch((error) => console.log(error.message));
+    })
+      .then(async () => {
+        const q = query(collection(db, "notes"));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach(async (document) => {
+          if (user.uid === document.data().uid) {
+            let listTags = document.data().tags;
+            const indexItem = listTags.indexOf(item);
+            if (indexItem !== -1) {
+              listTags.splice(indexItem, 1);
+              const ref = doc(db, "notes", document.id);
+              await updateDoc(ref, {
+                tags: listTags,
+              }).catch((error) => {
+                getUnknownErrorFirebase(
+                  "CustomModal",
+                  "delTag/updateDoc/second",
+                  error.code,
+                  error.message
+                );
+                setModalAction("UnknownError");
+                setActiveLoading(false);
+                setTheTagIsEditing(null);
+                return;
+              });
+            }
           }
-        }
+        });
+      })
+      .catch((error) => {
+        getUnknownErrorFirebase(
+          "CustomModal",
+          "delTag/updateDoc/first",
+          error.code,
+          error.message
+        );
+        setModalAction("UnknownError");
+        setActiveLoading(false);
+        setTheTagIsEditing(null);
+        return;
       });
-    });
 
     setTheTagIsEditing(null);
     setModalVisible(false);
@@ -187,10 +227,12 @@ const CustomModal = ({
         password
       );
 
+      // mateus.justino.07@gmail.com
+      // mateus_justino_07@hotmail.com
       reauthenticateWithCredential(auth.currentUser, credential)
         .then(() => {
           setActiveLoading(true);
-          if (modalAction === "AccountSettingsConfirmPassForEmail") {
+          if (modalAction === "ConfirmPassForEmail") {
             updateEmail(auth.currentUser, newEmail)
               .then(async () => {
                 const userNow = auth.currentUser;
@@ -198,61 +240,88 @@ const CustomModal = ({
                   setUser(userNow);
                 });
                 checkVerifiedEmail();
-                setModalAction("AccountSettingsConfirmMessageEmail");
+                setModalAction("ChangedEmail");
+                setActiveLoading(false);
                 const docRef = doc(db, "userData", user.uid);
                 await updateDoc(docRef, {
                   LastTimeSendVerifiedEmail: null,
+                }).catch((error) => {
+                  if (error.code === "auth/email-already-in-use") {
+                    setModalAction("EmailAlreadyInUse");
+                  } else {
+                    getUnknownErrorFirebase(
+                      "CustomModal",
+                      "handleLogin/updateDoc/ChangedEmail",
+                      error.code,
+                      error.message
+                    );
+                    setModalAction("UnknownError");
+                  }
                 });
-                setActiveLoading(false);
               })
               .catch((error) => {
-                console.log(
-                  `Código do erro: ${error.code}, Descrição: ${error.message}`
-                );
                 if (error.code === "auth/email-already-in-use") {
                   setModalAction("EmailAlreadyInUse");
+                } else {
+                  getUnknownErrorFirebase(
+                    "CustomModal",
+                    "handleLogin/updateEmail/ConfirmPassForEmail",
+                    error.code,
+                    error.message
+                  );
+                  setModalAction("UnknownError");
                 }
                 setActiveLoading(false);
               });
-          } else if (modalAction === "AccountSettingsConfirmPassForPassword") {
+          } else if (modalAction === "ConfirmPassForPassword") {
             updatePassword(user, newPassword)
               .then(() => {
-                setModalAction("AccountSettingsConfirmMessagePassword");
+                setModalAction("ChangedPassword");
                 setActiveLoading(false);
               })
               .catch((error) => {
-                alert(error.message);
+                getUnknownErrorFirebase(
+                  "CustomModal",
+                  "handleLogin/updatePassword/ConfirmPassForPassword",
+                  error.code,
+                  error.message
+                );
+                setModalAction("UnknownError");
                 setActiveLoading(false);
               });
-          } else if (modalAction === "AccountSettingsConfirmPassForName") {
+          } else if (modalAction === "ConfirmPassForName") {
             updateProfile(auth.currentUser, {
               displayName: newName,
             })
               .then(() => {
                 setUser(auth.currentUser);
-                setModalAction("AccountSettingsConfirmMessageName");
+                setModalAction("ChangedName");
                 setActiveLoading(false);
               })
               .catch((error) => {
-                console.log("error updateProfile", error);
+                getUnknownErrorFirebase(
+                  "CustomModal",
+                  "handleLogin/updateProfile/ConfirmPassForName",
+                  error.code,
+                  error.message
+                );
+                setModalAction("UnknownError");
                 setActiveLoading(false);
               });
-          } else if (
-            modalAction === "AccountSettingsConfirmPassForEmailAndPassword"
-          ) {
-            updatePassword(auth.currentUser, newPassword)
-              .then(() => {
-                console.log("passworddd atualizadooo");
-              })
-              .catch((error) => {
-                console.log("updatePassword deu erro:");
-                console.log(error.message);
-              });
+          } else if (modalAction === "ConfirmPassForEmailPassword") {
+            updatePassword(auth.currentUser, newPassword).catch((error) => {
+              getUnknownErrorFirebase(
+                "CustomModal",
+                "handleLogin/updatePassword/ConfirmPassForEmailPassword",
+                error.code,
+                error.message
+              );
+              setModalAction("UnknownError");
+            });
 
             setTimeout(() => {
               updateEmail(auth.currentUser, newEmail)
                 .then(async () => {
-                  console.log("email atualizadooo");
                   const userNow = auth.currentUser;
                   userNow.reload().then(() => {
                     setUser(userNow);
@@ -261,30 +330,35 @@ const CustomModal = ({
                   const docRef = doc(db, "userData", user.uid);
                   await updateDoc(docRef, {
                     LastTimeSendVerifiedEmail: null,
-                  })
-                    .then(() => console.log("updateDoc tudo certo"))
-                    .catch((error) => {
-                      console.log("updateDoc deu erro:");
-                      console.log(error.message);
-                    });
+                  }).catch((error) => {
+                    getUnknownErrorFirebase(
+                      "CustomModal",
+                      "handleLogin/updateDoc/ConfirmPassForEmailPassword",
+                      error.code,
+                      error.message
+                    );
+                    setModalAction("UnknownError");
+                  });
                   checkVerifiedEmail();
                   setActiveLoading(false);
-                  setModalAction(
-                    "AccountSettingsConfirmMessageEmailAndPassword"
-                  );
+                  setModalAction("ChangedEmailPassword");
                 })
                 .catch((error) => {
-                  console.log("updateEmail deu erro:");
-                  console.log(error.message);
                   if (error.code === "auth/email-already-in-use") {
                     setModalAction("EmailAlreadyInUse");
+                  } else {
+                    getUnknownErrorFirebase(
+                      "CustomModal",
+                      "handleLogin/updateEmail/ConfirmPassForEmailPassword",
+                      error.code,
+                      error.message
+                    );
+                    setModalAction("UnknownError");
                   }
                   setActiveLoading(false);
                 });
             }, 1000);
-          } else if (
-            modalAction === "AccountSettingsConfirmPassForEmailPasswordAndName"
-          ) {
+          } else if (modalAction === "ConfirmPassForEmailPasswordName") {
             updateProfile(auth.currentUser, {
               displayName: newName,
             })
@@ -292,25 +366,31 @@ const CustomModal = ({
                 setUser(auth.currentUser);
               })
               .catch((error) => {
-                console.log("error updateProfile", error);
+                getUnknownErrorFirebase(
+                  "CustomModal",
+                  "handleLogin/updateProfile/ConfirmPassForEmailPasswordName",
+                  error.code,
+                  error.message
+                );
+                setModalAction("UnknownError");
                 setActiveLoading(false);
               });
             setTimeout(() => {
-              updatePassword(auth.currentUser, newPassword)
-                .then(() => {
-                  console.log("updatePassword deu certo");
-                })
-                .catch((error) => {
-                  console.log("updatePassword deu erro:");
-                  console.log(error.message);
-                  setActiveLoading(false);
-                });
+              updatePassword(auth.currentUser, newPassword).catch((error) => {
+                getUnknownErrorFirebase(
+                  "CustomModal",
+                  "handleLogin/updatePassword/ConfirmPassForEmailPasswordName",
+                  error.code,
+                  error.message
+                );
+                setModalAction("UnknownError");
+                setActiveLoading(false);
+              });
             }, 1000);
 
             setTimeout(() => {
               updateEmail(auth.currentUser, newEmail)
                 .then(async () => {
-                  console.log("email atualizadooo");
                   const userNow = auth.currentUser;
                   userNow.reload().then(() => {
                     setUser(userNow);
@@ -319,30 +399,35 @@ const CustomModal = ({
                   const docRef = doc(db, "userData", user.uid);
                   await updateDoc(docRef, {
                     LastTimeSendVerifiedEmail: null,
-                  })
-                    .then(() => console.log("updateDoc tudo certo"))
-                    .catch((error) => {
-                      console.log("updateDoc deu erro:");
-                      console.log(error.message);
-                    });
+                  }).catch((error) => {
+                    getUnknownErrorFirebase(
+                      "CustomModal",
+                      "handleLogin/updateDoc/ConfirmPassForEmailPasswordName",
+                      error.code,
+                      error.message
+                    );
+                    setModalAction("UnknownError");
+                  });
                   checkVerifiedEmail();
-                  setModalAction(
-                    "AccountSettingsConfirmMessageEmailPasswordAndName"
-                  );
+                  setModalAction("ChangedEmailPasswordName");
                   setActiveLoading(false);
                 })
                 .catch((error) => {
-                  console.log("updateEmail deu erro:");
-                  console.log(error.message);
                   if (error.code === "auth/email-already-in-use") {
                     setModalAction("EmailAlreadyInUse");
+                  } else {
+                    getUnknownErrorFirebase(
+                      "CustomModal",
+                      "handleLogin/updateEmail/ConfirmPassForEmailPasswordName",
+                      error.code,
+                      error.message
+                    );
+                    setModalAction("UnknownError");
                   }
                   setActiveLoading(false);
                 });
             }, 2000);
-          } else if (
-            modalAction === "AccountSettingsConfirmPassForEmailAndName"
-          ) {
+          } else if (modalAction === "ConfirmPassForEmailName") {
             updateProfile(auth.currentUser, {
               displayName: newName,
             })
@@ -350,12 +435,17 @@ const CustomModal = ({
                 setUser(auth.currentUser);
               })
               .catch((error) => {
-                console.log("error updateProfile", error);
+                getUnknownErrorFirebase(
+                  "CustomModal",
+                  "handleLogin/updateProfile/ConfirmPassForEmailName",
+                  error.code,
+                  error.message
+                );
+                setModalAction("UnknownError");
               });
             setTimeout(() => {
               updateEmail(auth.currentUser, newEmail)
                 .then(async () => {
-                  console.log("email atualizadooo");
                   const userNow = auth.currentUser;
                   userNow.reload().then(() => {
                     setUser(userNow);
@@ -366,30 +456,36 @@ const CustomModal = ({
                     LastTimeSendVerifiedEmail: null,
                   })
                     .then(() => {
-                      setModalAction(
-                        "AccountSettingsConfirmMessageEmailAndName"
-                      );
+                      setModalAction("ChangedEmailName");
                       setActiveLoading(false);
-                      console.log("updateDoc tudo certo");
                     })
                     .catch((error) => {
-                      console.log("updateDoc deu erro:");
-                      console.log(error.message);
+                      getUnknownErrorFirebase(
+                        "CustomModal",
+                        "handleLogin/updateDoc/ConfirmPassForEmailName",
+                        error.code,
+                        error.message
+                      );
+                      setModalAction("UnknownError");
                       setActiveLoading(false);
                     });
                 })
                 .catch((error) => {
-                  console.log("updateEmail deu erro:");
-                  console.log(error.message);
                   if (error.code === "auth/email-already-in-use") {
                     setModalAction("EmailAlreadyInUse");
+                  } else {
+                    getUnknownErrorFirebase(
+                      "CustomModal",
+                      "handleLogin/updateEmail/ConfirmPassForEmailName",
+                      error.code,
+                      error.message
+                    );
+                    setModalAction("UnknownError");
                   }
                   setActiveLoading(false);
                 });
             }, 1000);
-          } else if (
-            modalAction === "AccountSettingsConfirmPassForPasswordAndName"
-          ) {
+          } else if (modalAction === "ConfirmPassForPasswordName") {
             updateProfile(auth.currentUser, {
               displayName: newName,
             })
@@ -397,31 +493,45 @@ const CustomModal = ({
                 setUser(auth.currentUser);
               })
               .catch((error) => {
-                console.log("error updateProfile", error);
+                getUnknownErrorFirebase(
+                  "CustomModal",
+                  "handleLogin/updateProfile/ConfirmPassForPasswordName",
+                  error.code,
+                  error.message
+                );
+                setModalAction("UnknownError");
               });
 
             setTimeout(() => {
               updatePassword(auth.currentUser, newPassword)
                 .then(() => {
-                  console.log("updatePassword deu certo");
-                  setModalAction(
-                    "AccountSettingsConfirmMessagePasswordAndName"
-                  );
+                  setModalAction("ChangedPasswordName");
                   setActiveLoading(false);
                 })
                 .catch((error) => {
-                  console.log("updatePassword deu erro:");
-                  console.log(error.message);
+                  getUnknownErrorFirebase(
+                    "CustomModal",
+                    "handleLogin/updatePassword/ConfirmPassForPasswordName",
+                    error.code,
+                    error.message
+                  );
+                  setModalAction("UnknownError");
                   setActiveLoading(false);
                 });
             }, 1000);
           }
         })
         .catch((error) => {
-          console.log("reauthenticateWithCredential erro:", error.message);
           if (error.code === "auth/wrong-password") {
             setModalAction("WrongPassword");
-            setModalVisible(true);
+          } else {
+            getUnknownErrorFirebase(
+              "CustomModal",
+              "handleLogin/reauthenticateWithCredential",
+              error.code,
+              error.message
+            );
+            setModalAction("UnknownError");
           }
         });
     }
@@ -433,17 +543,23 @@ const CustomModal = ({
     if (checkEmail) {
       sendPasswordResetEmail(auth, email)
         .then(() => {
-          setModalAction("ConfirmeMessageForEmailForSendPasswordReset");
+          setModalAction("SendPasswordReset");
         })
         .catch((error) => {
-          console.log(error.code);
-          console.log(error.message);
           if (error.code === "auth/user-not-found") {
             setModalAction("UserNotFound");
+          } else {
+            getUnknownErrorFirebase(
+              "CustomModal",
+              "sendResetPassword/sendPasswordResetEmail",
+              error.code,
+              error.message
+            );
+            setModalAction("UnknownError");
           }
         });
     } else {
-      setModalAction("AccountSettingsInvalidEmail");
+      setModalAction("InvalidEmail");
     }
   };
 
@@ -496,7 +612,7 @@ const CustomModal = ({
 
   const ButtonNo = () => {
     return (
-      <View style={{ width: 50 }}>
+      <View style={{ flex: 1 }}>
         <ButtonCustom
           onPressFunc={() => setModalVisible(false)}
           border
@@ -539,56 +655,53 @@ const CustomModal = ({
             maxWidth: 400,
           }}
         >
-          {modalAction === "Home" && (
+          {modalAction === "DelSelectedNotes" && (
             <TitleMsg message="Deseja excluir as notas selecionadas?" />
           )}
-          {modalAction === "EditNote" && (
+          {modalAction === "DelNote" && (
             <TitleMsg message="Deseja excluir esta nota?" />
           )}
-          {modalAction === "SettingsTags" && (
+          {modalAction === "DelTag" && (
             <TitleMsg message="Deseja excluir esta tag?" />
           )}
-          {modalAction === "AccountSettingsConfirmMessageEmail" && (
+          {modalAction === "ChangedEmail" && (
             <TitleMsg message="Email alterado!" />
           )}
-          {modalAction === "AccountSettingsSendEmail" && (
+          {modalAction === "SendEmail" && (
             <TitleMsg message="Email enviado, confirme ele!" />
           )}
-          {modalAction === "AccountSettingsVerifyEmail" && (
+          {modalAction === "NeedVerifyEmail" && (
             <TitleMsg message="Antes de alterar é necessario verificar seu email" />
           )}
-          {modalAction === "AccountSettingsTooManyRequests" && (
+          {modalAction === "TooManyRequests" && (
             <TitleMsg message="Email já enviado para o destinatario, aguarde para solicitar outro" />
           )}
-          {modalAction === "AccountSettingsConfirmMessagePassword" && (
+          {modalAction === "ChangedPassword" && (
             <TitleMsg message="Password alterado!" />
           )}
-          {modalAction === "AccountSettingsInvalidEmail" && (
+          {modalAction === "InvalidEmail" && (
             <TitleMsg message="Email invalido" />
           )}
-          {modalAction === "AccountSettingsConfirmMessageEmailAndPassword" && (
+          {modalAction === "ChangedEmailPassword" && (
             <TitleMsg message="Email e Password alterado!" />
           )}
-          {modalAction === "AccountSettingsPasswordShort" && (
+          {modalAction === "ShortPassword" && (
             <TitleMsg message="Password muito curto" />
           )}
-          {modalAction === "AccountSettingsPasswordConfirmDifferent" && (
+          {modalAction === "DifferentPassword" && (
             <TitleMsg message="ConfirmPassword diferente" />
           )}
-          {modalAction === "AccountSettingsConfirmMessageName" && (
+          {modalAction === "ChangedName" && (
             <TitleMsg message="name alterado!" />
           )}
-          {modalAction ===
-            "AccountSettingsConfirmMessageEmailPasswordAndName" && (
+          {modalAction === "ChangedEmailPasswordName" && (
             <TitleMsg message="name email e password alterado!" />
           )}
-          {modalAction === "AccountSettingsEmptyName" && (
-            <TitleMsg message="name vazio!" />
-          )}
-          {modalAction === "AccountSettingsConfirmMessageEmailAndName" && (
+          {modalAction === "EmptyName" && <TitleMsg message="name vazio!" />}
+          {modalAction === "ChangedEmailName" && (
             <TitleMsg message="name e email alterado!" />
           )}
-          {modalAction === "AccountSettingsConfirmMessagePasswordAndName" && (
+          {modalAction === "ChangedPasswordName" && (
             <TitleMsg message="name e password alterado!" />
           )}
           {modalAction === "EmailAlreadyInUse" && (
@@ -606,16 +719,19 @@ const CustomModal = ({
           {modalAction === "TooManyRequests" && (
             <TitleMsg message="muitas tentativas erradas, tente mais tarde" />
           )}
-          {modalAction === "ConfirmeMessageForEmailForSendPasswordReset" && (
+          {modalAction === "SendPasswordReset" && (
             <TitleMsg message="email de reset pass enviado" />
           )}
           {modalAction === "TagAlreadyExist" && (
             <TitleMsg message="Tag ja existe" />
           )}
+          {modalAction === "UnknownError" && (
+            <TitleMsg message="Unknown error, we are working in a solution" />
+          )}
 
           {/* parte dos input */}
 
-          {modalAction === "AccountSettingsConfirmPassForName" && (
+          {modalAction === "ConfirmPassForName" && (
             <TextInputCustom
               label="Confirme sua senha antes de alterar seu name"
               text={password}
@@ -624,7 +740,7 @@ const CustomModal = ({
               secure={!showPassword}
             />
           )}
-          {modalAction === "AccountSettingsConfirmPassForEmail" && (
+          {modalAction === "ConfirmPassForEmail" && (
             <TextInputCustom
               label="Confirme sua senha antes de alterar seu email"
               text={password}
@@ -633,7 +749,7 @@ const CustomModal = ({
               secure={!showPassword}
             />
           )}
-          {modalAction === "AccountSettingsConfirmPassForPassword" && (
+          {modalAction === "ConfirmPassForPassword" && (
             <TextInputCustom
               label="Confirme sua senha antes de alterar seu password"
               text={password}
@@ -642,7 +758,7 @@ const CustomModal = ({
               secure={!showPassword}
             />
           )}
-          {modalAction === "AccountSettingsConfirmPassForEmailAndPassword" && (
+          {modalAction === "ConfirmPassForEmailPassword" && (
             <TextInputCustom
               label="Confirme sua senha antes de alterar seu email e password"
               text={password}
@@ -651,8 +767,7 @@ const CustomModal = ({
               secure={!showPassword}
             />
           )}
-          {modalAction ===
-            "AccountSettingsConfirmPassForEmailPasswordAndName" && (
+          {modalAction === "ConfirmPassForEmailPasswordName" && (
             <TextInputCustom
               label="Confirme sua senha antes de alterar seu email e password e name"
               text={password}
@@ -661,7 +776,7 @@ const CustomModal = ({
               secure={!showPassword}
             />
           )}
-          {modalAction === "AccountSettingsConfirmPassForEmailAndName" && (
+          {modalAction === "ConfirmPassForEmailName" && (
             <TextInputCustom
               label="Confirme sua senha antes de alterar seu email e name"
               text={password}
@@ -670,7 +785,7 @@ const CustomModal = ({
               secure={!showPassword}
             />
           )}
-          {modalAction === "AccountSettingsConfirmPassForPasswordAndName" && (
+          {modalAction === "ConfirmPassForPasswordName" && (
             <TextInputCustom
               label="Confirme sua senha antes de alterar seu password e name"
               text={password}
@@ -692,53 +807,40 @@ const CustomModal = ({
 
           {/* parte do show password */}
 
-          {modalAction === "AccountSettingsConfirmPassForName" && (
+          {modalAction === "ConfirmPassForName" && <IconShowPass />}
+          {modalAction === "ConfirmPassForEmail" && <IconShowPass />}
+          {modalAction === "ConfirmPassForPassword" && <IconShowPass />}
+          {modalAction === "ConfirmPassForEmailPassword" && <IconShowPass />}
+          {modalAction === "ConfirmPassForEmailPasswordName" && (
             <IconShowPass />
           )}
-          {modalAction === "AccountSettingsConfirmPassForEmail" && (
-            <IconShowPass />
-          )}
-          {modalAction === "AccountSettingsConfirmPassForPassword" && (
-            <IconShowPass />
-          )}
-          {modalAction === "AccountSettingsConfirmPassForEmailAndPassword" && (
-            <IconShowPass />
-          )}
-          {modalAction ===
-            "AccountSettingsConfirmPassForEmailPasswordAndName" && (
-            <IconShowPass />
-          )}
-          {modalAction === "AccountSettingsConfirmPassForEmailAndName" && (
-            <IconShowPass />
-          )}
-          {modalAction === "AccountSettingsConfirmPassForPasswordAndName" && (
-            <IconShowPass />
-          )}
+          {modalAction === "ConfirmPassForEmailName" && <IconShowPass />}
+          {modalAction === "ConfirmPassForPasswordName" && <IconShowPass />}
 
           <View style={styles.buttonContainer}>
-            {modalAction === "Home" && <ButtonNo />}
-            {modalAction === "EditNote" && <ButtonNo />}
-            {modalAction === "SettingsTags" && <ButtonNo />}
+            {modalAction === "DelSelectedNotes" && <ButtonNo />}
+            {modalAction === "DelNote" && <ButtonNo />}
+            {modalAction === "DelTag" && <ButtonNo />}
 
-            <View style={{ width: 50 }}>
+            <View style={{ flex: 1 }}>
+              {/* <View> */}
               <ButtonCustom
                 onPressFunc={() => {
-                  if (modalAction === "Home" || modalAction === "EditNote") {
+                  if (
+                    modalAction === "DelSelectedNotes" ||
+                    modalAction === "DelNote"
+                  ) {
                     delNote();
-                  } else if (modalAction === "SettingsTags") {
+                  } else if (modalAction === "DelTag") {
                     delTag();
                   } else if (
-                    modalAction === "AccountSettingsConfirmPassForEmail" ||
-                    modalAction === "AccountSettingsConfirmPassForPassword" ||
-                    modalAction ===
-                      "AccountSettingsConfirmPassForEmailAndPassword" ||
-                    modalAction ===
-                      "AccountSettingsConfirmPassForEmailPasswordAndName" ||
-                    modalAction ===
-                      "AccountSettingsConfirmPassForEmailAndName" ||
-                    modalAction ===
-                      "AccountSettingsConfirmPassForPasswordAndName" ||
-                    modalAction === "AccountSettingsConfirmPassForName"
+                    modalAction === "ConfirmPassForEmail" ||
+                    modalAction === "ConfirmPassForPassword" ||
+                    modalAction === "ConfirmPassForEmailPassword" ||
+                    modalAction === "ConfirmPassForEmailPasswordName" ||
+                    modalAction === "ConfirmPassForEmailName" ||
+                    modalAction === "ConfirmPassForPasswordName" ||
+                    modalAction === "ConfirmPassForName"
                   ) {
                     handleLogin();
                   } else if (
@@ -750,16 +852,16 @@ const CustomModal = ({
                   }
                 }}
                 title={
-                  modalAction === "Home" ||
-                  modalAction === "EditNote" ||
-                  modalAction === "SettingsTags"
+                  modalAction === "DelSelectedNotes" ||
+                  modalAction === "DelNote" ||
+                  modalAction === "DelTag"
                     ? "Yes"
                     : "Ok"
                 }
                 background={
-                  modalAction === "Home" ||
-                  modalAction === "EditNote" ||
-                  modalAction === "SettingsTags"
+                  modalAction === "DelSelectedNotes" ||
+                  modalAction === "DelNote" ||
+                  modalAction === "DelTag"
                     ? colors.buttonRed
                     : colors.primaryPurple
                 }
@@ -779,7 +881,8 @@ export default CustomModal;
 const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    // justifyContent: "flex-end",
+    justifyContent: "space-between",
     gap: 10,
     marginTop: 20,
   },

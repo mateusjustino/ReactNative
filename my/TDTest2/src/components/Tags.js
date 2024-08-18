@@ -37,24 +37,6 @@ const Tags = ({ item, activeTags, onPressFunc }) => {
     </View>
   );
 };
-// const Tags = ({ item, activeTags, onPressFunc }) => {
-//   return (
-//     <TouchableOpacity
-//       style={[
-//         styles.tag,
-//         Array.isArray(activeTags) && activeTags.includes(item)
-//           ? { borderColor: colors.primaryPurple }
-//           : { borderColor: colors.borderColorLight },
-//       ]}
-//       onPress={onPressFunc ? onPressFunc : null}
-//       activeOpacity={onPressFunc ? 0.5 : 1}
-//     >
-//       <Text style={styles.txt} numberOfLines={1}>
-//         #{item}
-//       </Text>
-//     </TouchableOpacity>
-//   );
-// };
 
 export default Tags;
 

@@ -9,4 +9,4 @@ async function configureNavigationBar(color) {
   }
 }
 
-export { configureNavigationBar };
+export default configureNavigationBar;

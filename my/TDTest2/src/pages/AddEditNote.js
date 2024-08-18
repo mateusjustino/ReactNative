@@ -30,9 +30,10 @@ import { Ionicons } from "@expo/vector-icons";
 import colors from "../theme/colors";
 import { fontFamily, fontSize } from "../theme/font";
 import { iconSize } from "../theme/icon";
-import { configureNavigationBar } from "../scripts/NavigationBar";
+import configureNavigationBar from "../scripts/configureNavigationBar";
 import ButtonCustom from "../components/ButtonCustom";
 import ListTags from "../components/ListTags";
+import getUnknownErrorFirebase from "../scripts/getUnknownErrorFirebase";
 
 export default function AddEditNote() {
   const navigation = useNavigation();
@@ -135,7 +136,16 @@ export default function AddEditNote() {
           .then(() => {
             orderVar += 1;
           })
-          .catch((error) => console.log(error.message));
+          .catch((error) => {
+            getUnknownErrorFirebase(
+              "AddEditNote",
+              "handleAdd/updateDoc",
+              error.code,
+              error.message
+            );
+            setModalAction("UnknownError");
+            setModalVisible(true);
+          });
       }
 
       await addDoc(collection(db, "notes"), {
@@ -151,7 +161,16 @@ export default function AddEditNote() {
         .then(async () => {
           navigation.goBack();
         })
-        .catch((error) => console.log(error.message));
+        .catch((error) => {
+          getUnknownErrorFirebase(
+            "AddEditNote",
+            "handleAdd/addDoc",
+            error.code,
+            error.message
+          );
+          setModalAction("UnknownError");
+          setModalVisible(true);
+        });
 
       setActiveLoading(false);
     }
@@ -194,12 +213,30 @@ export default function AddEditNote() {
                 .then(() => {
                   orderVar += 1;
                 })
-                .catch((error) => console.log(error.message));
+                .catch((error) => {
+                  getUnknownErrorFirebase(
+                    "AddEditNote",
+                    "handleUpdate/updateDoc/updateDoc/second",
+                    error.code,
+                    error.message
+                  );
+                  setModalAction("UnknownError");
+                  setModalVisible(true);
+                });
             }
           }
           navigation.goBack();
         })
-        .catch((error) => console.log(error.message));
+        .catch((error) => {
+          getUnknownErrorFirebase(
+            "AddEditNote",
+            "handleUpdate/updateDoc/first",
+            error.code,
+            error.message
+          );
+          setModalAction("UnknownError");
+          setModalVisible(true);
+        });
 
       setActiveLoading(false);
     }

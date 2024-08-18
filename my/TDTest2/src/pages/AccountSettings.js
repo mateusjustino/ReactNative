@@ -21,6 +21,7 @@ import CustomModal from "../components/CustomModal";
 import moment from "moment";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import ButtonCustom from "../components/ButtonCustom";
+import getUnknownErrorFirebase from "../scripts/getUnknownErrorFirebase";
 
 const AccountSettings = () => {
   const { user, setUser, setModalAction } = useContext(UserContext);
@@ -60,108 +61,105 @@ const AccountSettings = () => {
             if (checkEmail) {
               if (password.length > 5) {
                 if (password === confirmPassword) {
-                  console.log("caiu aquiii");
-                  setModalAction(
-                    "AccountSettingsConfirmPassForEmailPasswordAndName"
-                  );
+                  setModalAction("ConfirmPassForEmailPasswordName");
                   setModalVisible(true);
                 } else {
-                  setModalAction("AccountSettingsPasswordConfirmDifferent");
+                  setModalAction("DifferentPassword");
                   setModalVisible(true);
                 }
               } else {
-                setModalAction("AccountSettingsPasswordShort");
+                setModalAction("ShortPassword");
                 setModalVisible(true);
               }
             } else {
-              setModalAction("AccountSettingsInvalidEmail");
+              setModalAction("InvalidEmail");
               setModalVisible(true);
             }
           } else {
-            setModalAction("AccountSettingsEmptyName");
+            setModalAction("EmptyName");
             setModalVisible(true);
           }
         } else if (name !== user.displayName && email !== user.email) {
           if (name !== "") {
             if (checkEmail) {
-              setModalAction("AccountSettingsConfirmPassForEmailAndName");
+              setModalAction("ConfirmPassForEmailName");
               setModalVisible(true);
             } else {
-              setModalAction("AccountSettingsInvalidEmail");
+              setModalAction("InvalidEmail");
               setModalVisible(true);
             }
           } else {
-            setModalAction("AccountSettingsEmptyName");
+            setModalAction("EmptyName");
             setModalVisible(true);
           }
         } else if (name !== user.displayName && password !== "") {
           if (name !== "") {
             if (password.length > 5) {
               if (password === confirmPassword) {
-                setModalAction("AccountSettingsConfirmPassForPasswordAndName");
+                setModalAction("ConfirmPassForPasswordName");
                 setModalVisible(true);
               } else {
-                setModalAction("AccountSettingsPasswordConfirmDifferent");
+                setModalAction("DifferentPassword");
                 setModalVisible(true);
               }
             } else {
-              setModalAction("AccountSettingsPasswordShort");
+              setModalAction("ShortPassword");
               setModalVisible(true);
             }
           } else {
-            setModalAction("AccountSettingsEmptyName");
+            setModalAction("EmptyName");
             setModalVisible(true);
           }
         } else if (email !== user.email && password !== "") {
           if (checkEmail) {
             if (password.length > 5) {
               if (password === confirmPassword) {
-                setModalAction("AccountSettingsConfirmPassForEmailAndPassword");
+                setModalAction("ConfirmPassForEmailPassword");
                 setModalVisible(true);
               } else {
-                setModalAction("AccountSettingsPasswordConfirmDifferent");
+                setModalAction("DifferentPassword");
                 setModalVisible(true);
               }
             } else {
-              setModalAction("AccountSettingsPasswordShort");
+              setModalAction("ShortPassword");
               setModalVisible(true);
             }
           } else {
-            setModalAction("AccountSettingsInvalidEmail");
+            setModalAction("InvalidEmail");
             setModalVisible(true);
           }
         } else if (email !== user.email) {
           if (checkEmail) {
-            setModalAction("AccountSettingsConfirmPassForEmail");
+            setModalAction("ConfirmPassForEmail");
             setModalVisible(true);
           } else {
-            setModalAction("AccountSettingsInvalidEmail");
+            setModalAction("InvalidEmail");
             setModalVisible(true);
           }
         } else if (password !== "") {
           if (password.length > 5) {
             if (password === confirmPassword) {
-              setModalAction("AccountSettingsConfirmPassForPassword");
+              setModalAction("ConfirmPassForPassword");
               setModalVisible(true);
             } else {
-              setModalAction("AccountSettingsPasswordConfirmDifferent");
+              setModalAction("DifferentPassword");
               setModalVisible(true);
             }
           } else {
-            setModalAction("AccountSettingsPasswordShort");
+            setModalAction("ShortPassword");
             setModalVisible(true);
           }
         } else if (name !== user.displayName) {
           if (name !== "") {
-            setModalAction("AccountSettingsConfirmPassForName");
+            setModalAction("ConfirmPassForName");
             setModalVisible(true);
           } else {
-            setModalAction("AccountSettingsEmptyName");
+            setModalAction("EmptyName");
             setModalVisible(true);
           }
         }
       } else {
-        setModalAction("AccountSettingsVerifyEmail");
+        setModalAction("NeedVerifyEmail");
         setModalVisible(true);
       }
     }
@@ -179,7 +177,7 @@ const AccountSettings = () => {
     if (now.isAfter(lastDatePlus) || !lastDate) {
       sendEmailVerification(auth.currentUser)
         .then(async () => {
-          setModalAction("AccountSettingsSendEmail");
+          setModalAction("SendEmail");
           setModalVisible(true);
           const nowDate = moment().format("YYYY-MM-DD HH:mm:ss");
           const docRef = doc(db, "userData", user.uid);
@@ -188,10 +186,17 @@ const AccountSettings = () => {
           });
         })
         .catch((error) => {
-          alert(error.message);
+          setModalVisible(true);
+          getUnknownErrorFirebase(
+            "AccountSettings",
+            "sendVerifiedEmail/sendEmailVerification",
+            error.code,
+            error.message
+          );
+          setModalAction("UnknownError");
         });
     } else {
-      setModalAction("AccountSettingsTooManyRequests");
+      setModalAction("TooManyRequests");
       setModalVisible(true);
     }
   };

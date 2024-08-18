@@ -15,9 +15,13 @@ import colors from "../theme/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { iconSize, iconSource } from "../theme/icon";
 import { fontFamily, fontSize } from "../theme/font";
+import CustomModal from "../components/CustomModal";
+import { useState } from "react";
+import getUnknownErrorFirebase from "../scripts/getUnknownErrorFirebase";
 
 const Settings = () => {
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleLogOut = () => {
     signOut(auth)
@@ -25,7 +29,14 @@ const Settings = () => {
         navigation.navigate("SignIn");
       })
       .catch((error) => {
-        console.log(error.message);
+        setModalVisible(true);
+        getUnknownErrorFirebase(
+          "Settings",
+          "handleLogOut/signOut",
+          error.code,
+          error.message
+        );
+        setModalAction("UnknownError");
       });
   };
 
@@ -159,6 +170,10 @@ const Settings = () => {
             </Text>
           </View>
         </View>
+        <CustomModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+        />
       </ScrollView>
     </>
   );

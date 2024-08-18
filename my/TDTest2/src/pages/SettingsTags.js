@@ -18,6 +18,7 @@ import { iconSize } from "../theme/icon";
 import Loading from "../components/Loading";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebaseConnection";
+import getUnknownErrorFirebase from "../scripts/getUnknownErrorFirebase";
 
 const SettingsTags = () => {
   const { tags, user, setTags, setModalAction } = useContext(UserContext);
@@ -41,6 +42,15 @@ const SettingsTags = () => {
     const docRef = doc(db, "userData", user.uid);
     await updateDoc(docRef, {
       tags: list,
+    }).catch((error) => {
+      setModalVisible(true);
+      getUnknownErrorFirebase(
+        "SettingsTags",
+        "addTag/updateDoc",
+        error.code,
+        error.message
+      );
+      setModalAction("UnknownError");
     });
 
     setTags(list);

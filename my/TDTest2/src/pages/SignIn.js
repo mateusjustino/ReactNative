@@ -7,9 +7,8 @@ import {
   View,
   KeyboardAvoidingView,
   Platform,
-  Button,
 } from "react-native";
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { auth } from "../firebaseConnection";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -20,17 +19,17 @@ import colors from "../theme/colors";
 import { iconSize, iconSource } from "../theme/icon";
 import { fontFamily, fontSize } from "../theme/font";
 import { Ionicons } from "@expo/vector-icons";
-import Header from "../components/Header";
 import { StatusBar } from "expo-status-bar";
 import Clouds from "../components/Clouds";
-import { configureNavigationBar } from "../scripts/NavigationBar";
+import configureNavigationBar from "../scripts/configureNavigationBar";
 import CustomModal from "../components/CustomModal";
+import getUnknownErrorFirebase from "../scripts/getUnknownErrorFirebase";
 
 const SignIn = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { user, setUser, EnterUser, setModalAction } = useContext(UserContext);
+  const { EnterUser, setModalAction } = useContext(UserContext);
   const [loadingLogin, setLoadingLogin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -57,28 +56,29 @@ const SignIn = () => {
         signInWithEmailAndPassword(auth, email, password)
           .then((userCredential) => {
             EnterUser(userCredential.user);
-
             navigation.navigate("Home");
           })
           .catch((error) => {
-            console.log(error.code);
-            console.log(error.message);
+            setModalVisible(true);
             if (error.code === "auth/user-not-found") {
               setModalAction("UserNotFound");
-              setModalVisible(true);
-            }
-            if (error.code === "auth/wrong-password") {
+            } else if (error.code === "auth/wrong-password") {
               setModalAction("WrongPassword");
-              setModalVisible(true);
-            }
-            if (error.code === "auth/too-many-requests") {
+            } else if (error.code === "auth/too-many-requests") {
               setModalAction("TooManyRequests");
-              setModalVisible(true);
+            } else {
+              getUnknownErrorFirebase(
+                "SignIn",
+                "handleLogin/signInWithEmailAndPassword",
+                error.code,
+                error.message
+              );
+              setModalAction("UnknownError");
             }
           });
         setLoadingLogin(false);
       } else {
-        setModalAction("AccountSettingsInvalidEmail");
+        setModalAction("InvalidEmail");
         setModalVisible(true);
       }
     }

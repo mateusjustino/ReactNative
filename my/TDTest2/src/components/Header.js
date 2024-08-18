@@ -134,7 +134,7 @@ export default function Header({
             {canDelete ? (
               <TouchableOpacity
                 onPress={() => {
-                  setModalAction("EditNote");
+                  setModalAction("DelNote");
                   setModalVisible(true);
                 }}
               >

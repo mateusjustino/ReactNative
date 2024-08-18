@@ -18,7 +18,7 @@ import {
 } from "firebase/auth";
 import { UserContext } from "../context/userContext";
 import { doc, setDoc } from "firebase/firestore";
-import { configureNavigationBar } from "../scripts/NavigationBar";
+import configureNavigationBar from "../scripts/configureNavigationBar";
 import colors from "../theme/colors";
 import { StatusBar } from "expo-status-bar";
 import Clouds from "../components/Clouds";
@@ -28,6 +28,7 @@ import ButtonCustom from "../components/ButtonCustom";
 import { fontFamily, fontSize } from "../theme/font";
 import { Ionicons } from "@expo/vector-icons";
 import CustomModal from "../components/CustomModal";
+import getUnknownErrorFirebase from "../scripts/getUnknownErrorFirebase";
 
 const SignUp = () => {
   const navigation = useNavigation();
@@ -80,27 +81,41 @@ const SignUp = () => {
                     navigation.navigate("Home");
                   })
                   .catch((error) => {
-                    const errorMessage = error.message;
-                    alert(errorMessage);
+                    setModalVisible(true);
+                    getUnknownErrorFirebase(
+                      "SignUp",
+                      "handleRegister/signInWithEmailAndPassword",
+                      error.code,
+                      error.message
+                    );
+                    setModalAction("UnknownError");
                   });
               })
               .catch((error) => {
+                setModalVisible(true);
                 if (error.code === "auth/email-already-in-use") {
                   setModalAction("EmailAlreadyInUse");
-                  setModalVisible(true);
+                } else {
+                  getUnknownErrorFirebase(
+                    "SignUp",
+                    "handleRegister/createUserWithEmailAndPassword",
+                    error.code,
+                    error.message
+                  );
+                  setModalAction("UnknownError");
                 }
               });
             setLoadingRegister(false);
           } else {
-            setModalAction("AccountSettingsPasswordConfirmDifferent");
+            setModalAction("DifferentPassword");
             setModalVisible(true);
           }
         } else {
-          setModalAction("AccountSettingsPasswordShort");
+          setModalAction("ShortPassword");
           setModalVisible(true);
         }
       } else {
-        setModalAction("AccountSettingsInvalidEmail");
+        setModalAction("InvalidEmail");
         setModalVisible(true);
       }
     } else {

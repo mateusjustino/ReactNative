@@ -21,6 +21,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { fontFamily, fontSize } from "../theme/font";
 import { iconSize } from "../theme/icon";
 import Loading from "./Loading";
+import getUnknownErrorFirebase from "../scripts/getUnknownErrorFirebase";
 
 const TagsControl = ({
   item,
@@ -65,23 +66,46 @@ const TagsControl = ({
       const docRef = doc(db, "userData", user.uid);
       await updateDoc(docRef, {
         tags: list,
-      }).then(async () => {
-        const q = query(collection(db, "notes"), where("uid", "==", user.uid));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach(async (document) => {
-          let listOldTags = document.data().tags;
-          const indexItem = listOldTags.indexOf(oldTag);
-          if (indexItem !== -1) {
-            listOldTags[indexItem] = newTag;
-            listOldTags.sort((a, b) => a.localeCompare(b));
+      })
+        .then(async () => {
+          const q = query(
+            collection(db, "notes"),
+            where("uid", "==", user.uid)
+          );
+          const querySnapshot = await getDocs(q);
+          querySnapshot.forEach(async (document) => {
+            let listOldTags = document.data().tags;
+            const indexItem = listOldTags.indexOf(oldTag);
+            if (indexItem !== -1) {
+              listOldTags[indexItem] = newTag;
+              listOldTags.sort((a, b) => a.localeCompare(b));
 
-            const noteRef = doc(db, "notes", document.id);
-            await updateDoc(noteRef, {
-              tags: listOldTags,
-            });
-          }
+              const noteRef = doc(db, "notes", document.id);
+              await updateDoc(noteRef, {
+                tags: listOldTags,
+              }).catch((error) => {
+                getUnknownErrorFirebase(
+                  "TagsControl",
+                  "confirmEditing/updateDoc/second",
+                  error.code,
+                  error.message
+                );
+                setModalVisible(true);
+                setModalAction("UnknownError");
+              });
+            }
+          });
+        })
+        .catch((error) => {
+          getUnknownErrorFirebase(
+            "TagsControl",
+            "confirmEditing/updateDoc/first",
+            error.code,
+            error.message
+          );
+          setModalVisible(true);
+          setModalAction("UnknownError");
         });
-      });
 
       setActiveLoading(false);
     }
@@ -91,7 +115,7 @@ const TagsControl = ({
 
   const delTag = async () => {
     setModalVisible(true);
-    setModalAction("SettingsTags");
+    setModalAction("DelTag");
   };
 
   return (

@@ -10,7 +10,7 @@ import LoadingScreen from "../components/LoadingScreen";
 import { UserContext } from "../context/userContext";
 import Settings from "../pages/Settings";
 import colors from "../theme/colors";
-import { configureNavigationBar } from "../scripts/NavigationBar";
+import configureNavigationBar from "../scripts/configureNavigationBar";
 import AccountSettings from "../pages/AccountSettings";
 import SettingsTags from "../pages/SettingsTags";
 

@@ -27,10 +27,11 @@ import colors from "../theme/colors";
 import { iconSize } from "../theme/icon";
 import { Ionicons } from "@expo/vector-icons";
 import { fontFamily, fontSize } from "../theme/font";
-import { configureNavigationBar } from "../scripts/NavigationBar";
+import configureNavigationBar from "../scripts/configureNavigationBar";
 import CloudButton from "../components/CloudButton";
 import ListTags from "../components/ListTags";
 import NoNotes from "../components/NoNotes";
+import getUnknownErrorFirebase from "../scripts/getUnknownErrorFirebase";
 
 const Home = () => {
   const navigation = useNavigation();
@@ -178,13 +179,29 @@ const Home = () => {
       await Promise.all(
         data.map(async (item, index) => {
           const noteRef = doc(db, "notes", item.id);
-          await updateDoc(noteRef, { order: index });
+          await updateDoc(noteRef, { order: index }).catch((error) => {
+            setModalVisible(true);
+            getUnknownErrorFirebase(
+              "Home",
+              "handleAdjustOrder/updateDoc",
+              error.code,
+              error.message
+            );
+            setModalAction("UnknownError");
+          });
         })
       )
         .then(() => {})
-        .catch((error) =>
-          console.log("Erro ao atualizar a ordem no Firestore:", error)
-        );
+        .catch((error) => {
+          setModalVisible(true);
+          getUnknownErrorFirebase(
+            "Home",
+            "handleAdjustOrder/Promise",
+            error.code,
+            error.message
+          );
+          setModalAction("UnknownError");
+        });
     } else {
       setSelectedNotes([draggingItem]);
     }
@@ -346,7 +363,7 @@ const Home = () => {
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => {
-                        setModalAction("Home");
+                        setModalAction("DelSelectedNotes");
                         setModalVisible(true);
                       }}
                     >
