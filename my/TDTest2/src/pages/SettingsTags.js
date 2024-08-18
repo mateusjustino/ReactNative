@@ -64,6 +64,7 @@ const SettingsTags = () => {
       <ScrollView
         style={styles.container}
         contentContainerStyle={{ alignItems: "center" }}
+        showsVerticalScrollIndicator={false}
       >
         <View
           style={[

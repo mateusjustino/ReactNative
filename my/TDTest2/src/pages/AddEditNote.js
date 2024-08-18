@@ -119,7 +119,7 @@ export default function AddEditNote() {
     if (title || content) {
       setActiveLoading(true);
       const now = moment().format("YYYY-MM-DD HH:mm:ss");
-      let orderVar = 1;
+      let orderChanged = 1;
 
       const q = query(
         collection(db, "notes"),
@@ -131,10 +131,10 @@ export default function AddEditNote() {
         const item = querySnapshot.docs[i];
         const noteRef = doc(db, "notes", item.id);
         await updateDoc(noteRef, {
-          order: orderVar,
+          order: orderChanged,
         })
           .then(() => {
-            orderVar += 1;
+            orderChanged += 1;
           })
           .catch((error) => {
             getUnknownErrorFirebase(
@@ -178,9 +178,10 @@ export default function AddEditNote() {
 
   const handleUpdate = async () => {
     if (
-      data.title !== title ||
+      data.backgroundColor !== backgroundColorNote ||
       data.contentText !== content ||
-      data.backgroundColor !== backgroundColorNote
+      data.tags !== activeTags ||
+      data.title !== title
     ) {
       setActiveLoading(true);
 
@@ -196,7 +197,7 @@ export default function AddEditNote() {
         title: title,
       })
         .then(async () => {
-          let orderVar = 1;
+          let orderChanged = 1;
           const q = query(
             collection(db, "notes"),
             orderBy("order"),
@@ -208,10 +209,10 @@ export default function AddEditNote() {
             if (item.id != data.id) {
               const noteRef = doc(db, "notes", item.id);
               await updateDoc(noteRef, {
-                order: orderVar,
+                order: orderChanged,
               })
                 .then(() => {
-                  orderVar += 1;
+                  orderChanged += 1;
                 })
                 .catch((error) => {
                   getUnknownErrorFirebase(
@@ -404,7 +405,7 @@ export default function AddEditNote() {
               <ScrollView
                 horizontal
                 contentContainerStyle={{ gap: 10 }}
-                showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
               >
                 <ColorComponent
                   colorValue={colors.backgroundLight}

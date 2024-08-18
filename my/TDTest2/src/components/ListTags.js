@@ -41,15 +41,7 @@ const ListTags = ({ forceUpdate, activeTags, searchNotes, setActiveTags }) => {
       ListFooterComponent={
         <TouchableOpacity
           onPress={() => navigation.navigate("SettingsTags")}
-          style={{
-            backgroundColor: colors.primaryGreenAlfa,
-            padding: 3,
-            paddingHorizontal: 10,
-            marginRight: 10,
-            borderRadius: 10,
-            borderWidth: 1,
-            borderColor: colors.borderColorLight,
-          }}
+          style={styles.footerContainer}
         >
           <Ionicons
             name="add-outline"
@@ -64,4 +56,14 @@ const ListTags = ({ forceUpdate, activeTags, searchNotes, setActiveTags }) => {
 
 export default ListTags;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  footerContainer: {
+    backgroundColor: colors.primaryGreenAlfa,
+    padding: 3,
+    paddingHorizontal: 10,
+    marginRight: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.borderColorLight,
+  },
+});

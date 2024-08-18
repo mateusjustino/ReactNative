@@ -1,4 +1,4 @@
-import { ActivityIndicator, StyleSheet } from "react-native";
+import { ActivityIndicator } from "react-native";
 import colors from "../theme/colors";
 
 const Loading = ({ color }) => {
@@ -11,5 +11,3 @@ const Loading = ({ color }) => {
 };
 
 export default Loading;
-
-const styles = StyleSheet.create({});

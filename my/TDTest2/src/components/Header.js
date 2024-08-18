@@ -32,49 +32,26 @@ export default function Header({
     colorBackground();
   }, [statusBarColor]);
 
-  const colorBackground = () => {
-    if (
-      statusBarColor == colors.customStatusBarModalNoteRed ||
-      statusBarColor == colors.customBackgroundNoteRed
-    ) {
-      return colors.customBackgroundNoteRed;
-    } else if (
-      statusBarColor == colors.customStatusBarModalNoteOrange ||
-      statusBarColor == colors.customBackgroundNoteOrange
-    ) {
-      return colors.customBackgroundNoteOrange;
-    } else if (
-      statusBarColor == colors.customStatusBarModalNoteYellow ||
-      statusBarColor == colors.customBackgroundNoteYellow
-    ) {
-      return colors.customBackgroundNoteYellow;
-    } else if (
-      statusBarColor == colors.customStatusBarModalNoteGreen ||
-      statusBarColor == colors.customBackgroundNoteGreen
-    ) {
-      return colors.customBackgroundNoteGreen;
-    } else if (
-      statusBarColor == colors.customStatusBarModalNoteBlue ||
-      statusBarColor == colors.customBackgroundNoteBlue
-    ) {
-      return colors.customBackgroundNoteBlue;
-    } else if (
-      statusBarColor == colors.customStatusBarModalNoteIndigo ||
-      statusBarColor == colors.customBackgroundNoteIndigo
-    ) {
-      return colors.customBackgroundNoteIndigo;
-    } else if (
-      statusBarColor == colors.customStatusBarModalNoteViolet ||
-      statusBarColor == colors.customBackgroundNoteViolet
-    ) {
-      return colors.customBackgroundNoteViolet;
-    } else if (
-      statusBarColor == colors.backgroundLightStatusBarModal ||
-      statusBarColor == colors.backgroundLight
-    ) {
-      return colors.backgroundLight;
-    }
+  const colorMapping = {
+    [colors.customStatusBarModalNoteRed]: colors.customBackgroundNoteRed,
+    [colors.customBackgroundNoteRed]: colors.customBackgroundNoteRed,
+    [colors.customStatusBarModalNoteOrange]: colors.customBackgroundNoteOrange,
+    [colors.customBackgroundNoteOrange]: colors.customBackgroundNoteOrange,
+    [colors.customStatusBarModalNoteYellow]: colors.customBackgroundNoteYellow,
+    [colors.customBackgroundNoteYellow]: colors.customBackgroundNoteYellow,
+    [colors.customStatusBarModalNoteGreen]: colors.customBackgroundNoteGreen,
+    [colors.customBackgroundNoteGreen]: colors.customBackgroundNoteGreen,
+    [colors.customStatusBarModalNoteBlue]: colors.customBackgroundNoteBlue,
+    [colors.customBackgroundNoteBlue]: colors.customBackgroundNoteBlue,
+    [colors.customStatusBarModalNoteIndigo]: colors.customBackgroundNoteIndigo,
+    [colors.customBackgroundNoteIndigo]: colors.customBackgroundNoteIndigo,
+    [colors.customStatusBarModalNoteViolet]: colors.customBackgroundNoteViolet,
+    [colors.customBackgroundNoteViolet]: colors.customBackgroundNoteViolet,
+    [colors.backgroundLightStatusBarModal]: colors.backgroundLight,
+    [colors.backgroundLight]: colors.backgroundLight,
   };
+
+  const colorBackground = () => colorMapping[statusBarColor] || null;
 
   return (
     <SafeAreaView

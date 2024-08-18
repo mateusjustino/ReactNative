@@ -100,6 +100,7 @@ const SignIn = () => {
             justifyContent: "center",
             paddingVertical: 10,
           }}
+          showsVerticalScrollIndicator={false}
         >
           <View style={styles.container}>
             <View style={{ marginBottom: 50 }}>

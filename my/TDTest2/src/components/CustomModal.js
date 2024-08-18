@@ -58,59 +58,46 @@ const CustomModal = ({
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
+    const colorMapping = {
+      [colors.customBackgroundNoteRed]: colors.customStatusBarModalNoteRed,
+      [colors.customBackgroundNoteOrange]:
+        colors.customStatusBarModalNoteOrange,
+      [colors.customBackgroundNoteYellow]:
+        colors.customStatusBarModalNoteYellow,
+      [colors.customBackgroundNoteGreen]: colors.customStatusBarModalNoteGreen,
+      [colors.customBackgroundNoteBlue]: colors.customStatusBarModalNoteBlue,
+      [colors.customBackgroundNoteIndigo]:
+        colors.customStatusBarModalNoteIndigo,
+      [colors.customBackgroundNoteViolet]:
+        colors.customStatusBarModalNoteViolet,
+      [colors.backgroundLight]: colors.backgroundLightStatusBarModal,
+    };
+
+    const reverseColorMapping = {
+      [colors.customStatusBarModalNoteRed]: colors.customBackgroundNoteRed,
+      [colors.customStatusBarModalNoteOrange]:
+        colors.customBackgroundNoteOrange,
+      [colors.customStatusBarModalNoteYellow]:
+        colors.customBackgroundNoteYellow,
+      [colors.customStatusBarModalNoteGreen]: colors.customBackgroundNoteGreen,
+      [colors.customStatusBarModalNoteBlue]: colors.customBackgroundNoteBlue,
+      [colors.customStatusBarModalNoteIndigo]:
+        colors.customBackgroundNoteIndigo,
+      [colors.customStatusBarModalNoteViolet]:
+        colors.customBackgroundNoteViolet,
+      [colors.backgroundLightStatusBarModal]: colors.backgroundLight,
+    };
+
     if (modalVisible) {
-      if (statusBarColor == colors.customBackgroundNoteRed) {
-        setStatusBarColor(colors.customStatusBarModalNoteRed);
-        configureNavigationBar(colors.customStatusBarModalNoteRed);
-      } else if (statusBarColor == colors.customBackgroundNoteOrange) {
-        setStatusBarColor(colors.customStatusBarModalNoteOrange);
-        configureNavigationBar(colors.customStatusBarModalNoteOrange);
-      } else if (statusBarColor == colors.customBackgroundNoteYellow) {
-        setStatusBarColor(colors.customStatusBarModalNoteYellow);
-        configureNavigationBar(colors.customStatusBarModalNoteYellow);
-      } else if (statusBarColor == colors.customBackgroundNoteGreen) {
-        setStatusBarColor(colors.customStatusBarModalNoteGreen);
-        configureNavigationBar(colors.customStatusBarModalNoteGreen);
-      } else if (statusBarColor == colors.customBackgroundNoteBlue) {
-        setStatusBarColor(colors.customStatusBarModalNoteBlue);
-        configureNavigationBar(colors.customStatusBarModalNoteBlue);
-      } else if (statusBarColor == colors.customBackgroundNoteIndigo) {
-        setStatusBarColor(colors.customStatusBarModalNoteIndigo);
-        configureNavigationBar(colors.customStatusBarModalNoteIndigo);
-      } else if (statusBarColor == colors.customBackgroundNoteViolet) {
-        setStatusBarColor(colors.customStatusBarModalNoteViolet);
-        configureNavigationBar(colors.customStatusBarModalNoteViolet);
-      } else if (statusBarColor == colors.backgroundLight) {
-        setStatusBarColor(colors.backgroundLightStatusBarModal);
-        configureNavigationBar(colors.backgroundLightStatusBarModal);
-      }
+      const newColor = colorMapping[statusBarColor] || statusBarColor;
+      setStatusBarColor(newColor);
+      configureNavigationBar(newColor);
     } else {
-      if (statusBarColor == colors.customStatusBarModalNoteRed) {
-        setStatusBarColor(colors.customBackgroundNoteRed);
-        configureNavigationBar(colors.customBackgroundNoteRed);
-      } else if (statusBarColor == colors.customStatusBarModalNoteOrange) {
-        setStatusBarColor(colors.customBackgroundNoteOrange);
-        configureNavigationBar(colors.customBackgroundNoteOrange);
-      } else if (statusBarColor == colors.customStatusBarModalNoteYellow) {
-        setStatusBarColor(colors.customBackgroundNoteYellow);
-        configureNavigationBar(colors.customBackgroundNoteYellow);
-      } else if (statusBarColor == colors.customStatusBarModalNoteGreen) {
-        setStatusBarColor(colors.customBackgroundNoteGreen);
-        configureNavigationBar(colors.customBackgroundNoteGreen);
-      } else if (statusBarColor == colors.customStatusBarModalNoteBlue) {
-        setStatusBarColor(colors.customBackgroundNoteBlue);
-        configureNavigationBar(colors.customBackgroundNoteBlue);
-      } else if (statusBarColor == colors.customStatusBarModalNoteIndigo) {
-        setStatusBarColor(colors.customBackgroundNoteIndigo);
-        configureNavigationBar(colors.customBackgroundNoteIndigo);
-      } else if (statusBarColor == colors.customStatusBarModalNoteViolet) {
-        setStatusBarColor(colors.customBackgroundNoteViolet);
-        configureNavigationBar(colors.customBackgroundNoteViolet);
-      } else if (statusBarColor == colors.backgroundLightStatusBarModal) {
-        setStatusBarColor(colors.backgroundLight);
-        configureNavigationBar(colors.backgroundLight);
-      }
+      const newColor = reverseColorMapping[statusBarColor] || statusBarColor;
+      setStatusBarColor(newColor);
+      configureNavigationBar(newColor);
     }
+
     if (!modalVisible) {
       setModalAction("");
       setActiveLoading(false);
@@ -227,8 +214,6 @@ const CustomModal = ({
         password
       );
 
-      // mateus.justino.07@gmail.com
-      // mateus_justino_07@hotmail.com
       reauthenticateWithCredential(auth.currentUser, credential)
         .then(() => {
           setActiveLoading(true);
@@ -623,6 +608,54 @@ const CustomModal = ({
     );
   };
 
+  const ShowMessages = () => {
+    const eachMessage = {
+      DelSelectedNotes: "Deseja excluir as notas selecionadas?",
+      DelNote: "Deseja excluir esta nota?",
+      DelTag: "Deseja excluir esta tag?",
+      ChangedEmail: "Email alterado!",
+      SendEmail: "Email enviado, confirme ele!",
+      NeedVerifyEmail: "Antes de alterar é necessario verificar seu email",
+      TooManyRequests:
+        "Email já enviado para o destinatario, aguarde para solicitar outro",
+      ChangedPassword: "Password alterado!",
+      InvalidEmail: "Email invalido",
+      ChangedEmailPassword: "Email e Password alterado!",
+      ShortPassword: "Password muito curto",
+      DifferentPassword: "ConfirmPassword diferente",
+      ChangedName: "name alterado!",
+      ChangedEmailPasswordName: "name email e password alterado!",
+      EmptyName: "name vazio!",
+      ChangedEmailName: "name e email alterado!",
+      ChangedPasswordName: "name e password alterado!",
+      EmailAlreadyInUse: "Email ja esta sendo utilizado!",
+      RequireAllFields: "Preencha todos os campos!",
+      UserNotFound: "Usuario nao encontrado",
+      WrongPassword: "Password errado",
+      SendPasswordReset: "email de reset pass enviado",
+      TagAlreadyExist: "Tag ja existe",
+      UnknownError: "Unknown error, we are working in a solution",
+    };
+
+    const message = eachMessage[modalAction];
+
+    return message ? <TitleMsg message={message} /> : null;
+  };
+
+  const PasswordIcon = () => {
+    const actionsWithIcon = [
+      "ConfirmPassForName",
+      "ConfirmPassForEmail",
+      "ConfirmPassForPassword",
+      "ConfirmPassForEmailPassword",
+      "ConfirmPassForEmailPasswordName",
+      "ConfirmPassForEmailName",
+      "ConfirmPassForPasswordName",
+    ];
+
+    return actionsWithIcon.includes(modalAction) ? <IconShowPass /> : null;
+  };
+
   return (
     <Modal
       animationType="fade"
@@ -655,82 +688,7 @@ const CustomModal = ({
             maxWidth: 400,
           }}
         >
-          {modalAction === "DelSelectedNotes" && (
-            <TitleMsg message="Deseja excluir as notas selecionadas?" />
-          )}
-          {modalAction === "DelNote" && (
-            <TitleMsg message="Deseja excluir esta nota?" />
-          )}
-          {modalAction === "DelTag" && (
-            <TitleMsg message="Deseja excluir esta tag?" />
-          )}
-          {modalAction === "ChangedEmail" && (
-            <TitleMsg message="Email alterado!" />
-          )}
-          {modalAction === "SendEmail" && (
-            <TitleMsg message="Email enviado, confirme ele!" />
-          )}
-          {modalAction === "NeedVerifyEmail" && (
-            <TitleMsg message="Antes de alterar é necessario verificar seu email" />
-          )}
-          {modalAction === "TooManyRequests" && (
-            <TitleMsg message="Email já enviado para o destinatario, aguarde para solicitar outro" />
-          )}
-          {modalAction === "ChangedPassword" && (
-            <TitleMsg message="Password alterado!" />
-          )}
-          {modalAction === "InvalidEmail" && (
-            <TitleMsg message="Email invalido" />
-          )}
-          {modalAction === "ChangedEmailPassword" && (
-            <TitleMsg message="Email e Password alterado!" />
-          )}
-          {modalAction === "ShortPassword" && (
-            <TitleMsg message="Password muito curto" />
-          )}
-          {modalAction === "DifferentPassword" && (
-            <TitleMsg message="ConfirmPassword diferente" />
-          )}
-          {modalAction === "ChangedName" && (
-            <TitleMsg message="name alterado!" />
-          )}
-          {modalAction === "ChangedEmailPasswordName" && (
-            <TitleMsg message="name email e password alterado!" />
-          )}
-          {modalAction === "EmptyName" && <TitleMsg message="name vazio!" />}
-          {modalAction === "ChangedEmailName" && (
-            <TitleMsg message="name e email alterado!" />
-          )}
-          {modalAction === "ChangedPasswordName" && (
-            <TitleMsg message="name e password alterado!" />
-          )}
-          {modalAction === "EmailAlreadyInUse" && (
-            <TitleMsg message="Email ja esta sendo utilizado!" />
-          )}
-          {modalAction === "RequireAllFields" && (
-            <TitleMsg message="Preencha todos os campos!" />
-          )}
-          {modalAction === "UserNotFound" && (
-            <TitleMsg message="Usuario nao encontrado" />
-          )}
-          {modalAction === "WrongPassword" && (
-            <TitleMsg message="Password errado" />
-          )}
-          {modalAction === "TooManyRequests" && (
-            <TitleMsg message="muitas tentativas erradas, tente mais tarde" />
-          )}
-          {modalAction === "SendPasswordReset" && (
-            <TitleMsg message="email de reset pass enviado" />
-          )}
-          {modalAction === "TagAlreadyExist" && (
-            <TitleMsg message="Tag ja existe" />
-          )}
-          {modalAction === "UnknownError" && (
-            <TitleMsg message="Unknown error, we are working in a solution" />
-          )}
-
-          {/* parte dos input */}
-
+          <ShowMessages />
           {modalAction === "ConfirmPassForName" && (
             <TextInputCustom
               label="Confirme sua senha antes de alterar seu name"
@@ -805,25 +763,13 @@ const CustomModal = ({
             />
           )}
 
-          {/* parte do show password */}
-
-          {modalAction === "ConfirmPassForName" && <IconShowPass />}
-          {modalAction === "ConfirmPassForEmail" && <IconShowPass />}
-          {modalAction === "ConfirmPassForPassword" && <IconShowPass />}
-          {modalAction === "ConfirmPassForEmailPassword" && <IconShowPass />}
-          {modalAction === "ConfirmPassForEmailPasswordName" && (
-            <IconShowPass />
-          )}
-          {modalAction === "ConfirmPassForEmailName" && <IconShowPass />}
-          {modalAction === "ConfirmPassForPasswordName" && <IconShowPass />}
-
+          <PasswordIcon />
           <View style={styles.buttonContainer}>
             {modalAction === "DelSelectedNotes" && <ButtonNo />}
             {modalAction === "DelNote" && <ButtonNo />}
             {modalAction === "DelTag" && <ButtonNo />}
 
             <View style={{ flex: 1 }}>
-              {/* <View> */}
               <ButtonCustom
                 onPressFunc={() => {
                   if (
@@ -881,7 +827,6 @@ export default CustomModal;
 const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
-    // justifyContent: "flex-end",
     justifyContent: "space-between",
     gap: 10,
     marginTop: 20,

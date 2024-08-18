@@ -18,6 +18,7 @@ import { fontFamily, fontSize } from "../theme/font";
 import CustomModal from "../components/CustomModal";
 import { useState } from "react";
 import getUnknownErrorFirebase from "../scripts/getUnknownErrorFirebase";
+import { openEmail } from "react-native-email-link";
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -82,11 +83,14 @@ const Settings = () => {
     );
   };
 
-  const handlePress = () => {
+  const openGithub = () => {
     const url = "https://github.com/justmatedev";
-    Linking.openURL(url).catch((err) =>
-      console.error("Erro ao tentar abrir o link:", err)
-    );
+    Linking.openURL(url);
+  };
+
+  const openEmail = () => {
+    const url = "mailto:justmatedev@gmail.com";
+    Linking.openURL(url);
   };
 
   return (
@@ -98,6 +102,7 @@ const Settings = () => {
           alignItems: "center",
           paddingBottom: 30,
         }}
+        showsVerticalScrollIndicator={false}
       >
         <View
           style={{
@@ -144,30 +149,42 @@ const Settings = () => {
             }
             navigate="logout"
           />
-
-          <View style={{ alignItems: "center", marginTop: 40 }}>
+          <View style={{ alignItems: "center", marginTop: 20 }}>
             <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                marginVertical: 20,
-                gap: 15,
+                marginVertical: 10,
+                gap: 5,
               }}
             >
               <Text style={[styles.text, { paddingTop: 4 }]}>Source Code:</Text>
-              <TouchableOpacity onPress={handlePress}>
+              <TouchableOpacity onPress={openGithub}>
                 <Ionicons
                   name="logo-github"
                   size={iconSize.regular}
                   color={colors.primaryPurple}
+                  style={{ padding: 5 }}
                 />
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.text}>duvida, errro, sugestao pelo email:</Text>
-            <Text style={styles.text} selectable>
-              justmatedev@gmail.com
+            <Text style={[styles.text, { textAlign: "center" }]}>
+              For any questions, errors, or suggestions, please email us at:
             </Text>
+            <TouchableOpacity onPress={openEmail}>
+              <Text
+                style={[
+                  styles.text,
+                  {
+                    color: colors.primaryPurple,
+                    textDecorationLine: "underline",
+                  },
+                ]}
+              >
+                justmatedev@gmail.com
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
         <CustomModal

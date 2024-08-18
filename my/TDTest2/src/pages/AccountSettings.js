@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  Text,
   View,
   ScrollView,
   TouchableOpacity,
@@ -219,6 +218,7 @@ const AccountSettings = () => {
       <ScrollView
         style={styles.container}
         contentContainerStyle={{ alignItems: "center" }}
+        showsVerticalScrollIndicator={false}
       >
         <View style={styles.form}>
           <KeyboardAvoidingView
@@ -274,7 +274,7 @@ const AccountSettings = () => {
             <TextInputCustom
               text={password}
               setText={setPassowrd}
-              label="Senha"
+              label="Password"
               autoCapitalize="none"
               secure={!showPassword}
             />
@@ -310,7 +310,7 @@ const AccountSettings = () => {
             <TextInputCustom
               text={confirmPassword}
               setText={setConfirmPassowrd}
-              label="Confirmar Senha"
+              label="Confirm Password"
               autoCapitalize="none"
               secure={!showConfirmPassword}
             />

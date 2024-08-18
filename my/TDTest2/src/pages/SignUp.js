@@ -135,6 +135,7 @@ const SignUp = () => {
             justifyContent: "center",
             paddingVertical: 10,
           }}
+          showsVerticalScrollIndicator={false}
         >
           <View style={styles.container}>
             <View style={{ marginBottom: 50 }}>
@@ -210,7 +211,6 @@ const SignUp = () => {
                     justifyContent: "flex-end",
                     paddingHorizontal: 5,
                     alignItems: "center",
-                    // marginBottom: 15,
                   }}
                 >
                   {showConfirmPassword ? (

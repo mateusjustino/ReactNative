@@ -484,7 +484,6 @@ const styles = StyleSheet.create({
     width: "100%",
     fontSize: fontSize.regular,
     fontFamily: fontFamily.PoppinsRegular400,
-    // backgroundColor: colors.primaryGreenDark,
   },
 });
 

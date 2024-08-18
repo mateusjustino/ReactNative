@@ -11,7 +11,6 @@ export default function UserContextProvider({ children }) {
   const [tags, setTags] = useState([]);
   const [statusBarColor, setStatusBarColor] = useState(colors.backgroundLight);
   const [modalAction, setModalAction] = useState("");
-  // const [unknownError, setUnknownError] = useState("");
 
   const EnterUser = async (userInfo) => {
     setUser(userInfo);
